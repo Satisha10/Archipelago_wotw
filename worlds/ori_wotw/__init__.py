@@ -1,7 +1,6 @@
 """AP world for Ori and the Will of the Wisps."""
 
 # TODO Relics ? Black market ? Also make location groups for each area
-# TODO fix player name with _
 # TODO fix the in-game location counter
 
 
