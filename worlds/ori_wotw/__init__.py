@@ -523,6 +523,7 @@ class WotWWorld(World):
             "open_mode": bool(options.open_mode),
             "glades_done": bool(options.glades_done),
             "shop_icons": icons_paths,
+            "bonus": bool(options.extra_bonus or options.skill_upgrade)
         }
 
         return slot_data
