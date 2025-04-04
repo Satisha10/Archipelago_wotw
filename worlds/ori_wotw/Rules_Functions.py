@@ -160,7 +160,7 @@ def cost_all(state: CollectionState, player: int, options: WotWOptions, region: 
         if energy < 0:
             return False
 
-    energy -= combat_cost(state, player, options, combat_and)
+    energy -= combat_cost(state, player, options, combat_and, bool(path_difficulty==0))
     if energy < 0:
         return False
 
@@ -170,7 +170,7 @@ def cost_all(state: CollectionState, player: int, options: WotWOptions, region: 
         for req in or_req:
             if req[0] == 0:
                 if all([state.has(danger, player) for danger in req[2]]):
-                    min_cost = min(min_cost, combat_cost(state, player, options, req[1]))
+                    min_cost = min(min_cost, combat_cost(state, player, options, req[1], bool(path_difficulty==0)))
             if req[0] == 1:
                 if state.has(req[1], player):
                     min_cost = min(min_cost, weapon_data[req[1]][1] * req[2])
@@ -191,10 +191,15 @@ def cost_all(state: CollectionState, player: int, options: WotWOptions, region: 
     return True
 
 
-def combat_cost(state: CollectionState, player: int, options: WotWOptions, hp_list: List[List]) -> float:
+def combat_cost(state: CollectionState, player: int, options: WotWOptions, hp_list: List[List],
+                moki_path: bool) -> float:
     """Returns the energy cost for the enemies/walls/boss with current state."""
     hard = options.hard_mode
     diff = options.difficulty
+    if moki_path:
+        if state.has_any(("Sword", "Hammer"), player):
+            return 0
+        return 1000  # Arbitrary value, greater than 200
 
     tot_cost = 0
     max_cost = 0  # Maximum amount used, in case there are refills during combat.
