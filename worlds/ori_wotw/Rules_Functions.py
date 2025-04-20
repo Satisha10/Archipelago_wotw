@@ -18,14 +18,14 @@ weapon_data: Dict[str, List] = {  # The list contains the damage, and its energy
 
 
 def has_health(amount: int, state: CollectionState, player: int) -> bool:
-    """Returns if the player has enough max health to enter the area."""
+    """Return if the player has enough max health to enter the area."""
     wisps = state.count_from_list(("EastHollow.ForestsVoice", "LowerReach.ForestsMemory", "UpperDepths.ForestsEyes",
                                   "WestPools.ForestsStrength", "WindtornRuins.Seir"), player)
     return amount < 30 + state.count("Health Fragment", player)*5 + 10*wisps
 
 
 def get_max(state: CollectionState, player: int) -> (int, float):
-    """Returns the current max health and energy."""
+    """Return the current max health and energy."""
     wisps = state.count_from_list(("EastHollow.ForestsVoice", "LowerReach.ForestsMemory", "UpperDepths.ForestsEyes",
                                   "WestPools.ForestsStrength", "WindtornRuins.Seir"), player)
     return (30 + state.count("Health Fragment", player)*5 + 10*wisps,
@@ -33,7 +33,7 @@ def get_max(state: CollectionState, player: int) -> (int, float):
 
 
 def get_refill(max_resource: (int, float)) -> (int, int):
-    """Returns the refill values."""
+    """Return the refill values."""
     maxH, maxE = max_resource
     refillH = min((4 + floor(maxH/50/0.6685)) * 10, maxH)
     refillE = floor(maxE/5+1)
@@ -41,32 +41,12 @@ def get_refill(max_resource: (int, float)) -> (int, int):
 
 
 def can_buy_map(state: CollectionState, player: int) -> bool:
-    """Returns if the total amount of Spirit Light can buy all accessible maps."""
-    cost = 200  # Higher cost than necessary to make it less constrained for the player.
-    if state.can_reach_region("MarshSpawn.BrokenBridge", player):
-        cost += 200
-    if state.can_reach_region("MidnightBurrows.Central", player):
-        cost += 50
-    if state.can_reach_region("WestHollow.HollowDrainLower", player):
-        cost += 150
-    if state.can_reach_region("InnerWellspring.WestDoor", player):
-        cost += 150
-    if (state.can_reach_region("LowerReach.Central", player)
-            or state.can_reach_region("LowerReach.OutsideTPRoom", player)):
-        cost += 150
-    if state.can_reach_region("LowerDepths.East", player):
-        cost += 150
-    if state.can_reach_region("EastPools.LupoArea", player):
-        cost += 150
-    if state.can_reach_region("LowerWastes.ThirstyGorlek", player):
-        cost += 150
-    if state.can_reach_region("WillowsEnd.InnerTP", player):
-        cost += 50
-    return state.count("200 Spirit Light", player) >= ceil(cost/200)
+    """Return if the total amount of Spirit Light can buy all maps (1200 SL)."""
+    return state.count("200 Spirit Light", player) >= 6
 
 
 def can_keystones(state: CollectionState, player: int) -> bool:
-    """Returns if the total amount of Keystones can open all accessible doors."""
+    """Return if the total amount of Keystones can open all accessible doors."""
     count = 2  # Add more Keystones than necessary to make it less constrained for the player.
     if (state.can_reach_region("MarshSpawn.CaveEntrance", player)
             or state.can_reach_region("MarshSpawn.RegenDoor", player)):
@@ -108,7 +88,7 @@ def can_keystones(state: CollectionState, player: int) -> bool:
 def cost_all(state: CollectionState, player: int, options: WotWOptions, region: str, damage_and: List,
              en_and: List[List], combat_and: List[List], or_req: List[List], path_difficulty: int) -> bool:
     """
-    Returns a bool stating if the path can be taken, and updates ref_resource if it's a connection.
+    Return a bool stating if the path can be taken.
 
     damage_and: contains the dboost values (if several elements, Regenerate can be used inbetween).
     combat_and: contains the combat damages needed and the type (enemy/wall).
@@ -193,7 +173,7 @@ def cost_all(state: CollectionState, player: int, options: WotWOptions, region: 
 
 def combat_cost(state: CollectionState, player: int, options: WotWOptions, hp_list: List[List],
                 moki_path: bool) -> float:
-    """Returns the energy cost for the enemies/walls/boss with current state."""
+    """Return the energy cost for the enemies/walls/boss with current state."""
     hard = options.hard_mode
     diff = options.difficulty
     if moki_path:
