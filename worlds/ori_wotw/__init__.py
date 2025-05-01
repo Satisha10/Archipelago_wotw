@@ -66,9 +66,18 @@ class WotWWorld(World):
         super(WotWWorld, self).__init__(multiworld, player)
 
     def generate_early(self):
-        """Options checking"""
+        """Options checking + selection of a random goal."""
         if self.options.open_mode:
             self.options.no_rain.value = True
+
+        if "random" in self.options.goal:
+            possible_goals = list(self.options.goal.value).remove("random")
+            selected_goal: List = []
+            if not possible_goals:  # Only random selected, choose among all goals
+                possible_goals = ["trees", "wisps", "quests"]
+            # Select a goal at random among the selected ones
+            selected_goal.append(self.multiworld.random.choice(possible_goals))
+            self.options.goal.value = frozenset(selected_goal)
 
     def create_regions(self):
         world = self.multiworld
@@ -220,7 +229,7 @@ class WotWWorld(World):
         if options.quests == Quests.option_none:
             empty_locations += loc_sets["Quests"].copy()
         else:
-            empty_locations += "GladesTown.FamilyReunionKey"  # TODO remove when fixed
+            empty_locations += ["GladesTown.FamilyReunionKey"]  # TODO remove when fixed
 
         for location in empty_locations:
             loc = world.get_location(location, player)

@@ -63,14 +63,17 @@ class StartingLocation(Choice):
 class Goal(OptionSet):
     """Set conditions for entering the final boss. Use the rando wheel (with **V**) to check goal progress.
 
-    - **Trees**: All trees must be collected.
-    - **Wisps**: All wisps must be collected.
-    - **Quests**: All quests have to be finished.
+    - **trees**: All trees must be collected.
+    - **wisps**: All wisps must be collected.
+    - **quests**: All quests have to be finished.
+    - **random**: Choose one goal at random among the other selected ones.
+      e.g. [random, trees, wisps] will give trees or wisps.
+      If only random is selected, it will choose among all goals.
     """
     display_name = "Goal"
     rich_text_doc = True
     valid_keys_casefold = True
-    valid_keys = ["trees", "wisps", "quests"]
+    valid_keys = ["trees", "wisps", "quests", "random"]
     default = frozenset(["trees"])
 
 
