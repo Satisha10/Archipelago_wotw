@@ -219,6 +219,8 @@ class WotWWorld(World):
             empty_locations += loc_sets["HandToHand"].copy()
         if options.quests == Quests.option_none:
             empty_locations += loc_sets["Quests"].copy()
+        else:
+            empty_locations += "GladesTown.FamilyReunionKey"  # TODO remove when fixed
 
         for location in empty_locations:
             loc = world.get_location(location, player)
