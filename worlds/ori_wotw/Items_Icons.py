@@ -90,26 +90,28 @@ bonus_paths: dict[str, str] = {
     "Flash Efficiency": "file:assets/icons/bonus/flashefficiency.png",
     "Grenade Efficiency": "file:assets/icons/bonus/grenadeefficiency.png",
     "Rapid Sword": "file:assets/icons/bonus/rapidsword.png",
-    "Rapid Hammer": "file:assets/icons/bonus/rapidsmash.png",  # Manually Found
+    "Rapid Hammer": "file:assets/icons/bonus/rapidsmash.png",
     "Rapid Spear": "file:assets/icons/bonus/rapidspear.png",
     "Rapid Grenade": "file:assets/icons/bonus/rapidgrenade.png",
-    "Quickshot Upgrade": "file:assets/icons/bonus/rapidquickshot.png",  # Manually Found
-    "Rapid Regenerate": "file:assets/icons/bonus/rapidregen.png",  # Manually Found
-    "Melting Bow":  skills_paths["Bow"],  # Manually Found
+    "Quickshot Upgrade": "file:assets/icons/bonus/rapidquickshot.png",
+    "Rapid Regenerate": "file:assets/icons/bonus/rapidregen.png",
+    "Melting Bow":  skills_paths["Bow"],
     "Melting Blaze": "file:assets/icons/bonus/meltingblaze.png",
     "Melting Sword": "file:assets/icons/bonus/meltingsword.png",
-    "Melting Hammer": skills_paths["Hammer"],  # Manually Found
+    "Melting Hammer": skills_paths["Hammer"],
     "Melting Spear": "file:assets/icons/bonus/meltingspear.png",
     "Melting Shuriken": "file:assets/icons/bonus/meltingshuriken.png",
-    "Uncharged Bashnades": "file:assets/icons/bonus/unchargedbashgrenade.png",  # Manually Found
+    "Uncharged Bashnades": "file:assets/icons/bonus/unchargedbashgrenade.png",
     "Extra Grenade": "file:assets/icons/bonus/extragrenade.png",
     "Splinter Grenade": "file:assets/icons/bonus/splintergrenade.png",
     "Unlimited Sentries": "file:assets/icons/bonus/unlimitedsentries.png",
     "Sentry Burst Upgrade": "file:assets/icons/bonus/sentryburstupgrade.png",
-    "Sentry Fire Rate": "file:assets/icons/bonus/sentryattackspeed.png",  # Manually Found
-    "Extra Shurikens": "file:assets/icons/bonus/extrashuriken.png",  # Manually Found
-    "Splinter Shurikens": "file:assets/icons/bonus/splintershuriken.png",  # Manually Found
-    "Bashable Shurikens": "file:assets/icons/bonus/bashableshuriken.png"  # Manually Found
+    "Sentry Fire Rate": "file:assets/icons/bonus/sentryattackspeed.png",
+    "Extra Shurikens": "file:assets/icons/bonus/extrashuriken.png",
+    "Splinter Shurikens": "file:assets/icons/bonus/splintershuriken.png",
+    "Bashable Shurikens": "file:assets/icons/bonus/bashableshuriken.png",
+    "Jumpgrade": "file:assets/icons/bonus/jumpgrade.png",
+    "Skill Velocity": "file:assets/icons/bonus/skillvelocity.png",
 }
 others_paths: dict[str, str] = {
     "teleporter": "file:assets/icons/game/teleporter.png",

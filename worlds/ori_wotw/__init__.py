@@ -457,7 +457,7 @@ class WotWWorld(World):
         player = self.player
         options = self.options
         logic_difficulty: List[str] = ["Moki", "Gorlek", "Kii", "Unsafe"]
-        coord: List[List[float]] = [
+        coord: List[List[int | str]] = [
             [-799, -4310, "MarshSpawn.Main"],
             [-945, -4582, "MidnightBurrows.Teleporter"],
             [-328, -4536, "HowlsDen.Teleporter"],
