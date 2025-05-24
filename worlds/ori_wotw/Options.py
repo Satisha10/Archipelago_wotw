@@ -1,6 +1,6 @@
 """Options for Ori and the Will of the Wisps Randomizer."""
 
-from Options import Choice, Toggle, DefaultOnToggle, PerGameCommonOptions, OptionGroup, OptionSet
+from Options import Choice, Toggle, DefaultOnToggle, PerGameCommonOptions, OptionGroup, OptionSet, StartInventoryPool
 from dataclasses import dataclass
 
 
@@ -140,11 +140,11 @@ class NoRain(Toggle):
 class NoCombat(OptionSet):
     """Skip all combat heavy parts.
 
-    - Everything: the same as if you include all the following
-    - Shrines: Shrine have their pickup floating above them before the fight
-    - Arenas: the arenas start as completed
-    - Demi Bosses: Demi Bosses like Howl, Beetle and Rock boss start as defeated
-    - Bosses: Bosses like Kwolok, Mora and Shriek's combat phases are skipped
+    - **Everything**: the same as if you include all the following
+    - **Shrines**: Shrine have their pickup floating above them before the fight
+    - **Arenas**: the arenas start as completed
+    - **Demi Bosses**: Demi Bosses like Howl, Beetle and Rock boss start as defeated
+    - **Bosses**: Bosses like Kwolok, Mora and Shriek's combat phases are skipped
     """
     display_name = "No Combat"
     rich_text_doc = True
@@ -163,7 +163,11 @@ class NoWillowHearts(Toggle):
 
 
 class Quests(Choice):
-    """Remove locations that involve talking to NPCs, and locations locked behind them are accessible."""
+    """Change which quests are in the location pool.
+
+    - **all**: All quests are present.
+    - **no hand**: Remove the Hand-to-hand questline from the locations.
+    - **none**: Remove all quests that involve talking to NPCs. Main quests (e.g. wisps) or rebuilding Glades are still in the pool."""
     display_name = "Remove Quests"
     option_all = 0
     option_no_hand = 1
@@ -187,7 +191,7 @@ class GladesDone(Toggle):
 
 
 class ShopKeywordsIcons(Toggle):
-    """Have the non local items attempt to use a keyword system to choose icons.
+    """Have the non-local items attempt to use a keyword system to choose icons.
     For example, item with 'map' in their name will have a map icon.
     If no keyword fit, then the icon fall back to Classification.
     """
@@ -277,3 +281,4 @@ class WotWOptions(PerGameCommonOptions):
     sword: SpawnSword  # Item Placements
     vanilla_shop_upgrades: VanillaShopUpgrades
     launch_on_seir: LaunchOnSeir
+    start_inventory_from_pool: StartInventoryPool

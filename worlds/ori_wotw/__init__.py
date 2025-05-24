@@ -4,7 +4,7 @@
 # TODO fix the in-game location counter
 
 
-from typing import List, Dict
+from typing import List, Dict, Any
 from collections import Counter
 
 from .Rules import (set_moki_rules, set_gorlek_rules, set_gorlek_glitched_rules, set_kii_rules,
@@ -112,6 +112,7 @@ class WotWWorld(World):
             base_region = world.get_region(quest_name, player)
             base_region.connect(region)
 
+        # TODO Make a function for these (input list, make the regions...)
         for event in event_table:  # Create events, their item, and a region to attach them
             region = Region(event, player, world)
             ev = WotWLocation(player, event, None, region)
@@ -452,7 +453,7 @@ class WotWWorld(World):
                           "GladesTown.FamilyReunionKey"):
                 try_connect(menu, world.get_region(quest + ".quest", player))
 
-    def fill_slot_data(self) -> Dict[str, any]:
+    def fill_slot_data(self) -> Dict[str, Any]:
         world = self.multiworld
         player = self.player
         options = self.options
@@ -506,7 +507,7 @@ class WotWWorld(World):
             icon_path = get_item_iconpath(self, item, bool(options.shop_keywords))
             icons_paths.update({loc: icon_path})
 
-        slot_data: Dict[str, any] = {
+        slot_data: Dict[str, Any] = {
             "difficulty": logic_difficulty[options.difficulty.value],
             "glitches": bool(options.glitches.value),
             "spawn_x": coord[options.spawn.value][0],
