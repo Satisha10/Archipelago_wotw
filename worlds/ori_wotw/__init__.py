@@ -4,7 +4,7 @@
 # TODO fix the in-game location counter
 
 
-from typing import List, Dict, Any
+from typing import Any
 from collections import Counter
 
 from .Rules import (set_moki_rules, set_gorlek_rules, set_gorlek_glitched_rules, set_kii_rules,
@@ -25,7 +25,7 @@ from .Presets import options_presets
 
 from worlds.AutoWorld import World, WebWorld
 from worlds.generic.Rules import add_rule, set_rule
-from BaseClasses import Region, Location, Item, Tutorial, ItemClassification
+from BaseClasses import Region, Location, Item, Tutorial, ItemClassification, LocationProgressType
 
 
 class WotWWeb(WebWorld):
@@ -54,7 +54,7 @@ class WotWWorld(World):
     item_name_to_id = {name: data[2] for name, data in item_table.items()}
     location_name_to_id = loc_table
 
-    item_name_groups = group_table
+    item_name_groups = group_table  # TODO put the item table in a different file + use sets instead of list
 
     options_dataclass = WotWOptions
     options: WotWOptions
@@ -65,19 +65,20 @@ class WotWWorld(World):
     def __init__(self, multiworld, player):
         super(WotWWorld, self).__init__(multiworld, player)
 
-    def generate_early(self):
+    def generate_early(self) -> None:
         """Options checking + selection of a random goal."""
         if self.options.open_mode:
             self.options.no_rain.value = True
 
         if "random" in self.options.goal:
-            possible_goals = list(self.options.goal.value).remove("random")
-            selected_goal: List = []
+            possible_goals = list(self.options.goal.value)
+            possible_goals.remove("random")
+            selected_goal: list = []
             if not possible_goals:  # Only random selected, choose among all goals
                 possible_goals = ["trees", "wisps", "quests"]
             # Select a goal at random among the selected ones
             selected_goal.append(self.multiworld.random.choice(possible_goals))
-            self.options.goal.value = frozenset(selected_goal)
+            self.options.goal.value = set(selected_goal)
 
     def create_regions(self):
         world = self.multiworld
@@ -147,13 +148,13 @@ class WotWWorld(World):
     def create_item(self, name: str) -> "WotWItem":
         return WotWItem(name, item_table[name][1], item_table[name][2], player=self.player)
 
-    def create_items(self):
+    def create_items(self) -> None:
         world = self.multiworld
         player = self.player
         options = self.options
 
-        skipped_items: List[str] = []  # Remove one instance of the item
-        removed_items: List[str] = []  # Remove all instances of the item
+        skipped_items: list[str] = []  # Remove one instance of the item
+        removed_items: list[str] = []  # Remove all instances of the item
 
         for item in spawn_items(world, options.spawn, options.difficulty):  # Staring items
             world.push_precollected(self.create_item(item))
@@ -218,7 +219,7 @@ class WotWWorld(World):
             removed_items.append("Launch")
 
         # Contain all the locations that are used
-        empty_locations: List[str] = []
+        empty_locations: list[str] = []
         if options.glades_done:
             empty_locations += loc_sets["Rebuild"].copy()
         if options.no_trials:
@@ -237,7 +238,7 @@ class WotWWorld(World):
             loc.place_locked_item(self.create_item("Nothing"))
 
         counter = Counter(skipped_items)
-        pool: List[WotWItem] = []
+        pool: list[WotWItem] = []
 
         for item, data in item_table.items():
             if item in removed_items:
@@ -259,7 +260,7 @@ class WotWWorld(World):
         if options.difficulty == LogicDifficulty.option_moki:
             # Exclude a location that is inaccessible in the lowest difficulty.
             skipped_loc = world.get_location("WestPools.BurrowOre", player)
-            skipped_loc.progress_type = 3
+            skipped_loc.progress_type = LocationProgressType.EXCLUDED
 
     def create_event(self, event: str) -> "WotWItem":
         return WotWItem(event, ItemClassification.progression, None, self.player)
@@ -267,7 +268,7 @@ class WotWWorld(World):
     def get_filler_item_name(self) -> str:
         return self.random.choice(["50 Spirit Light", "100 Spirit Light"])
 
-    def set_rules(self):
+    def set_rules(self) -> None:
         world = self.multiworld
         player = self.player
         options = self.options
@@ -329,7 +330,7 @@ class WotWWorld(World):
                                                         "WindtornRuins.Seir"), player)
                      )
         if "quests" in options.goal:
-            quest_list: List[str] = loc_sets["ExtraQuests"].copy()
+            quest_list: list[str] = loc_sets["ExtraQuests"].copy()
             if options.quests == Quests.option_no_hand:
                 quest_list += loc_sets["Quests"].copy()
             elif options.quests == Quests.option_all:
@@ -453,12 +454,12 @@ class WotWWorld(World):
                           "GladesTown.FamilyReunionKey"):
                 try_connect(menu, world.get_region(quest + ".quest", player))
 
-    def fill_slot_data(self) -> Dict[str, Any]:
+    def fill_slot_data(self) -> dict[str, Any]:
         world = self.multiworld
         player = self.player
         options = self.options
-        logic_difficulty: List[str] = ["Moki", "Gorlek", "Kii", "Unsafe"]
-        coord: List[List[int | str]] = [
+        logic_difficulty: list[str] = ["Moki", "Gorlek", "Kii", "Unsafe"]
+        coord: list[list[int | str]] = [
             [-799, -4310, "MarshSpawn.Main"],
             [-945, -4582, "MidnightBurrows.Teleporter"],
             [-328, -4536, "HowlsDen.Teleporter"],
@@ -477,8 +478,8 @@ class WotWWorld(World):
             [2130, -3984, "WindtornRuins.RuinsTP"],
             [422, -3864, "WillowsEnd.InnerTP"]
         ]
-        icons_paths: Dict[str, str] = {}
-        shops: List[str] = ["TwillenShop.Overcharge",
+        icons_paths: dict[str, str] = {}
+        shops: list[str] = ["TwillenShop.Overcharge",
                             "TwillenShop.TripleJump",
                             "TwillenShop.Wingclip",
                             "TwillenShop.Swap",
@@ -507,7 +508,7 @@ class WotWWorld(World):
             icon_path = get_item_iconpath(self, item, bool(options.shop_keywords))
             icons_paths.update({loc: icon_path})
 
-        slot_data: Dict[str, Any] = {
+        slot_data: dict[str, Any] = {
             "difficulty": logic_difficulty[options.difficulty.value],
             "glitches": bool(options.glitches.value),
             "spawn_x": coord[options.spawn.value][0],

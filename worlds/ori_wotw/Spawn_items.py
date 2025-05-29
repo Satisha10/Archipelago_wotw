@@ -1,6 +1,6 @@
 """Function for handling spawn items for random spawn."""
 
-from typing import List
+from worlds.AutoWorld import World
 
 spawn_names = ["MarshSpawn.Main",
                "MidnightBurrows.Teleporter",
@@ -20,8 +20,8 @@ spawn_names = ["MarshSpawn.Main",
                "WindtornRuins.RuinsTP",
                "WillowsEnd.InnerTP",]
 
-
-def spawn_items(world, spawn, difficulty):
+# TODO fix typing
+def spawn_items(world: World, spawn: int, difficulty: int) -> list[str]:
     """
     Returns a set of spawn items for the chosen spawn point and difficulty.
 
@@ -29,7 +29,7 @@ def spawn_items(world, spawn, difficulty):
     with spawn location, item groups, items along 1st, 2nd, 3rd indexes respectively.
     """
     rand = world.random
-    moki: List[List[List]] = [
+    moki: list[list[list[str]]] = [
             [["Inkwater Marsh TP"]],
             [["Midnight Burrows TP", "Bash", "Double Jump"],
              ["Midnight Burrows TP", "Bash", "Dash"],
@@ -76,7 +76,7 @@ def spawn_items(world, spawn, difficulty):
               "Health Fragment"]],
             ]
 
-    gorlek: List[List[List]] = [
+    gorlek: list[list[list[str]]] = [
               [["Inkwater Marsh TP"]],
               [["Midnight Burrows TP", "Bash", "Double Jump"],
                ["Midnight Burrows TP", "Bash", "Dash"],
@@ -116,7 +116,7 @@ def spawn_items(world, spawn, difficulty):
               [["Willow's End TP", "Launch", "200 Spirit Light", "200 Spirit Light", "Regenerate"]],
               ]
 
-    kii: List[List[List]] = [
+    kii: list[list[list[str]]] = [
            [["Inkwater Marsh TP"]],
            [["Midnight Burrows TP", "Bash"]],
            [["Howl's Den TP", "Double Jump"],
@@ -153,7 +153,7 @@ def spawn_items(world, spawn, difficulty):
            [["Willow's End TP", "Launch", "200 Spirit Light", "200 Spirit Light", "Regenerate"]],
            ]
 
-    unsafe: List[List[List]] = [
+    unsafe: list[list[list[str]]] = [
               [["Inkwater Marsh TP"]],
               [["Midnight Burrows TP", "Bash"]],
               [["Howl's Den TP", "Double Jump"],
@@ -188,12 +188,12 @@ def spawn_items(world, spawn, difficulty):
               ]
 
     if difficulty == 0:
-        sets: List[List] = moki[spawn]
+        sets = moki[spawn]
     elif difficulty == 1 or difficulty == 2:
-        sets: List[List] = gorlek[spawn]
+        sets = gorlek[spawn]
     elif difficulty == 3 or difficulty == 4:
-        sets: List[List] = kii[spawn]
+        sets = kii[spawn]
     else:
-        sets: List[List] = unsafe[spawn]
+        sets = unsafe[spawn]
     i = rand.randrange(len(sets))
     return sets[i]

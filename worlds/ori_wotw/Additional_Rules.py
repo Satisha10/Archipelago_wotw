@@ -1,5 +1,5 @@
 """Additional location rules that are not extracted from `areas.wotw`."""
-
+# TODO: Put the combat events into LogicMixin/functions (and maybe the refills ?)
 from worlds.generic.Rules import set_rule
 from .Options import WotWOptions
 
@@ -91,8 +91,9 @@ def glitch_rules(world, player: int, options: WotWOptions):
 def unreachable_rules(world, player: int, options: WotWOptions):
     """Rules to handle unreachable events."""
     diff = options.difficulty
+    unreach: list[str]
     if diff == 0:
-        unreach = ("WestHollow.AboveJumppad_to_WestHollow.LowerTongueRetracted",
+        unreach = ["WestHollow.AboveJumppad_to_WestHollow.LowerTongueRetracted",
                    "OuterWellspring.EntranceDoor_to_OuterWellspring.FallingWheel",
                    "MarshSpawn.PoolsBurrowsSignpost_to_E.MarshSpawn.PoolsBurrowsSignpost",
                    "GladesTown.MotayHut_to_C.GladesTown.MotayHut",
@@ -111,9 +112,9 @@ def unreachable_rules(world, player: int, options: WotWOptions):
                    "LowerDepths.West_to_H.LowerDepths.West",
                    "LowerDepths.West_to_E.LowerDepths.West",
                    "UpperWastes.MissilePuzzleMiddle_to_C.UpperWastes.MissilePuzzleMiddle",
-                   "WillowsEnd.Upper_to_E.WillowsEnd.Upper")
+                   "WillowsEnd.Upper_to_E.WillowsEnd.Upper"]
     elif diff == 1:
-        unreach = ("OuterWellspring.EntranceDoor_to_OuterWellspring.FallingWheel",
+        unreach = ["OuterWellspring.EntranceDoor_to_OuterWellspring.FallingWheel",
                    "MarshSpawn.PoolsBurrowsSignpost_to_E.MarshSpawn.PoolsBurrowsSignpost",
                    "GladesTown.MotayHut_to_C.GladesTown.MotayHut",
                    "GladesTown.UpperWest_to_C.GladesTown.UpperWest",
@@ -126,9 +127,9 @@ def unreachable_rules(world, player: int, options: WotWOptions):
                    "UpperReach.TreeRoom_to_C.UpperReach.TreeRoom",
                    "UpperDepths.FirstKSRoom_to_C.UpperDepths.FirstKSRoom",
                    "UpperDepths.FirstKSRoom_to_E.UpperDepths.FirstKSRoom",
-                   "UpperDepths.Central_to_E.UpperDepths.Central")
+                   "UpperDepths.Central_to_E.UpperDepths.Central"]
     elif diff == 2:
-        unreach = ("OuterWellspring.EntranceDoor_to_OuterWellspring.FallingWheel",
+        unreach = ["OuterWellspring.EntranceDoor_to_OuterWellspring.FallingWheel",
                    "GladesTown.MotayHut_to_C.GladesTown.MotayHut",
                    "GladesTown.UpperWest_to_C.GladesTown.UpperWest",
                    "GladesTown.AcornMoki_to_C.GladesTown.AcornMoki",
@@ -140,9 +141,9 @@ def unreachable_rules(world, player: int, options: WotWOptions):
                    "UpperReach.TreeRoom_to_C.UpperReach.TreeRoom",
                    "UpperDepths.FirstKSRoom_to_C.UpperDepths.FirstKSRoom",
                    "UpperDepths.FirstKSRoom_to_E.UpperDepths.FirstKSRoom",
-                   "UpperDepths.Central_to_E.UpperDepths.Central")
+                   "UpperDepths.Central_to_E.UpperDepths.Central"]
     else:
-        unreach = ()
+        unreach = []
 
     for entr in unreach:  # Connect these events when the seed is completed, to make them reachable.
         set_rule(world.get_entrance(entr, player), lambda s: s.has("Victory", player))

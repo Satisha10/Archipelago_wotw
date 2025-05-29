@@ -132,7 +132,10 @@ archipelago_paths: dict[str, str] = {
 }
 
 
-def get_item_iconpath(world: World, item: Item, keyword_based_icons: bool = True) -> str|None:
+def get_item_iconpath(world: World, item: Item | None, keyword_based_icons: bool = True) -> str:
+    if item is None:
+        return ""
+
     # sometimes apworld use ints that since 0.6.0 need to be converted explicitly
     classification = ItemClassification(item.classification)
 
