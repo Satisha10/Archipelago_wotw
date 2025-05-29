@@ -1,6 +1,7 @@
 """Options for Ori and the Will of the Wisps Randomizer."""
 
-from Options import Choice, Toggle, DefaultOnToggle, PerGameCommonOptions, OptionGroup, OptionSet, StartInventoryPool
+from Options import (Choice, Toggle, DefaultOnToggle, PerGameCommonOptions, OptionGroup, OptionSet, StartInventoryPool,
+                     Range)
 from dataclasses import dataclass
 
 
@@ -66,6 +67,7 @@ class Goal(OptionSet):
     - **trees**: All trees must be collected.
     - **wisps**: All wisps must be collected.
     - **quests**: All quests have to be finished.
+    - **relics**: Place relics in some areas, all of them must be collected.
     - **random**: Choose one goal at random among the other selected ones.
       e.g. [random, trees, wisps] will give trees or wisps.
       If only random is selected, it will choose among all goals.
@@ -73,8 +75,16 @@ class Goal(OptionSet):
     display_name = "Goal"
     rich_text_doc = True
     valid_keys_casefold = True
-    valid_keys = ["trees", "wisps", "quests", "random"]
+    valid_keys = ["trees", "wisps", "quests", "relics" "random"]
     default = frozenset(["trees"])
+
+
+class RelicCount(Range):
+    """How many areas contain a relic (no effect without the relic goal)."""
+    display_name = "Relic Count"
+    range_start = 1
+    range_end = 11
+    default = 7
 
 
 class HardMode(Toggle):
@@ -169,6 +179,7 @@ class Quests(Choice):
     - **no hand**: Remove the Hand-to-hand questline from the locations.
     - **none**: Remove all quests that involve talking to NPCs. Main quests (e.g. wisps) or rebuilding Glades are still in the pool."""
     display_name = "Remove Quests"
+    rich_text_doc = True
     option_all = 0
     option_no_hand = 1
     option_none = 2
@@ -258,6 +269,7 @@ class WotWOptions(PerGameCommonOptions):
     glitches: Glitches
     spawn: StartingLocation
     goal: Goal
+    relic_count: RelicCount
     hard_mode: HardMode
     qol: QualityOfLife
     hints: ShrineTrialHints

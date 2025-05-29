@@ -2,9 +2,9 @@
 
 # TODO Relics ? Black market ?
 # TODO fix the in-game location counter
-# TODO Change the item and location groups
 # TODO rename MultiWorld to mw and use new world API for regions
-# TODO location groups: see if using sets for choosing relic is deterministic (otherwise make a list)
+# TODO location groups (as a set)
+# TODO Add relics to slot_data and client implementation
 
 
 from typing import Any
@@ -59,7 +59,6 @@ class WotWWorld(World):
     location_name_to_id = loc_table
 
     item_name_groups = item_groups
-    location_name_groups = location_regions
 
     options_dataclass = WotWOptions
     options: WotWOptions
@@ -67,23 +66,42 @@ class WotWWorld(World):
 
     required_client_version = (0, 5, 0)
 
-    def __init__(self, multiworld, player):
+    def __init__(self, multiworld, player) -> None:
         super(WotWWorld, self).__init__(multiworld, player)
+        self.relic_areas: list[str] = []  # Store which areas contain a relic
+        self.empty_locations: list[str] = []  # Excluded locations, for now hold a Nothing item
 
     def generate_early(self) -> None:
-        """Options checking + selection of a random goal."""
-        if self.options.open_mode:
-            self.options.no_rain.value = True
+        options = self.options
+        # Options checking
+        if options.open_mode:
+            options.no_rain.value = True
 
-        if "random" in self.options.goal:
-            possible_goals = list(self.options.goal.value)
+        # Selection of a random goal
+        if "random" in options.goal:
+            possible_goals = list(options.goal.value)
             possible_goals.remove("random")
             selected_goal: list = []
             if not possible_goals:  # Only random selected, choose among all goals
                 possible_goals = ["trees", "wisps", "quests"]
             # Select a goal at random among the selected ones
             selected_goal.append(self.multiworld.random.choice(possible_goals))
-            self.options.goal.value = set(selected_goal)
+            options.goal.value = set(selected_goal)
+
+
+        # Construct the excluded locations list
+        if options.glades_done:
+            self.empty_locations += loc_sets["Rebuild"].copy()
+        if options.no_trials:
+            self.empty_locations += loc_sets["Trials"].copy()
+        if options.qol or options.quests == Quests.option_none:
+            self.empty_locations += loc_sets["QOL"].copy()
+        if options.quests != Quests.option_all:
+            self.empty_locations += loc_sets["HandToHand"].copy()
+        if options.quests == Quests.option_none:
+            self.empty_locations += loc_sets["Quests"].copy()
+        else:
+            self.empty_locations += ["GladesTown.FamilyReunionKey"]  # TODO remove when fixed
 
     def create_regions(self):
         world = self.multiworld
@@ -224,22 +242,7 @@ class WotWWorld(World):
             world.get_location("WindtornRuins.Seir", player).place_locked_item(self.create_item("Launch"))
             removed_items.append("Launch")
 
-        # Contain all the locations that are used
-        empty_locations: list[str] = []
-        if options.glades_done:
-            empty_locations += loc_sets["Rebuild"].copy()
-        if options.no_trials:
-            empty_locations += loc_sets["Trials"].copy()
-        if options.qol or options.quests == Quests.option_none:
-            empty_locations += loc_sets["QOL"].copy()
-        if options.quests != Quests.option_all:
-            empty_locations += loc_sets["HandToHand"].copy()
-        if options.quests == Quests.option_none:
-            empty_locations += loc_sets["Quests"].copy()
-        else:
-            empty_locations += ["GladesTown.FamilyReunionKey"]  # TODO remove when fixed
-
-        for location in empty_locations:
+        for location in self.empty_locations:  # TODO temporary workaround
             loc = world.get_location(location, player)
             loc.place_locked_item(self.create_item("Nothing"))
 
@@ -267,6 +270,30 @@ class WotWWorld(World):
             # Exclude a location that is inaccessible in the lowest difficulty.
             skipped_loc = world.get_location("WestPools.BurrowOre", player)
             skipped_loc.progress_type = LocationProgressType.EXCLUDED
+
+        if "relics" in options.goal:  # Put the relics at random places in the areas
+            remaining_areas: list[str] = [
+                "Marsh",
+                "Burrows",
+                "Hollow",
+                "Glades",
+                "Wellspring",
+                "Woods",
+                "Reach",
+                "Pools",
+                "Depths",
+                "Wastes",
+                "Willow",
+            ]
+            for _ in range(options.relic_count.value):
+                area: str = self.random.choice(remaining_areas)
+                remaining_areas.remove(area)
+                self.relic_areas.append(area)
+
+                relic_location: str = self.random.choice(location_regions[area])
+                while relic_location in self.excluded_locations:  # Reroll if the location is excluded
+                    relic_location = self.random.choice(location_regions[area])
+                self.get_location(relic_location).place_locked_item(self.create_item("Relic"))
 
     def create_event(self, event: str) -> "WotWItem":
         return WotWItem(event, ItemClassification.progression, None, self.player)
@@ -335,6 +362,7 @@ class WotWWorld(World):
                                                         "UpperDepths.ForestsEyes", "WestPools.ForestsStrength",
                                                         "WindtornRuins.Seir"), player)
                      )
+
         if "quests" in options.goal:
             quest_list: list[str] = loc_sets["ExtraQuests"].copy()
             if options.quests == Quests.option_no_hand:
@@ -346,6 +374,9 @@ class WotWWorld(World):
             if not options.qol and options.quests != Quests.option_none:
                 quest_list += loc_sets["QOL"].copy()
             add_rule(victory_conn, lambda s: s.has_all((quests for quests in quest_list), player))
+
+        if "relics" in options.goal:
+            add_rule(victory_conn, lambda s: s.count("Relics", player) >= options.relic_count.value)
 
         def try_connect(region_in: Region, region_out: Region, connection: str | None = None, rule=None):
             """Create the region connection if it doesn't already exist."""
@@ -461,6 +492,7 @@ class WotWWorld(World):
                 try_connect(menu, world.get_region(quest + ".quest", player))
 
     def fill_slot_data(self) -> dict[str, Any]:
+        # TODO Relics
         world = self.multiworld
         player = self.player
         options = self.options
