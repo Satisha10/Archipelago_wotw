@@ -1,7 +1,10 @@
 """AP world for Ori and the Will of the Wisps."""
 
-# TODO Relics ? Black market ? Also make location groups for each area
+# TODO Relics ? Black market ?
 # TODO fix the in-game location counter
+# TODO Change the item and location groups
+# TODO rename MultiWorld to mw and use new world API for regions
+# TODO location groups: see if using sets for choosing relic is deterministic (otherwise make a list)
 
 
 from typing import Any
@@ -9,19 +12,20 @@ from collections import Counter
 
 from .Rules import (set_moki_rules, set_gorlek_rules, set_gorlek_glitched_rules, set_kii_rules,
                     set_kii_glitched_rules, set_unsafe_rules, set_unsafe_glitched_rules)
-from .Additional_Rules import combat_rules, glitch_rules, unreachable_rules
-from .Items import item_table, group_table
+from .AdditionalRules import combat_rules, glitch_rules, unreachable_rules
+from .Items import item_table
 from .Items_Icons import get_item_iconpath
 from .Locations import loc_table
 from .Quests import quest_table
-from .LocationGroups import loc_sets
+from .LocationGroups import loc_sets, location_regions
 from .Events import event_table
 from .Regions import region_table
 from .Entrances import entrance_table
 from .Refills import refill_events
 from .Options import WotWOptions, option_groups, LogicDifficulty, Quests
-from .Spawn_items import spawn_items, spawn_names
+from .SpawnItems import spawn_items, spawn_names
 from .Presets import options_presets
+from .ItemGroups import item_groups
 
 from worlds.AutoWorld import World, WebWorld
 from worlds.generic.Rules import add_rule, set_rule
@@ -54,7 +58,8 @@ class WotWWorld(World):
     item_name_to_id = {name: data[2] for name, data in item_table.items()}
     location_name_to_id = loc_table
 
-    item_name_groups = group_table  # TODO put the item table in a different file + use sets instead of list
+    item_name_groups = item_groups
+    location_name_groups = location_regions
 
     options_dataclass = WotWOptions
     options: WotWOptions
@@ -156,7 +161,8 @@ class WotWWorld(World):
         skipped_items: list[str] = []  # Remove one instance of the item
         removed_items: list[str] = []  # Remove all instances of the item
 
-        for item in spawn_items(world, options.spawn, options.difficulty):  # Staring items
+        # TODO Check if random must be taken from mw or world
+        for item in spawn_items(world, options.spawn.value, options.difficulty.value):  # Staring items
             world.push_precollected(self.create_item(item))
             skipped_items.append(item)
 
@@ -169,23 +175,23 @@ class WotWWorld(World):
             removed_items.append("Sword")
 
         if not options.tp:
-            for item in group_table["teleporters"]:
+            for item in item_groups["teleporters"]:
                 removed_items.append(item)
 
         if not options.extratp:
-            for item in group_table["extra_tp"]:
+            for item in item_groups["extra_tp"]:
                 removed_items.append(item)
 
         if not options.bonus:
-            for item in group_table["bonus"]:
+            for item in item_groups["bonus"]:
                 removed_items.append(item)
 
         if not options.extra_bonus:
-            for item in group_table["bonus+"]:
+            for item in item_groups["bonus+"]:
                 removed_items.append(item)
 
         if not options.skill_upgrade:
-            for item in group_table["skill_upgrades"]:
+            for item in item_groups["skill_upgrades"]:
                 removed_items.append(item)
 
         if options.glades_done:

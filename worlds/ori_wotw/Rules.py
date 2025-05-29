@@ -6,7 +6,7 @@ Generated with `extract_rules.py` by running `parse_rules()`.
 """
 
 
-from .Rules_Functions import *
+from .RulesFunctions import *
 
 from worlds.generic.Rules import add_rule
 

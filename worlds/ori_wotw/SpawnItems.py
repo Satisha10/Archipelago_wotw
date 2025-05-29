@@ -1,6 +1,6 @@
 """Function for handling spawn items for random spawn."""
 
-from worlds.AutoWorld import World
+from worlds.AutoWorld import MultiWorld
 
 spawn_names = ["MarshSpawn.Main",
                "MidnightBurrows.Teleporter",
@@ -20,8 +20,7 @@ spawn_names = ["MarshSpawn.Main",
                "WindtornRuins.RuinsTP",
                "WillowsEnd.InnerTP",]
 
-# TODO fix typing
-def spawn_items(world: World, spawn: int, difficulty: int) -> list[str]:
+def spawn_items(world: MultiWorld, spawn: int, difficulty: int) -> list[str]:
     """
     Returns a set of spawn items for the chosen spawn point and difficulty.
 

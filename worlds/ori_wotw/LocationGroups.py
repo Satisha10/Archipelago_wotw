@@ -64,8 +64,8 @@ loc_sets: dict[str, list[str]] = {
     ],
 }
 
-location_regions: dict[str, list[str]] = {
-    "Marsh": [
+location_regions: dict[str, set[str]] = {
+    "Marsh": {
         "MarshSpawn.RockHC",
         "MarshSpawn.FirstPickupEX",
         "MarshSpawn.GrappleHC",
@@ -122,8 +122,8 @@ location_regions: dict[str, list[str]] = {
         "MarshPastOpher.PoolsPathEC",
         "MarshPastOpher.PoolsPathEX",
         "MarshPastOpher.SpiritTrial",
-    ],
-    "Burrows": [
+    },
+    "Burrows": {
         "MidnightBurrows.LeftKS",
         "MidnightBurrows.RightKS",
         "MidnightBurrows.UpperKS",
@@ -131,8 +131,8 @@ location_regions: dict[str, list[str]] = {
         "MidnightBurrows.LupoMap",
         "MidnightBurrows.DeflectorShard",
         "MidnightBurrows.TabletQI",
-    ],
-    "Hollow": [
+    },
+    "Hollow": {
         "WestHollow.CrusherHC",
         "WestHollow.FarLeftEX",
         "WestHollow.RockPuzzleEX",
@@ -166,8 +166,8 @@ location_regions: dict[str, list[str]] = {
         "EastHollow.ForestsVoice",
         "EastHollow.HandToHandMap",
         "EastHollow.KwolokAmuletQuest",
-    ],
-    "Glades": [
+    },
+    "Glades": {
         "GladesTown.HoleHutEC",
         "GladesTown.AboveGromHC",
         "GladesTown.LupoSwimHC",
@@ -208,8 +208,8 @@ location_regions: dict[str, list[str]] = {
         "WestGlades.RightOre",
         "WestGlades.ShrineHC",
         "WestGlades.CombatShrine",
-    ],
-    "Wellspring": [
+    },
+    "Wellspring": {
         "OuterWellspring.RightWallOre",
         "OuterWellspring.RightWallEC",
         "OuterWellspring.RightWallEX",
@@ -248,8 +248,8 @@ location_regions: dict[str, list[str]] = {
         "InnerWellspring.BlueMoonSeed",
         "InnerWellspring.WaterEscape",
         "InnerWellspring.HandToHandHerbs",
-    ],
-    "Pools": [
+    },
+    "Pools": {
         "PoolsApproach.MarshPathCurrentEX",
         "PoolsApproach.AboveWheelEX",
         "PoolsApproach.MillPathHC",
@@ -291,8 +291,8 @@ location_regions: dict[str, list[str]] = {
         "WestPools.TpEX",
         "WestPools.EscapeRevisitEX",
         "WestPools.ForestsStrength",
-    ],
-    "Woods": [
+    },
+    "Woods": {
         "WoodsEntry.MudPitEX",
         "WoodsEntry.LedgeOre",
         "WoodsEntry.LeafPileEX",
@@ -325,8 +325,8 @@ location_regions: dict[str, list[str]] = {
         "WeepingRidge.LaunchTree",
         "WeepingRidge.SpikeClimbEX",
         "WeepingRidge.PortalEX",
-    ],
-    "Reach": [
+    },
+    "Reach": {
         "LowerReach.BelowBaurEX",
         "LowerReach.AboveBaurLowerEX",
         "LowerReach.AboveBaurUpperEX",
@@ -371,8 +371,8 @@ location_regions: dict[str, list[str]] = {
         "UpperReach.TreeOre",
         "UpperReach.WellEX",
         "UpperReach.HiddenEX",
-    ],
-    "Depths": [
+    },
+    "Depths": {
         "UpperDepths.EntrySpikesEX",
         "UpperDepths.EntryRoofEX",
         "UpperDepths.EntryOre",
@@ -398,8 +398,8 @@ location_regions: dict[str, list[str]] = {
         "LowerDepths.FlashTree",
         "LowerDepths.SpiritTrial",
         "LowerDepths.HandToHandSilk",
-    ],
-    "Wastes": [
+    },
+    "Wastes": {
         "LowerWastes.WestTPOre",
         "LowerWastes.PurpleWallEX",
         "LowerWastes.SunsetViewEX",
@@ -439,13 +439,13 @@ location_regions: dict[str, list[str]] = {
         "UpperWastes.SpinLasersLowerEX",
         "UpperWastes.WallOre",
         "UpperWastes.FlowersSeed",
-    ],
-    "Ruins": [
+    },
+    "Ruins": {
         "WindtornRuins.EscapeRevisitEC",
         "WindtornRuins.Seir",
         "WindtornRuins.HandToHandComplete",
-    ],
-    "Willow": [
+    },
+    "Willow": {
         "WillowsEnd.SpikesOre",
         "WillowsEnd.EntryEX",
         "WillowsEnd.PoisonfallHC",
@@ -454,8 +454,8 @@ location_regions: dict[str, list[str]] = {
         "WillowsEnd.RedirectEX",
         "WillowsEnd.UpperLeftEX",
         "WillowsEnd.UpperRightEX",
-    ],
-    "Shop": [
+    },
+    "Shop": {
         "TwillenShop.Overcharge",
         "TwillenShop.TripleJump",
         "TwillenShop.Wingclip",
@@ -479,5 +479,5 @@ location_regions: dict[str, list[str]] = {
         "LupoShop.HCMapIcon",
         "LupoShop.ECMapIcon",
         "LupoShop.ShardMapIcon",
-    ],
+    },
 }
