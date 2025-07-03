@@ -1,10 +1,25 @@
-from typing import Dict, List
 from math import ceil, floor
 from .Refills import refills
 from .Options import WotWOptions
-from BaseClasses import CollectionState
+from BaseClasses import CollectionState, MultiWorld
+from worlds.AutoWorld import LogicMixin
 
-weapon_data: Dict[str, List] = {  # The list contains the damage, and its energy cost
+
+# TODO Move combat events (dangerous, ranged...) here, and define a function that update the dict of enemy: defeatable
+class WotWLogic(LogicMixin):
+    """All methods should start with _wotw"""
+    mw: MultiWorld
+    wotw_max_resources: dict[int, tuple[int, float]]  # Max health and energy
+    wotw_refill_amount: dict[int, tuple[int, float]]  # Refill amounts for health and energy
+    wotw_combat_tags: dict[int, set[str]]
+
+    def init_mixin(self, mw: MultiWorld):
+        self.wotw_max_resources = {player: (30, 3.0) for player in mw.get_game_players("Ori and the Will of the Wisps")}
+        self.wotw_refill_amount = {player: (30, 1.0) for player in mw.get_game_players("Ori and the Will of the Wisps")}
+        self.wotw_combat_tags = {player: set() for player in mw.get_game_players("Ori and the Will of the Wisps")}
+
+
+weapon_data: dict[str, list] = {  # The list contains the damage, and its energy cost
     "Sword": [4, 0],
     "Hammer": [12, 0],
     "Grenade": [13, 1],  # Can be 17 damage if charged
@@ -24,7 +39,7 @@ def has_health(amount: int, state: CollectionState, player: int) -> bool:
     return amount < 30 + state.count("Health Fragment", player)*5 + 10*wisps
 
 
-def get_max(state: CollectionState, player: int) -> (int, float):
+def get_max(state: CollectionState, player: int) -> tuple[int, float]:
     """Return the current max health and energy."""
     wisps = state.count_from_list(("EastHollow.ForestsVoice", "LowerReach.ForestsMemory", "UpperDepths.ForestsEyes",
                                   "WestPools.ForestsStrength", "WindtornRuins.Seir"), player)
@@ -32,12 +47,12 @@ def get_max(state: CollectionState, player: int) -> (int, float):
             3 + state.count("Energy Fragment", player)*0.5 + wisps)
 
 
-def get_refill(max_resource: (int, float)) -> (int, int):
+def get_refill(state: CollectionState, player: int) -> tuple[int, int]:
     """Return the refill values."""
-    maxH, maxE = max_resource
-    refillH = min((4 + floor(maxH/50/0.6685)) * 10, maxH)
-    refillE = floor(maxE/5+1)
-    return refillH, refillE
+    max_h, max_e = state.wotw_max_resources[player]
+    refill_h = min((4 + floor(max_h/50/0.6685)) * 10, max_h)
+    refill_e = floor(max_e/5+1)
+    return refill_h, refill_e
 
 
 def can_buy_map(state: CollectionState, player: int) -> bool:
@@ -85,8 +100,8 @@ def can_keystones(state: CollectionState, player: int) -> bool:
     return state.count("Keystone", player) >= count
 
 
-def cost_all(state: CollectionState, player: int, options: WotWOptions, region: str, damage_and: List,
-             en_and: List[List], combat_and: List[List], or_req: List[List], path_difficulty: int) -> bool:
+def cost_all(state: CollectionState, player: int, options: WotWOptions, region: str, damage_and: list,
+             en_and: list[list], combat_and: list[list], or_req: list[list], path_difficulty: int) -> bool:
     """
     Return a bool stating if the path can be taken.
 
@@ -171,7 +186,7 @@ def cost_all(state: CollectionState, player: int, options: WotWOptions, region: 
     return True
 
 
-def combat_cost(state: CollectionState, player: int, options: WotWOptions, hp_list: List[List],
+def combat_cost(state: CollectionState, player: int, options: WotWOptions, hp_list: list[list],
                 moki_path: bool) -> float:
     """Return the energy cost for the enemies/walls/boss with current state."""
     hard = options.hard_mode

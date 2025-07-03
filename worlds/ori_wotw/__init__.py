@@ -26,10 +26,11 @@ from .Options import WotWOptions, option_groups, LogicDifficulty, Quests
 from .SpawnItems import spawn_items, spawn_names
 from .Presets import options_presets
 from .ItemGroups import item_groups
+from .RulesFunctions import get_max, get_refill
 
 from worlds.AutoWorld import World, WebWorld
 from worlds.generic.Rules import add_rule, set_rule
-from BaseClasses import Region, Location, Item, Tutorial, ItemClassification, LocationProgressType
+from BaseClasses import Region, Location, Item, Tutorial, ItemClassification, LocationProgressType, CollectionState
 
 
 class WotWWeb(WebWorld):
@@ -71,6 +72,20 @@ class WotWWorld(World):
         self.relic_areas: list[str] = []  # Store which areas contain a relic
         self.empty_locations: list[str] = []  # Excluded locations, for now hold a Nothing item
 
+    def collect(self, state: CollectionState, item: Item) -> bool:
+        change = super().collect(state, item)
+        if change and item.name in ("Health Fragment", "Energy Fragment"):
+            state.wotw_max_resources[self.player] = get_max(state, self.player)
+            state.wotw_refill_amount[self.player] = get_refill(state, self.player)
+        return change
+
+    def remove(self, state: CollectionState, item: Item) -> bool:
+        change = super().remove(state, item)
+        if change and item.name in ("Health Fragment", "Energy Fragment"):
+            state.wotw_max_resources[self.player] = get_max(state, self.player)
+            state.wotw_refill_amount[self.player] = get_refill(state, self.player)
+        return change
+
     def generate_early(self) -> None:
         options = self.options
         # Options checking
@@ -103,7 +118,7 @@ class WotWWorld(World):
         else:
             self.empty_locations += ["GladesTown.FamilyReunionKey"]  # TODO remove when fixed
 
-    def create_regions(self):
+    def create_regions(self) -> None:
         world = self.multiworld
         player = self.player
         options = self.options
@@ -127,30 +142,19 @@ class WotWWorld(World):
             region.locations.append(WotWLocation(player, loc_name, self.location_name_to_id[loc_name], region))
         for quest_name in quest_table:  # Quests are locations that have to be tracked like events
             event_name = quest_name + ".quest"
-            region = Region(event_name, player, world)
-            world.regions.append(region)
-            event = WotWLocation(player, event_name, None, region)
+            event_region = Region(event_name, player, world)  # Region that holds the event item
+            world.regions.append(event_region)
+            event = WotWLocation(player, event_name, None, event_region)
             event.show_in_spoiler = False
-            event.place_locked_item(self.create_event(quest_name))
-            region.locations.append(event)
-            base_region = world.get_region(quest_name, player)
-            base_region.connect(region)
+            event.place_locked_item(self.create_event_item(quest_name))
+            event_region.locations.append(event)
+            base_region = world.get_region(quest_name, player)  # Region that holds the location
+            base_region.connect(event_region)  # Connect the event region to the base region
 
-        # TODO Make a function for these (input list, make the regions...)
-        for event in event_table:  # Create events, their item, and a region to attach them
-            region = Region(event, player, world)
-            ev = WotWLocation(player, event, None, region)
-            ev.show_in_spoiler = False
-            ev.place_locked_item(self.create_event(event))
-            world.regions.append(region)
-            region.locations.append(ev)
-        for event in refill_events:  # Create refill events, their item, and attach to their region
-            region = Region(event, player, world)
-            ev = WotWLocation(player, event, None, region)
-            ev.show_in_spoiler = False
-            ev.place_locked_item(self.create_event(event))
-            world.regions.append(region)
-            region.locations.append(ev)
+        for event in event_table:  # Various events
+            self.create_event(event)
+        for event in refill_events:  # Tracks the refills that are accessible
+            self.create_event(event)
 
         for entrance_name in entrance_table:  # Creates and connects the entrances
             (parent, connected) = entrance_name.split("_to_")
@@ -167,6 +171,15 @@ class WotWWorld(World):
         region.locations.append(ev)
 
         world.completion_condition[player] = lambda state: state.has("Victory", player)
+
+    def create_event(self, event: str) -> None:
+        """Create an event, place the item and attach it to an event region (all with the same name)."""
+        event_region = Region(event, self.player, self.multiworld)
+        event_location = WotWLocation(self.player, event, None, event_region)
+        event_location.show_in_spoiler = False
+        event_location.place_locked_item(self.create_event_item(event))
+        self.multiworld.regions.append(event_region)
+        event_region.locations.append(event_location)
 
     def create_item(self, name: str) -> "WotWItem":
         return WotWItem(name, item_table[name][1], item_table[name][2], player=self.player)
@@ -295,7 +308,7 @@ class WotWWorld(World):
                     relic_location = self.random.choice(location_regions[area])
                 self.get_location(relic_location).place_locked_item(self.create_item("Relic"))
 
-    def create_event(self, event: str) -> "WotWItem":
+    def create_event_item(self, event: str) -> "WotWItem":
         return WotWItem(event, ItemClassification.progression, None, self.player)
 
     def get_filler_item_name(self) -> str:
@@ -378,10 +391,10 @@ class WotWWorld(World):
         if "relics" in options.goal:
             add_rule(victory_conn, lambda s: s.count("Relics", player) >= options.relic_count.value)
 
-        def try_connect(region_in: Region, region_out: Region, connection: str | None = None, rule=None):
+        def try_connect(region_in: Region, region_out: Region, connection: str | None = None, rule=None) -> None:
             """Create the region connection if it doesn't already exist."""
             if connection is None:
-                connection = f"{region_in.name} -> {region_out.name}"
+                connection = f"{region_in.name}_to_{region_out.name}"
             if not world.regions.entrance_cache[player].get(connection):
                 region_in.connect(region_out, connection, rule)
 
