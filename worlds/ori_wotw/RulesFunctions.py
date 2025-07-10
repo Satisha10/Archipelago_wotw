@@ -7,16 +7,32 @@ from worlds.AutoWorld import LogicMixin
 
 # TODO Move combat events (dangerous, ranged...) here, and define a function that update the dict of enemy: defeatable
 class WotWLogic(LogicMixin):
-    """All methods should start with _wotw"""
-    mw: MultiWorld
+    """
+    Class to store the max health/energy, refill values and defeatable enemies.
+
+    All methods and variables should start with `wotw_`.
+    """
     wotw_max_resources: dict[int, tuple[int, float]]  # Max health and energy
     wotw_refill_amount: dict[int, tuple[int, float]]  # Refill amounts for health and energy
     wotw_combat_tags: dict[int, set[str]]
 
-    def init_mixin(self, mw: MultiWorld):
+    def init_mixin(self, mw: MultiWorld) -> None:
         self.wotw_max_resources = {player: (30, 3.0) for player in mw.get_game_players("Ori and the Will of the Wisps")}
         self.wotw_refill_amount = {player: (30, 1.0) for player in mw.get_game_players("Ori and the Will of the Wisps")}
         self.wotw_combat_tags = {player: set() for player in mw.get_game_players("Ori and the Will of the Wisps")}
+
+# Rules for some glitches
+def can_wavedash(state: CollectionState, player: int) -> bool:
+    return state.has_all(("Dash", "Regenerate"), player)
+
+def can_hammerjump(state: CollectionState, player: int) -> bool:
+    return state.has_all(("Double Jump", "Hammer"), player)
+
+def can_swordjump(state: CollectionState, player: int) -> bool:
+    return state.has_all(("Double Jump", "Sword"), player)
+
+def can_glidehammerjump(state: CollectionState, player: int) -> bool:
+    return state.has_all(("Glide", "Hammer"), player)
 
 
 weapon_data: dict[str, list] = {  # The list contains the damage, and its energy cost
@@ -56,50 +72,37 @@ def get_refill(state: CollectionState, player: int) -> tuple[int, int]:
 
 
 def can_buy_map(state: CollectionState, player: int) -> bool:
-    """Return if the total amount of Spirit Light can buy all maps (1200 SL)."""
+    """Maps are logically required after collecting 1200 SL from 200 SL items."""
     return state.count("200 Spirit Light", player) >= 6
 
 
-def can_keystones(state: CollectionState, player: int) -> bool:
-    """Return if the total amount of Keystones can open all accessible doors."""
-    count = 2  # Add more Keystones than necessary to make it less constrained for the player.
-    if (state.can_reach_region("MarshSpawn.CaveEntrance", player)
-            or state.can_reach_region("MarshSpawn.RegenDoor", player)):
-        count += 2
-    if (state.can_reach_region("HowlsDen.BoneBridge", player)
-            or state.can_reach_region("HowlsDen.BoneBridgeDoor", player)):
-        count += 2
-    if (state.can_reach_region("MarshPastOpher.BowArea", player)
-            or state.can_reach_region("WestHollow.Entrance", player)):
-        count += 2
-    if state.can_reach_region("MidnightBurrows.TabletRoom", player):
-        count += 4
-    if (state.can_reach_region("WoodsEntry.TwoKeystoneRoom", player)
-            or state.can_reach_region("WoodsMain.AfterKuMeet", player)):
-        count += 2
-    if (state.can_reach_region("WoodsMain.FourKeystoneRoom", player)
-            or state.can_reach_region("WoodsMain.GiantSkull", player)):
-        count += 4
-    if state.can_reach_region("LowerReach.TrialStart", player):
-        count += 4
-    if (state.can_reach_region("UpperReach.OutsideTreeRoom", player)
-            or state.can_reach_region("UpperReach.TreeRoomLedge", player)):
-        count += 4
-    if (state.can_reach_region("UpperDepths.KeydoorLedge", player)
-            or state.can_reach_region("UpperDepths.BelowHive", player)):
-        count += 2
-    if (state.can_reach_region("UpperDepths.Central", player)
-            or state.can_reach_region("UpperDepths.LowerConnection", player)):
-        count += 2
-    if (state.can_reach_region("UpperPools.BeforeKeystoneDoor", player)
-            or state.can_reach_region("UpperPools.TreeRoomEntrance", player)):
-        count += 4
-    if (state.can_reach_region("UpperWastes.KeystoneRoom", player)
-            or state.can_reach_region("UpperWastes.MissilePuzzleLeft", player)):
-        count += 2
-    return state.count("Keystone", player) >= count
+def can_keystones(state: CollectionState, player: int, door_name: str) -> bool:
+    """
+    Return if the door can be opened. The keystone (KS) costs are arbitrary.
+
+    10 KS for early game doors that only require 2 KS to open.
+    14 KS are mid-game doors that cost 2 KS (these doors are relevant early with random spawn).
+    22 KS for mid-game doors at 4 KS.
+    34 KS (enough KS to open everything) for doors that can be avoided or only lock a few items (and no trees).
+    """
+    keystone_data: dict[str, int] = {
+        "MarshSpawn.KeystoneDoor": 10,
+        "HowlsDen.KeystoneDoor": 10,
+        "MarshPastOpher.EyestoneDoor": 10,
+        "MidnightBurrows.KeystoneDoor": 34,
+        "WoodsEntry.KeystoneDoor": 14,
+        "WoodsMain.KeystoneDoor": 22,
+        "LowerReach.KeystoneDoor": 34,
+        "UpperReach.KeystoneDoor": 22,
+        "UpperDepths.EntryKeystoneDoor": 14,
+        "UpperDepths.CentralKeystoneDoor": 34,
+        "UpperPools.KeystoneDoor": 22,
+        "UpperWastes.KeystoneDoor": 14,
+    }
+    return state.count("Keystone", player) >= keystone_data[door_name]
 
 
+# TODO Simplify with lists/dicts for and and or chains, with key is type of requirement, and then the value.
 def cost_all(state: CollectionState, player: int, options: WotWOptions, region: str, damage_and: list,
              en_and: list[list], combat_and: list[list], or_req: list[list], path_difficulty: int) -> bool:
     """
@@ -115,7 +118,7 @@ def cost_all(state: CollectionState, player: int, options: WotWOptions, region: 
     hard = options.hard_mode
     maxH, maxE = get_max(state, player)
 
-    en, hp, tr = refills[region]
+    en, hp, tr = refills[region]  # TODO refills: typing, use tuples, use enum for refill type. Also split in a new function
     health, energy = 10, 1  # TODO: The base resources can lead to softlock, modify when resource tracking is reworked
 
     if path_difficulty == 0:  # Moki has no damage boost and barely requires energy, so this is fine.
@@ -227,128 +230,3 @@ def combat_cost(state: CollectionState, player: int, options: WotWOptions, hp_li
         tot_cost += cost
 
     return max(tot_cost, max_cost)
-
-
-# Old implementation
-'''
-def cost_all(state, player, ref_resource, options, region: str, arrival: str, damage_and: List, en_and: List[List],
-             combat_and: List[List], or_req: List[List], refill: str, update: bool) -> bool:
-    """
-    Returns a bool stating if the path can be taken, and updates ref_resource if it's a connection.
-
-    damage_and: contains the dboost values (if several elements, Regenerate can be used inbetween).
-    combat_and: contains the combat damages needed and the type (enemy/wall).
-    en_and: contains as elements the skill name, and the amount used. All must be satisfied.
-    or_req: contains damages, combat, and energy in each sublist (the first element of the list is the
-        type of requirement: 0 is combat, 1 is energy, 2 is damage boost). Any can be verified.
-    update: indicates if the resource table has to be updated
-    refill: indicates if the path leads to a refill, and its type in that case
-    """
-    diff = options.difficulty
-    hard = options.hard_mode
-    health, energy, old_maxH, old_maxE = ref_resource[region].copy()
-    maxH, maxE = get_max(state, player)
-
-    # Note: this can yield to some inaccuracies, but it should be fine (except maybe in unsafe).
-    # The alternative is to redo all rules each time an item is received, but that takes too long
-    health += maxH - old_maxH
-    energy += maxE - old_maxE
-
-    if diff != 3:  # Energy costs are doubled, except in unsafe
-        energy /= 2
-
-    for damage in damage_and:  # This part deals with the damage boosts
-        if hard:
-            damage *= 2
-        health -= damage
-        if health <= 0:
-            if state.has("Regenerate", player) and -health < maxH:
-                n_regen = ceil((-health + 1)/30)
-                if n_regen > energy:
-                    return False
-                health = min(maxH, health + 30*n_regen)
-                energy -= n_regen
-            else:
-                return False
-
-    for source in en_and:  # This computes the energy cost for weapons
-        if not state.has(source[0], player):
-            return False
-        energy -= weapon_data[source[0]][1] * source[1]
-        if energy < 0:
-            return False
-
-    energy -= combat_cost(state, player, options, combat_and)
-    if energy < 0:
-        return False
-
-    if or_req:
-        min_cost = 1000  # Arbitrary value, higher than 20
-        hp_cost = False
-        for req in or_req:
-            if req[0] == 0:
-                if all([state.has(danger, player) for danger in req[2]]):
-                    min_cost = min(min_cost, combat_cost(state, player, options, req[1]))
-            if req[0] == 1:
-                if state.has(req[1], player):
-                    min_cost = min(min_cost, weapon_data[req[1]][1] * req[2])
-            if req[0] == 2:
-                hp_cost = req[1]
-        if min_cost > energy:
-            if not hp_cost:  # The damage boost option is considered only if no other option is possible.
-                return False
-            else:
-                if hard:
-                    hp_cost *= 2
-                health -= hp_cost
-                if state.has("Regenerate", player) and -health < maxH:
-                    n_regen = ceil((-health + 1)/30)
-                    if n_regen > energy:
-                        return False
-                    health = min(maxH, health + 30*n_regen)
-                    energy -= n_regen
-        else:
-            energy -= min_cost
-
-    if update:
-        if diff != 3:
-            energy *= 2
-        update_ref(arrival, state, player, ref_resource, [health, energy], [maxH, maxE], refill)
-    return True
-
-
-def no_cost(region: str, arrival: str, state, player, ref_resource, refill: str) -> bool:
-    """Executed when the path does not consume resource to still update the resource table."""
-    maxH, maxE = get_max(state, player)
-    old_health, old_energy, old_maxH, old_maxE = ref_resource[region].copy()
-    oldH = old_health + maxH - old_maxH
-    oldE = old_energy + maxE - old_maxE
-    update_ref(arrival, state, player, ref_resource, [oldH, oldE], get_max(state, player), refill)
-    return True
-
-
-def update_ref(region: str, state, player, ref_resource, resource: [int, float], max_res: [int, float], refill: str):
-    """Updates the resource table for the arrival region, using the resource and the refills."""
-    maxH, maxE = max_res
-    old_health, old_energy, old_maxH, old_maxE = ref_resource[region].copy()
-    oldH = old_health + maxH - old_maxH
-    oldE = old_energy + maxE - old_maxE
-    refillH, refillE = get_refill(max_res)
-    en, hp, tr = refills[region]
-
-    if tr == 2 and (refill == "F" or state.has("F." + region, player)):
-        ref_resource[region] = [maxH, maxE, maxH, maxE]
-    else:
-        if tr == 1 and (refill == "C" or state.has("C." + region, player)):
-            resource = [max(resource[0], refillH), max(resource[1], refillE)]
-        if hp != 0 and (refill == "H" or state.has("H." + region, player)):
-            resource[0] = min(maxH, resource[0] + hp*10)
-        if en != 0 and (refill == "E" or state.has("E." + region, player)):
-            resource[1] = min(maxE, resource[1] + en)
-
-        if resource > [oldH, oldE]:  # Updates if bigger (lexical order, so health takes priority)
-            ref_resource[region] = [resource[0], resource[1], maxH, maxE]
-        elif old_health == 0:  # If this is the first time the region is accessible, update the resource table
-            ref_resource[region] = [resource[0], resource[1], maxH, maxE]
-        # Otherwise, the resource table is unchanged
-'''

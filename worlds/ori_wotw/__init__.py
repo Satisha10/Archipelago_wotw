@@ -74,7 +74,7 @@ class WotWWorld(World):
 
     def collect(self, state: CollectionState, item: Item) -> bool:
         change = super().collect(state, item)
-        if change and item.name in ("Health Fragment", "Energy Fragment"):
+        if change and item.name in ("Health Fragment", "Energy Fragment"):  # TODO Wisps ? See if events are collected as well
             state.wotw_max_resources[self.player] = get_max(state, self.player)
             state.wotw_refill_amount[self.player] = get_refill(state, self.player)
         return change
