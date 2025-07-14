@@ -76,7 +76,7 @@ def can_buy_map(state: CollectionState, player: int) -> bool:
     return state.count("200 Spirit Light", player) >= 6
 
 
-def can_keystones(state: CollectionState, player: int, door_name: str) -> bool:
+def can_open_door(state: CollectionState, player: int, door_name: str) -> bool:
     """
     Return if the door can be opened. The keystone (KS) costs are arbitrary.
 

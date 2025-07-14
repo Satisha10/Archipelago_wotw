@@ -5,6 +5,7 @@
 # TODO rename MultiWorld to mw and use new world API for regions
 # TODO location groups (as a set)
 # TODO Add relics to slot_data and client implementation
+# TODO rename spawn locations and add aliases
 
 
 from typing import Any
