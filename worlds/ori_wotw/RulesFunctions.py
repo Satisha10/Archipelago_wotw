@@ -1,8 +1,11 @@
 from math import ceil, floor
 from .Refills import refills
-from .Options import WotWOptions
-from BaseClasses import CollectionState, MultiWorld
 from worlds.AutoWorld import LogicMixin
+
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from BaseClasses import CollectionState, MultiWorld
+    from .Options import WotWOptions
 
 
 # TODO Move combat events (dangerous, ranged...) here, and define a function that update the dict of enemy: defeatable
@@ -48,13 +51,6 @@ weapon_data: dict[str, list] = {  # The list contains the damage, and its energy
     }
 
 
-def has_health(amount: int, state: CollectionState, player: int) -> bool:
-    """Return if the player has enough max health to enter the area."""
-    wisps = state.count_from_list(("EastHollow.ForestsVoice", "LowerReach.ForestsMemory", "UpperDepths.ForestsEyes",
-                                  "WestPools.ForestsStrength", "WindtornRuins.Seir"), player)
-    return amount < 30 + state.count("Health Fragment", player)*5 + 10*wisps
-
-
 def get_max(state: CollectionState, player: int) -> tuple[int, float]:
     """Return the current max health and energy."""
     wisps = state.count_from_list(("EastHollow.ForestsVoice", "LowerReach.ForestsMemory", "UpperDepths.ForestsEyes",
@@ -69,6 +65,50 @@ def get_refill(state: CollectionState, player: int) -> tuple[int, int]:
     refill_h = min((4 + floor(max_h/50/0.6685)) * 10, max_h)
     refill_e = floor(max_e/5+1)
     return refill_h, refill_e
+
+
+def can_enter_area(area: str, state: CollectionState, player: int, options: WotWOptions) -> bool:
+    """Check if the requirement to enter an area is fulfilled."""
+    difficulty = options.difficulty.value
+
+    if area in ("MarshSpawn", "HowlsDen", "MarshPastOpher", "GladesTown"):  # No restriction in these areas
+        return state.wotw_max_resources[player][0] > 30
+
+    if difficulty == 3:  # Unsafe difficulty: no restriction
+        return True
+
+    area_data = {"MidnightBurrows": (25, False),  # For each area, minimum health and whether regenerate is needed
+                 "EastHollow": (20, False),
+                 "WestHollow": (20, False),
+                 "WestGlades": (20, False),
+                 "OuterWellspring": (25, False),
+                 "InnerWellspring": (25, False),
+                 "WoodsEntry": (40, True),
+                 "WoodsMain": (40, True),
+                 "LowerReach": (40, True),
+                 "UpperReach": (40, True),
+                 "UpperDepths": (40, True),
+                 "LowerDepths": (40, True),
+                 "PoolsApproach": (25, True),
+                 "EastPools": (40, True),
+                 "UpperPools": (40, True),
+                 "WestPools": (40, True),
+                 "LowerWastes": (50, True),
+                 "UpperWastes": (50, True),
+                 "WindtornRuins": (50, True),
+                 "WeepingRidge": (60, True),
+                 "WillowsEnd": (60, True),
+                 }
+
+    if difficulty != 0:  # Kii and Gorlek: only check for regenerate
+        if area_data[area][1]:  # Kii, Gorlek
+            return state.has("Regenerate", player)
+        return True
+
+    # Moki difficulty: check for health and regenerate
+    if area_data[area][1]:
+        return state.has("Regenerate", player) and state.wotw_max_resources[player][0] >= area_data[area][0]
+    return state.wotw_max_resources[player][0] >= area_data[area][0]
 
 
 def can_buy_map(state: CollectionState, player: int) -> bool:
