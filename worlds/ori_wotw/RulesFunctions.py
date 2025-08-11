@@ -275,3 +275,56 @@ def combat_cost(state: CollectionState, player: int, options: WotWOptions, hp_li
         tot_cost += cost
 
     return max(tot_cost, max_cost)
+
+
+def has_enough_resources(requirements: list[tuple[str, any]],
+                         region: str,
+                         state: CollectionState,
+                         player: int,
+                         options: WotWOptions,
+                         is_moki: bool) -> bool:
+    """Check if the player has enough energy/health to use the path."""
+    max_h, max_e = state.wotw_max_resources[player]
+    health, energy = 10, 1.0  # Minimal values, can lead to softlocks in specific situations
+    refill_e, refill_h, refill_type = refills[region]  # TODO use an enum for the type or use an str
+
+    # Apply the refills
+    if is_moki:  # Moki has no damage boost and barely requires energy, so this is fine.
+        health, energy = max_h, max_e
+    else:
+        if refill_type == 2 and state.has("F." + region, player):  # Full refill
+            health, energy = max_h, max_e
+        else:
+            if refill_type == 1 and state.has("C." + region, player):  # Checkpoint
+                health, energy = state.wotw_refill_amount[player]
+            if refill_h != 0 and state.has("H." + region, player):  # Health plant
+                health += refill_h*10
+            if refill_e != 0 and state.has("E." + region, player):  # Energy crystal
+                energy += refill_e
+        health, energy = min(max_h, health), min(max_e, energy)  # Make sure that it does not go over the maximum
+
+    # Compute the requirements
+    for req in requirements:
+        if req[0] == "db":  # Damage boost
+            health, energy = compute_dboost(req[1], health, energy, max_h, state, player, bool(options.hard_mode))
+        # TODO combat, energy weapons, wallbreak
+        if energy < 0:  # Not enough energy, or a required skill is missing
+            return False
+
+def compute_dboost(damage: int,
+                   health: int,
+                   energy: float,
+                   max_health:int,
+                   state: CollectionState,
+                   player: int,
+                   is_hard: bool) -> tuple[int, float]:
+    """Return the new health and energy values after the damage boost."""
+    if is_hard:  # Hard difficulty doubles the damage taken
+        damage *= 2
+    health -= damage
+    if health <= 0:  # Not enough health, Regenerate must be used beforehand
+        if state.has("Regenerate", player) and damage < max_health:
+            n_regen = ceil((-health + 1) / 30)  # Amount of regenerate needed
+            health = health + 30 * n_regen
+            energy -= n_regen
+    return health, energy
