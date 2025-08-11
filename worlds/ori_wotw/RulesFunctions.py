@@ -116,7 +116,12 @@ def can_buy_map(state: CollectionState, player: int) -> bool:
     return state.count("200 Spirit Light", player) >= 6
 
 
-def can_open_door(state: CollectionState, player: int, door_name: str) -> bool:
+def can_buy_shop(state: CollectionState, player: int) -> bool:
+    """Shops are logically required after collecting 1200 SL from 200 SL items."""
+    return state.count("200 Spirit Light", player) >= 6
+
+
+def can_open_door(door_name: str, state: CollectionState, player: int) -> bool:
     """
     Return if the door can be opened. The keystone (KS) costs are arbitrary.
 
