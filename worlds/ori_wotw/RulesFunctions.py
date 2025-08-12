@@ -1,6 +1,7 @@
 from math import ceil, floor
 from .Refills import refills
 from worlds.AutoWorld import LogicMixin
+from .Options import LogicDifficulty
 
 from typing import TYPE_CHECKING, cast
 if TYPE_CHECKING:
@@ -267,15 +268,16 @@ def has_enough_resources(requirements: list[tuple[str, any]],
             health, energy = compute_dboost(data, health, energy, max_h, state, player, bool(options.hard_mode))
         elif req_type == "combat":  # TODO make a mixin for which enemies can be defeated and the cost: only use list[str]
             cast(list[str], data)
-            health, energy = combat_cost(data, health, energy, max_h, state, player, bool(options.hard_mode))
+            energy -= combat_cost(data, state, player, options)
         elif req_type == "wall":
             cast(tuple[str, int], data)
-            health, energy = compute_wall(data, health, energy, max_h, state, player, bool(options.hard_mode))
-        else:  # req_type == "energy"  # TODO
+            energy -= compute_wall(data, state, player)
+        else:  # req_type == "energy"
             cast(list[tuple[str, int]], data)
-        # TODO combat, energy weapons, wallbreak
+            energy -= compute_energy(data, state, player)
         if energy < 0:  # Not enough energy, or a required skill is missing
             return False
+    return True
 
 def compute_dboost(damage: int,
                    health: int,
@@ -296,67 +298,50 @@ def compute_dboost(damage: int,
     return health, energy
 
 
-def combat_cost(state: CollectionState,
+def combat_cost(enemies: list[str],
+                state: CollectionState,
                 player: int,
-                options: WotWOptions,
-                hp_list: list[list],
-                is_moki: bool) -> float:
+                options: WotWOptions) -> float:
     """Return the energy cost for the enemies/walls/boss with current state."""
-    if is_moki:
+    if options.difficulty.value == LogicDifficulty.option_moki:  # TODO move this part to the Mixin
         if state.has_any(("Sword", "Hammer"), player):
             return 0
-        return 1000  # Arbitrary value, greater than 200
+        return 1000  # Arbitrary value, greater than 20
 
-    hard = options.hard_mode
-    diff = options.difficulty
-    tot_cost = 0
-    max_cost = 0  # Maximum amount used, in case there are refills during combat.
-    for damage, category in hp_list:
-        if category == "Combat":
-            if diff == 3:
-                weapons = ["Sword", "Hammer", "Grenade", "Bow", "Shuriken", "Sentry", "Spear", "Blaze", "Flash"]
-            else:
-                weapons = ["Sword", "Hammer", "Grenade", "Bow", "Shuriken", "Sentry", "Spear", "Blaze"]
-        elif category == "Wall":
-            weapons = ["Sword", "Hammer", "Grenade", "Bow", "Shuriken", "Sentry", "Spear", "Blaze"]
-        elif category == "Boss":
-            if hard:
-                damage *= 1.8
-            if diff == 3:
-                weapons = ["Sword", "Hammer", "Grenade", "Bow", "Shuriken", "Sentry", "Spear", "Blaze", "Flash"]
-            else:
-                weapons = ["Sword", "Hammer", "Grenade", "Bow", "Shuriken", "Sentry", "Spear", "Blaze"]
-        elif category == "Refill":
-            max_cost = max(max_cost, tot_cost)
-            tot_cost -= damage  # In that case, damage contains the amount of energy given back
-            continue
-        else:  # ShurikenBreak or SentryBreak
-            weapons = [category]
+    if options.difficulty.value == LogicDifficulty.option_unsafe:
+        weapons = ["Sword", "Hammer", "Grenade", "Bow", "Shuriken", "Sentry", "Spear", "Blaze", "Flash"]
+    else:
+        weapons = ["Sword", "Hammer", "Grenade", "Bow", "Shuriken", "Sentry", "Spear", "Blaze"]
 
-        cost = 1000  # Arbitrary value, higher than 20
-        for weapon in weapons:
-            if state.has(weapon, player):
-                cost = min(cost, weapon_data[weapon][1] * ceil(damage / weapon_data[weapon][0]))
-        tot_cost += cost
+    cost = 0
+    for enemy in enemies:
+        continue  # TODO get cost from the Mixin
 
-    return max(tot_cost, max_cost)
+    return cost
 
 
 def compute_wall(data: tuple[str, int],
-                 health: int,
-                 energy: float,
                  state: CollectionState,
-                 player: int) -> tuple[int, float]:  # TODO sentry/shuriken break (also boss here ?)
+                 player: int) -> float:  # TODO sentry/shuriken break (also boss here ?)
+    """Return the energy cost for breaking a wall"""
     break_type, damage = data
     if state.has_any(("Sword", "Hammer"), player):
-        return health, energy
+        return 0
 
     weapons = ["Grenade", "Bow", "Shuriken", "Sentry", "Spear", "Blaze"]
-    cost = 1000  # Arbitrary value, must be higher than 20 (which is the max energy that you can get)
+    cost = 1000.0  # Arbitrary value, must be higher than 20 (which is the max energy that you can get)
     for weapon in weapons:
         if state.has(weapon, player):
             cost = min(cost, weapon_data[weapon][1] * ceil(damage / weapon_data[weapon][0]))
-    return health, energy - cost
+    return cost
 
-def compute_energy(state: CollectionState,):
-    pass
+def compute_energy(data: list[tuple[str, int]],
+                   state: CollectionState,
+                   player: int) -> float:
+    """Return the energy cost for using the energy weapons."""
+    cost = 0.0
+    for weapon, times in data:
+        if not state.has(weapon, player):
+            return 1000  # Arbitrary value, must be above 20
+        cost += weapon_data[weapon][1] * times
+    return cost
