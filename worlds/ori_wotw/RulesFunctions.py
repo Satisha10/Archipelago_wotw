@@ -18,12 +18,13 @@ class WotWLogic(LogicMixin):
     """
     wotw_max_resources: dict[int, tuple[int, float]]  # Max health and energy
     wotw_refill_amount: dict[int, tuple[int, float]]  # Refill amounts for health and energy
-    wotw_combat_tags: dict[int, set[str]]
+    wotw_enemies: dict[int, dict[str, float]]  # Energy cost to defeat each enemy
 
     def init_mixin(self, mw: MultiWorld) -> None:
         self.wotw_max_resources = {player: (30, 3.0) for player in mw.get_game_players("Ori and the Will of the Wisps")}
         self.wotw_refill_amount = {player: (30, 1.0) for player in mw.get_game_players("Ori and the Will of the Wisps")}
-        self.wotw_combat_tags = {player: set() for player in mw.get_game_players("Ori and the Will of the Wisps")}
+        for player in mw.get_game_players("Ori and the Will of the Wisps"):
+            self.wotw_enemies.setdefault(player, {enemy: 1000.0 for enemy in enemy_data.keys()})
 
 # Rules for some glitches
 def can_wavedash(state: CollectionState, player: int) -> bool:
@@ -51,6 +52,36 @@ weapon_data: dict[str, tuple[int, float]] = {  # The tuple contains the damage, 
     "Blaze": (13, 1),  # 13.8 damage, rounded down here
     }
 
+enemy_data: dict[str, tuple[int, list[str]]] = {  # For each enemy: HP and combat tags required
+    "Mantis": (32, []),
+    "Slug": (13, []),
+    "WeakSlug": (12, []),
+    "BombSlug": (1, ["Combat.Ranged"]),
+    "CorruptSlug": (1, ["Combat.Ranged"]),
+    "SneezeSlug": (32, ["Combat.Dangerous"]),
+    "ShieldSlug": (24, []),
+    "Lizard": (24, []),
+    "Combat.Bat": (32, ["Combat.Bat", "Combat.Aerial", "Combat.Ranged"]),
+    "Hornbug": (40, ["Combat.Dangerous", "Combat.Shielded"]),
+    "Skeeto": (20, ["Combat.Aerial"]),
+    "SmallSkeeto": (8, ["Combat.Aerial"]),
+    "Bee": (24, ["Combat.Aerial"]),
+    "Nest": (25, ["Combat.Aerial"]),
+    "Fish": (10, []),
+    "Waterworm": (20, []),
+    "Crab": (32, ["Combat.Dangerous"]),
+    "SpinCrab": (32, ["Combat.Dangerous"]),
+    "Tentacle": (40, ["Combat.Ranged"]),
+    "Balloon": (1, []),
+    "Miner": (40, ["Combat.Dangerous"]),
+    "MaceMiner": (60, ["Combat.Dangerous"]),
+    "ShieldMiner": (60, ["Combat.Dangerous", "Combat.Shielded"]),
+    "CrystalMiner": (80, ["Combat.Dangerous"]),
+    "ShieldCrystalMiner": (50, ["Combat.Dangerous", "Combat.Shielded"]),
+    "Sandworm": (20, ["Combat.Sand"]),
+    "Spiderling": (12, []),
+}
+
 
 def get_max(state: CollectionState, player: int) -> tuple[int, float]:
     """Return the current max health and energy."""
@@ -67,6 +98,22 @@ def get_refill(state: CollectionState, player: int) -> tuple[int, int]:
     refill_e = floor(max_e/5+1)
     return refill_h, refill_e
 
+
+def get_enemy_cost(enemy: str, state: CollectionState, player: int) -> float:
+    """Return the energy cost to defeat the enemy (or 1000 if the tags are not fulfilled)."""
+    data = enemy_data[enemy]
+    if not state.has_all(data[1], player):
+        return 1000.0
+
+    if state.has_any(("Sword", "Hammer"), player):
+        return 0
+
+    possible_weapons = ["Grenade", "Bow", "Shuriken", "Sentry", "Spear", "Blaze"]  # TODO add Flash in unsafe ? Also Moki
+    cost = 1000.0
+    for weapon in possible_weapons:
+        if state.has(weapon, player):
+            cost = min(cost, weapon_data[weapon][1] * ceil(data[0] / weapon_data[weapon][0]))
+    return cost
 
 def can_enter_area(area: str, state: CollectionState, player: int, options: WotWOptions) -> bool:
     """Check if the requirement to enter an area is fulfilled."""
@@ -313,10 +360,9 @@ def combat_cost(enemies: list[str],
     else:
         weapons = ["Sword", "Hammer", "Grenade", "Bow", "Shuriken", "Sentry", "Spear", "Blaze"]
 
-    cost = 0
+    cost = 0.0
     for enemy in enemies:
-        continue  # TODO get cost from the Mixin
-
+        cost += state.wotw_enemies[player][enemy]
     return cost
 
 

@@ -27,7 +27,7 @@ from .Options import WotWOptions, option_groups, LogicDifficulty, Quests
 from .SpawnItems import spawn_items, spawn_names
 from .Presets import options_presets
 from .ItemGroups import item_groups
-from .RulesFunctions import get_max, get_refill
+from .RulesFunctions import get_max, get_refill, get_enemy_cost
 
 from worlds.AutoWorld import World, WebWorld
 from worlds.generic.Rules import add_rule, set_rule
@@ -75,16 +75,53 @@ class WotWWorld(World):
 
     def collect(self, state: CollectionState, item: Item) -> bool:
         change = super().collect(state, item)
-        if change and item.name in ("Health Fragment", "Energy Fragment"):  # TODO Wisps ? See if events are collected as well
+        # Update the max health and the refills
+        if change and item.name in ("Health Fragment",
+                                    "Energy Fragment",
+                                    "EastHollow.ForestsVoice",
+                                    "LowerReach.ForestsMemory",
+                                    "UpperDepths.ForestsEyes",
+                                    "WestPools.ForestsStrength",
+                                    "WindtornRuins.Seir"):
             state.wotw_max_resources[self.player] = get_max(state, self.player)
             state.wotw_refill_amount[self.player] = get_refill(state, self.player)
+        # Update combat data
+        elif change and item.name in ("Hammer",  # TODO Also when tags change
+                                      "Sword",
+                                      "Grenade",
+                                      "Bow",
+                                      "Shuriken",
+                                      "Sentry",
+                                      "Spear",
+                                      "Blaze",
+                                      "Flash"):
+            for enemy in state.wotw_enemies[self.player].keys():
+                state.wotw_enemies[self.player][enemy] = get_enemy_cost(enemy, state, self.player)
         return change
 
     def remove(self, state: CollectionState, item: Item) -> bool:
         change = super().remove(state, item)
-        if change and item.name in ("Health Fragment", "Energy Fragment"):
+        if change and item.name in ("Health Fragment",
+                                    "Energy Fragment",
+                                    "EastHollow.ForestsVoice",
+                                    "LowerReach.ForestsMemory",
+                                    "UpperDepths.ForestsEyes",
+                                    "WestPools.ForestsStrength",
+                                    "WindtornRuins.Seir"):
             state.wotw_max_resources[self.player] = get_max(state, self.player)
             state.wotw_refill_amount[self.player] = get_refill(state, self.player)
+        # Update combat data
+        elif change and item.name in ("Hammer",  # TODO Also when tags change
+                                      "Sword",
+                                      "Grenade",
+                                      "Bow",
+                                      "Shuriken",
+                                      "Sentry",
+                                      "Spear",
+                                      "Blaze",
+                                      "Flash"):
+            for enemy in state.wotw_enemies[self.player].keys():
+                state.wotw_enemies[self.player][enemy] = get_enemy_cost(enemy, state, self.player)
         return change
 
     def generate_early(self) -> None:
