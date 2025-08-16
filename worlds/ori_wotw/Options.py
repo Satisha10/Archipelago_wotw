@@ -87,6 +87,11 @@ class RelicCount(Range):
     default = 7
 
 
+class RandomizeDoors(Toggle):
+    """Enable door randomizer."""
+    display_name = "Randomize Doors"
+
+
 class HardMode(Toggle):
     """Play the game in hard difficulty."""
     display_name = "Hard mode"
@@ -231,6 +236,7 @@ option_groups = [
         StartingLocation,
         Goal,
         HardMode,
+        RandomizeDoors,
         QualityOfLife,
         ShrineTrialHints,
         KnowledgeHints
@@ -271,6 +277,7 @@ class WotWOptions(PerGameCommonOptions):
     goal: Goal
     relic_count: RelicCount
     hard_mode: HardMode
+    door_rando: RandomizeDoors
     qol: QualityOfLife
     hints: ShrineTrialHints
     knowledge_hints: KnowledgeHints

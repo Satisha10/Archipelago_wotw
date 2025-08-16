@@ -11,6 +11,7 @@
 from typing import Any
 from collections import Counter
 
+from entrance_rando import randomize_entrances, disconnect_entrance_for_randomization
 from .Rules import (set_moki_rules, set_gorlek_rules, set_gorlek_glitched_rules, set_kii_rules,
                     set_kii_glitched_rules, set_unsafe_rules, set_unsafe_glitched_rules)
 from .AdditionalRules import combat_rules, glitch_rules, unreachable_rules
@@ -28,6 +29,7 @@ from .SpawnItems import spawn_items, spawn_names
 from .Presets import options_presets
 from .ItemGroups import item_groups
 from .RulesFunctions import get_max, get_refill, get_enemy_cost
+from .DoorData import doors_map, doors_vanilla
 
 from worlds.AutoWorld import World, WebWorld
 from worlds.generic.Rules import add_rule, set_rule
@@ -194,8 +196,8 @@ class WotWWorld(World):
         for event in refill_events:  # Tracks the refills that are accessible
             self.create_event(event)
 
-        for entrance_name in entrance_table:  # Creates and connects the entrances
-            (parent, connected) = entrance_name.split("_to_")
+        for entrance_name in entrance_table:  # Create and connect the entrances
+            (parent, connected) = entrance_name.split(" -> ")
             parent_region = world.get_region(parent, player)
             connected_region = world.get_region(connected, player)
             entrance = parent_region.create_exit(entrance_name)
@@ -541,6 +543,15 @@ class WotWWorld(World):
                           "WoodsEntry.DollQI",
                           "GladesTown.FamilyReunionKey"):
                 try_connect(menu, world.get_region(quest + ".quest", player))
+
+
+    def connect_entrances(self) -> None:
+        # TODO create the vanilla connections (do it in rules)
+        if self.options.door_rando:
+            for entry, target in doors_vanilla:
+                disconnect_entrance_for_randomization(self.world.get_entrance(f"{entry} -> {target}"))
+            randomize_entrances(self.world, True, {0: [0]})
+
 
     def fill_slot_data(self) -> dict[str, Any]:
         # TODO Relics
