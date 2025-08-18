@@ -24,7 +24,7 @@ class WotWLogic(LogicMixin):
         self.wotw_max_resources = {player: (30, 3.0) for player in mw.get_game_players("Ori and the Will of the Wisps")}
         self.wotw_refill_amount = {player: (30, 1.0) for player in mw.get_game_players("Ori and the Will of the Wisps")}
         for player in mw.get_game_players("Ori and the Will of the Wisps"):
-            self.wotw_enemies.setdefault(player, {enemy: 1000.0 for enemy in enemy_data.keys()})
+            self.wotw_enemies.setdefault(player, {enemy: IMPOSSIBLE_COST for enemy in enemy_data.keys()})
 
 # Rules for some glitches
 def can_wavedash(state: CollectionState, player: int) -> bool:
@@ -40,6 +40,10 @@ def can_glidehammerjump(state: CollectionState, player: int) -> bool:
     return state.has_all(("Glide", "Hammer"), player)
 
 
+IMPOSSIBLE_COST = 1000.0  # Extremely high energy cost, used when a requirement is not met
+# The value is arbitrary value, but it must be higher than 20 (which is the max energy that you can get)
+
+
 weapon_data: dict[str, tuple[int, float]] = {  # The tuple contains the damage, and its energy cost
     "Sword": (4, 0),
     "Hammer": (12, 0),
@@ -50,6 +54,9 @@ weapon_data: dict[str, tuple[int, float]] = {  # The tuple contains the damage, 
     "Sentry": (8, 1),  # 8.8 damage, rounded down here
     "Spear": (20, 2),
     "Blaze": (13, 1),  # 13.8 damage, rounded down here
+    "SentryJump": (8, 1),  # Same as Sentry values
+    "SwordSJump": (8, 1),
+    "HammerSJump": (8, 1),
     }
 
 enemy_data: dict[str, tuple[int, list[str]]] = {  # For each enemy: HP and combat tags required
@@ -100,16 +107,16 @@ def get_refill(state: CollectionState, player: int) -> tuple[int, int]:
 
 
 def get_enemy_cost(enemy: str, state: CollectionState, player: int) -> float:
-    """Return the energy cost to defeat the enemy (or 1000 if the tags are not fulfilled)."""
+    """Return the energy cost to defeat the enemy (or IMPOSSIBLE_COST if the tags are not fulfilled)."""
     data = enemy_data[enemy]
     if not state.has_all(data[1], player):
-        return 1000.0
+        return IMPOSSIBLE_COST
 
     if state.has_any(("Sword", "Hammer"), player):
         return 0
 
     possible_weapons = ["Grenade", "Bow", "Shuriken", "Sentry", "Spear", "Blaze"]  # TODO add Flash in unsafe ? Also Moki
-    cost = 1000.0
+    cost = IMPOSSIBLE_COST
     for weapon in possible_weapons:
         if state.has(weapon, player):
             cost = min(cost, weapon_data[weapon][1] * ceil(data[0] / weapon_data[weapon][0]))
@@ -256,7 +263,7 @@ def cost_all(state: CollectionState, player: int, options: WotWOptions, region: 
         return False
 
     if or_req:
-        min_cost = 1000  # Arbitrary value, higher than 20
+        min_cost = IMPOSSIBLE_COST
         hp_cost = False
         for req in or_req:
             if req[0] == 0:
@@ -376,7 +383,7 @@ def compute_wall(data: tuple[str, int],
     else:  # break_type == "sentry"
         weapons = ["Sentry"]
         damage *= 6
-    cost = 1000.0  # Arbitrary value, must be higher than 20 (which is the max energy that you can get)
+    cost = IMPOSSIBLE_COST
     for weapon in weapons:
         if state.has(weapon, player):
             cost = min(cost, weapon_data[weapon][1] * ceil(damage / weapon_data[weapon][0]))
@@ -389,7 +396,15 @@ def compute_energy(data: list[tuple[str, int]],
     """Return the energy cost for using the energy weapons."""
     cost = 0.0
     for weapon, times in data:
+        # Check for the non-energy requirements for sentry jumps
+        if weapon == "SentryJump" and not state.has_any(("Sword", "Hammer"), player):
+            return IMPOSSIBLE_COST
+        elif weapon == "SwordSJump" and not state.has("Sword", player):
+            return IMPOSSIBLE_COST
+        elif weapon == "HammerSJump" and not state.has("Hammer", player):
+            return IMPOSSIBLE_COST
+        # In any cases, check for the energy cost (and if the energy weapon is there)
         if not state.has(weapon, player):
-            return 1000  # Arbitrary value, must be above 20
+            return IMPOSSIBLE_COST
         cost += weapon_data[weapon][1] * times
     return cost
