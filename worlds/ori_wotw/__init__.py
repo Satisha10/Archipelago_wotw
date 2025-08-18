@@ -66,7 +66,6 @@ class WotWWorld(World):
 
     options_dataclass = WotWOptions
     options: WotWOptions
-    explicit_indirect_conditions = False  # TODO remove
 
     required_client_version = (0, 5, 0)
 

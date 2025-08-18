@@ -291,7 +291,7 @@ def has_enough_resources(requirements: list[tuple[str, any]],
     """Check if the player has enough energy/health to use the path."""
     max_h, max_e = state.wotw_max_resources[player]
     health, energy = 10, 1.0  # Minimal values, can lead to softlocks in specific situations
-    refill_e, refill_h, refill_type = refills[region]  # TODO use an enum for the type or use an str
+    refill_e, refill_h, refill_type = refills[region]
 
     # Apply the refills
     if is_moki:  # Moki has no damage boost and barely requires energy, so this is fine.
@@ -313,12 +313,12 @@ def has_enough_resources(requirements: list[tuple[str, any]],
         if req_type == "db":  # Damage boost
             cast(int, data)
             health, energy = compute_dboost(data, health, energy, max_h, state, player, bool(options.hard_mode))
-        elif req_type == "combat":  # TODO make a mixin for which enemies can be defeated and the cost: only use list[str]
+        elif req_type == "combat":
             cast(list[str], data)
             energy -= combat_cost(data, state, player, options)
         elif req_type == "wall":
             cast(tuple[str, int], data)
-            energy -= compute_wall(data, state, player)
+            energy -= compute_wall(data, state, player, options)
         else:  # req_type == "energy"
             cast(list[tuple[str, int]], data)
             energy -= compute_energy(data, state, player)
@@ -350,16 +350,6 @@ def combat_cost(enemies: list[str],
                 player: int,
                 options: WotWOptions) -> float:
     """Return the energy cost for the enemies/walls/boss with current state."""
-    if options.difficulty.value == LogicDifficulty.option_moki:  # TODO move this part to the Mixin
-        if state.has_any(("Sword", "Hammer"), player):
-            return 0
-        return 1000  # Arbitrary value, greater than 20
-
-    if options.difficulty.value == LogicDifficulty.option_unsafe:
-        weapons = ["Sword", "Hammer", "Grenade", "Bow", "Shuriken", "Sentry", "Spear", "Blaze", "Flash"]
-    else:
-        weapons = ["Sword", "Hammer", "Grenade", "Bow", "Shuriken", "Sentry", "Spear", "Blaze"]
-
     cost = 0.0
     for enemy in enemies:
         cost += state.wotw_enemies[player][enemy]
@@ -368,18 +358,30 @@ def combat_cost(enemies: list[str],
 
 def compute_wall(data: tuple[str, int],
                  state: CollectionState,
-                 player: int) -> float:  # TODO sentry/shuriken break (also boss here ?)
+                 player: int,
+                 options: WotWOptions) -> float:
     """Return the energy cost for breaking a wall"""
     break_type, damage = data
-    if state.has_any(("Sword", "Hammer"), player):
+    if state.has_any(("Sword", "Hammer"), player) and break_type == "wall":
         return 0
 
-    weapons = ["Grenade", "Bow", "Shuriken", "Sentry", "Spear", "Blaze"]
+    if break_type == "wall":
+        weapons = ["Grenade", "Bow", "Shuriken", "Sentry", "Spear", "Blaze"]
+    elif break_type == "shuriken":
+        weapons = ["Shuriken"]
+        if options.difficulty.value == LogicDifficulty.option_unsafe:
+            damage *= 2
+        else:
+            damage *= 3
+    else:  # break_type == "sentry"
+        weapons = ["Sentry"]
+        damage *= 6
     cost = 1000.0  # Arbitrary value, must be higher than 20 (which is the max energy that you can get)
     for weapon in weapons:
         if state.has(weapon, player):
             cost = min(cost, weapon_data[weapon][1] * ceil(damage / weapon_data[weapon][0]))
     return cost
+
 
 def compute_energy(data: list[tuple[str, int]],
                    state: CollectionState,
