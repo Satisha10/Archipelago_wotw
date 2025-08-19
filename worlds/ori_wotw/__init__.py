@@ -97,7 +97,7 @@ class WotWWorld(World):
                                       "Blaze",
                                       "Flash"):
             for enemy in state.wotw_enemies[self.player].keys():
-                state.wotw_enemies[self.player][enemy] = get_enemy_cost(enemy, state, self.player)
+                state.wotw_enemies[self.player][enemy] = get_enemy_cost(enemy, state, self.player, self.options)
         return change
 
     def remove(self, state: CollectionState, item: Item) -> bool:
@@ -122,7 +122,7 @@ class WotWWorld(World):
                                       "Blaze",
                                       "Flash"):
             for enemy in state.wotw_enemies[self.player].keys():
-                state.wotw_enemies[self.player][enemy] = get_enemy_cost(enemy, state, self.player)
+                state.wotw_enemies[self.player][enemy] = get_enemy_cost(enemy, state, self.player, self.options)
         return change
 
     def generate_early(self) -> None:
@@ -545,7 +545,6 @@ class WotWWorld(World):
 
 
     def connect_entrances(self) -> None:
-        # TODO create the vanilla connections (do it in rules)
         if self.options.door_rando:
             for entry, target in doors_vanilla:
                 disconnect_entrance_for_randomization(self.world.get_entrance(f"{entry} -> {target}"))

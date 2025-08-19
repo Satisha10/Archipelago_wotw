@@ -44,9 +44,7 @@ IMPOSSIBLE_COST = 1000.0  # Extremely high energy cost, used when a requirement 
 # The value is arbitrary value, but it must be higher than 20 (which is the max energy that you can get)
 
 
-weapon_data: dict[str, tuple[int, float]] = {  # The tuple contains the damage, and its energy cost
-    "Sword": (4, 0),
-    "Hammer": (12, 0),
+weapon_data: dict[str, tuple[int, float]] = {  # The tuple contains the damage per use, and the energy cost
     "Grenade": (13, 1),  # Can be 17 damage if charged
     "Shuriken": (7, 0.5),
     "Bow": (4, 0.25),
@@ -106,7 +104,7 @@ def get_refill(state: CollectionState, player: int) -> tuple[int, int]:
     return refill_h, refill_e
 
 
-def get_enemy_cost(enemy: str, state: CollectionState, player: int) -> float:
+def get_enemy_cost(enemy: str, state: CollectionState, player: int, options: WotWOptions) -> float:
     """Return the energy cost to defeat the enemy (or IMPOSSIBLE_COST if the tags are not fulfilled)."""
     data = enemy_data[enemy]
     if not state.has_all(data[1], player):
@@ -115,7 +113,13 @@ def get_enemy_cost(enemy: str, state: CollectionState, player: int) -> float:
     if state.has_any(("Sword", "Hammer"), player):
         return 0
 
-    possible_weapons = ["Grenade", "Bow", "Shuriken", "Sentry", "Spear", "Blaze"]  # TODO add Flash in unsafe ? Also Moki
+    if options.difficulty.value == LogicDifficulty.option_moki:
+        possible_weapons = []  # Only use Sword or Hammer in Moki
+    elif options.difficulty.value == LogicDifficulty.option_unsafe:
+        possible_weapons = ["Grenade", "Bow", "Shuriken", "Sentry", "Spear", "Blaze", "Flash"]
+    else:
+        possible_weapons = ["Grenade", "Bow", "Shuriken", "Sentry", "Spear", "Blaze"]
+
     cost = IMPOSSIBLE_COST
     for weapon in possible_weapons:
         if state.has(weapon, player):
@@ -294,8 +298,20 @@ def has_enough_resources(requirements: list[tuple[str, any]],
                          state: CollectionState,
                          player: int,
                          options: WotWOptions,
-                         is_moki: bool) -> bool:
-    """Check if the player has enough energy/health to use the path."""
+                         is_moki: bool,
+                         all_required: bool) -> bool:
+    """
+    Check if the player has enough energy/health to use the path.
+
+    :param requirements: List of requirements, the tuples contain a key (str) and a data object.
+    :param region: The starting region of the path.
+    :param state: The CollectionState object.
+    :param player: The player int.
+    :param options: The WotWOptions object.
+    :param is_moki: Whether the path is moki (lowest difficulty).
+    :param all_required: If True, all the requirements must be valid using the same initial health/energy pool.
+                         If False, only one must be valid, and the health/energy pool is reset each time.
+    """
     max_h, max_e = state.wotw_max_resources[player]
     health, energy = 10, 1.0  # Minimal values, can lead to softlocks in specific situations
     refill_e, refill_h, refill_type = refills[region]
@@ -317,30 +333,37 @@ def has_enough_resources(requirements: list[tuple[str, any]],
 
     # Compute the requirements
     for req_type, data in requirements:
+        energy_cost = 0
         if req_type == "db":  # Damage boost
             cast(int, data)
-            health, energy = compute_dboost(data, health, energy, max_h, state, player, bool(options.hard_mode))
+            health, energy_cost = compute_dboost(data, health, max_h, state, player, bool(options.hard_mode))
         elif req_type == "combat":
-            cast(list[str], data)
-            energy -= combat_cost(data, state, player, options)
+            cast(str, data)
+            energy_cost = combat_cost(data, state, player)
         elif req_type == "wall":
             cast(tuple[str, int], data)
-            energy -= compute_wall(data, state, player, options)
+            energy_cost = compute_wall(data, state, player, options)
         else:  # req_type == "energy"
-            cast(list[tuple[str, int]], data)
-            energy -= compute_energy(data, state, player)
-        if energy < 0:  # Not enough energy, or a required skill is missing
-            return False
-    return True
+            cast(tuple[str, int], data)
+            energy_cost = compute_energy(data, state, player)
+        if all_required:
+            energy -= energy_cost
+            if energy < 0:  # Not enough energy, or a required skill is missing
+                return False
+        elif energy >= energy_cost:  # Only one path required, and this one is valid
+            return True
+    if all_required:  # All requirements parsed, and not out of energy: path is valid
+        return True
+    return False  # all_required is false, and no requirement can be fulfilled: invalid
 
 def compute_dboost(damage: int,
                    health: int,
-                   energy: float,
                    max_health:int,
                    state: CollectionState,
                    player: int,
                    is_hard: bool) -> tuple[int, float]:
-    """Return the new health and energy values after the damage boost."""
+    """Return the new health and the energy cost after the damage boost."""
+    n_regen = 0.0  # Number of Regenerate used, i.e. the energy cost
     if is_hard:  # Hard difficulty doubles the damage taken
         damage *= 2
     health -= damage
@@ -348,19 +371,16 @@ def compute_dboost(damage: int,
         if state.has("Regenerate", player) and damage < max_health:
             n_regen = ceil((-health + 1) / 30)  # Amount of regenerate needed
             health = health + 30 * n_regen
-            energy -= n_regen
-    return health, energy
+        else:
+            n_regen = IMPOSSIBLE_COST
+    return health, n_regen
 
 
-def combat_cost(enemies: list[str],
+def combat_cost(enemy: str,
                 state: CollectionState,
-                player: int,
-                options: WotWOptions) -> float:
-    """Return the energy cost for the enemies/walls/boss with current state."""
-    cost = 0.0
-    for enemy in enemies:
-        cost += state.wotw_enemies[player][enemy]
-    return cost
+                player: int) -> float:
+    """Return the energy cost to defeat the enemy."""
+    return state.wotw_enemies[player][enemy]
 
 
 def compute_wall(data: tuple[str, int],
@@ -390,21 +410,19 @@ def compute_wall(data: tuple[str, int],
     return cost
 
 
-def compute_energy(data: list[tuple[str, int]],
+def compute_energy(data: tuple[str, int],
                    state: CollectionState,
                    player: int) -> float:
     """Return the energy cost for using the energy weapons."""
-    cost = 0.0
-    for weapon, times in data:
-        # Check for the non-energy requirements for sentry jumps
-        if weapon == "SentryJump" and not state.has_any(("Sword", "Hammer"), player):
-            return IMPOSSIBLE_COST
-        elif weapon == "SwordSJump" and not state.has("Sword", player):
-            return IMPOSSIBLE_COST
-        elif weapon == "HammerSJump" and not state.has("Hammer", player):
-            return IMPOSSIBLE_COST
-        # In any cases, check for the energy cost (and if the energy weapon is there)
-        if not state.has(weapon, player):
-            return IMPOSSIBLE_COST
-        cost += weapon_data[weapon][1] * times
-    return cost
+    weapon, times = data
+    # Check for the non-energy requirements for sentry jumps
+    if weapon == "SentryJump" and not state.has_any(("Sword", "Hammer"), player):
+        return IMPOSSIBLE_COST
+    elif weapon == "SwordSJump" and not state.has("Sword", player):
+        return IMPOSSIBLE_COST
+    elif weapon == "HammerSJump" and not state.has("Hammer", player):
+        return IMPOSSIBLE_COST
+    # In any cases, check for the energy cost (and if the energy weapon is there)
+    if not state.has(weapon, player):
+        return IMPOSSIBLE_COST
+    return weapon_data[weapon][1] * times
