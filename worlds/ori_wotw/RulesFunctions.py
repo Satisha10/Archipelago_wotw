@@ -206,93 +206,6 @@ def can_open_door(door_name: str, state: CollectionState, player: int) -> bool:
     return state.count("Keystone", player) >= keystone_data[door_name]
 
 
-# TODO Simplify with lists/dicts for and and or chains, with key is type of requirement, and then the value.
-def cost_all(state: CollectionState, player: int, options: WotWOptions, region: str, damage_and: list,
-             en_and: list[list], combat_and: list[list], or_req: list[list], path_difficulty: int) -> bool:
-    """
-    Return a bool stating if the path can be taken.
-
-    damage_and: contains the dboost values (if several elements, Regenerate can be used inbetween).
-    combat_and: contains the combat damages needed and the type (enemy/wall).
-    en_and: contains as elements the skill name, and the amount used. All must be satisfied.
-    or_req: contains damages, combat, and energy in each sublist (the first element of the list is the
-        type of requirement: 0 is combat, 1 is energy, 2 is damage boost). Any can be verified.
-    path_difficulty: 0, 1, 3, 5 for Moki, Gorlek, Kii, Unsafe
-    """
-    hard = options.hard_mode
-    maxH, maxE = get_max(state, player)
-
-    en, hp, tr = refills[region]  # TODO refills: typing, use tuples, use enum for refill type. Also split in a new function
-    health, energy = 10, 1  # TODO: The base resources can lead to softlock, modify when resource tracking is reworked
-
-    if path_difficulty == 0:  # Moki has no damage boost and barely requires energy, so this is fine.
-        health, energy = maxH, maxE
-    else:
-        if tr == 2 and state.has("F." + region, player):
-            health, energy = maxH, maxE
-        else:
-            if tr == 1 and state.has("C." + region, player):
-                health, energy = get_refill((maxH, maxE))
-            if hp != 0 and state.has("H." + region, player):
-                health += hp*10
-            if en != 0 and state.has("E." + region, player):
-                energy += en
-
-    # if diff != 3:  # Energy costs are doubled, except in unsafe
-    #     energy /= 2
-
-    for damage in damage_and:  # This part deals with the damage boosts
-        if hard:
-            damage *= 2
-        health -= damage
-        if health <= 0:
-            if state.has("Regenerate", player) and -health < maxH:
-                n_regen = ceil((-health + 1)/30)
-                if n_regen > energy:
-                    return False
-                health = min(maxH, health + 30*n_regen)
-                energy -= n_regen
-            else:
-                return False
-
-    for source in en_and:  # This computes the energy cost for weapons
-        if not state.has(source[0], player):
-            return False
-        energy -= weapon_data[source[0]][1] * source[1]
-        if energy < 0:
-            return False
-
-    energy -= combat_cost(state, player, options, combat_and, bool(path_difficulty==0))
-    if energy < 0:
-        return False
-
-    if or_req:
-        min_cost = IMPOSSIBLE_COST
-        hp_cost = False
-        for req in or_req:
-            if req[0] == 0:
-                if all([state.has(danger, player) for danger in req[2]]):
-                    min_cost = min(min_cost, combat_cost(state, player, options, req[1], bool(path_difficulty==0)))
-            if req[0] == 1:
-                if state.has(req[1], player):
-                    min_cost = min(min_cost, weapon_data[req[1]][1] * req[2])
-            if req[0] == 2:
-                hp_cost = req[1]
-        if min_cost > energy:
-            if not hp_cost:  # The damage boost option is considered only if no other option is possible.
-                return False
-            else:
-                if hard:
-                    hp_cost *= 2
-                health -= hp_cost
-                if state.has("Regenerate", player) and -health < maxH:  # Consider healing before the damage instance
-                    n_regen = ceil((-health + 1)/30)
-                    if n_regen > energy:  # In that case, not enough energy to heal
-                        return False
-
-    return True
-
-
 def has_enough_resources(requirements_all: list[tuple[str, any]],
                          requirements_any: list[tuple[str, any]],
                          region: str,
@@ -338,9 +251,11 @@ def has_enough_resources(requirements_all: list[tuple[str, any]],
         if req_type == "db":  # Damage boost
             cast(int, data)
             health, energy_cost = compute_dboost(data, health, max_h, state, player, bool(options.hard_mode))
+            # Remark: the health is not reset in the `any` part, but it is fine since there is at most one damage boost
+            # in requirements_any, and health does not affect the other types of requirements.
         elif req_type == "combat":
             cast(str, data)
-            energy_cost = combat_cost(data, state, player)
+            energy_cost = compute_combat(data, state, player)
         elif req_type == "wall":
             cast(tuple[str, int], data)
             energy_cost = compute_wall(data, state, player, options)
@@ -378,9 +293,9 @@ def compute_dboost(damage: int,
     return health, n_regen
 
 
-def combat_cost(enemy: str,
-                state: CollectionState,
-                player: int) -> float:
+def compute_combat(enemy: str,
+                   state: CollectionState,
+                   player: int) -> float:
     """Return the energy cost to defeat the enemy."""
     return state.wotw_enemies[player][enemy]
 
