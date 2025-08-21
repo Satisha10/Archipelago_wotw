@@ -293,24 +293,25 @@ def cost_all(state: CollectionState, player: int, options: WotWOptions, region: 
     return True
 
 
-def has_enough_resources(requirements: list[tuple[str, any]],
+def has_enough_resources(requirements_all: list[tuple[str, any]],
+                         requirements_any: list[tuple[str, any]],
                          region: str,
                          state: CollectionState,
                          player: int,
                          options: WotWOptions,
-                         is_moki: bool,
-                         all_required: bool) -> bool:
+                         is_moki: bool) -> bool:
     """
     Check if the player has enough energy/health to use the path.
 
-    :param requirements: List of requirements, the tuples contain a key (str) and a data object.
+    :param requirements_all: List of requirements, the tuples contain a key (str) and a data object.
+                             All of them must be satisfied from the same initial health/energy pool.
+    :param requirements_any: List of requirements, only one must be valid.T
+                             The health/energy pool is reset each time, from what remains after the all part.
     :param region: The starting region of the path.
     :param state: The CollectionState object.
     :param player: The player int.
     :param options: The WotWOptions object.
     :param is_moki: Whether the path is moki (lowest difficulty).
-    :param all_required: If True, all the requirements must be valid using the same initial health/energy pool.
-                         If False, only one must be valid, and the health/energy pool is reset each time.
     """
     max_h, max_e = state.wotw_max_resources[player]
     health, energy = 10, 1.0  # Minimal values, can lead to softlocks in specific situations
@@ -331,9 +332,9 @@ def has_enough_resources(requirements: list[tuple[str, any]],
                 energy += refill_e
         health, energy = min(max_h, health), min(max_e, energy)  # Make sure that it does not go over the maximum
 
+    energy_cost: float
     # Compute the requirements
-    for req_type, data in requirements:
-        energy_cost = 0
+    for i, (req_type, data) in enumerate(requirements_all + requirements_any):
         if req_type == "db":  # Damage boost
             cast(int, data)
             health, energy_cost = compute_dboost(data, health, max_h, state, player, bool(options.hard_mode))
@@ -346,15 +347,16 @@ def has_enough_resources(requirements: list[tuple[str, any]],
         else:  # req_type == "energy"
             cast(tuple[str, int], data)
             energy_cost = compute_energy(data, state, player)
-        if all_required:
+        if i < len(requirements_all):  # This means that it is parsing the `all` part
             energy -= energy_cost
             if energy < 0:  # Not enough energy, or a required skill is missing
                 return False
-        elif energy >= energy_cost:  # Only one path required, and this one is valid
+        elif energy >= energy_cost:  # Currently parsing the `any` part, and this path is valid
             return True
-    if all_required:  # All requirements parsed, and not out of energy: path is valid
-        return True
-    return False  # all_required is false, and no requirement can be fulfilled: invalid
+    if requirements_any:  # There is at least one requirement from `any`, and no requirement can be fulfilled: invalid
+        return False
+    return False  # `All` requirements parsed, and not out of energy: path is valid
+
 
 def compute_dboost(damage: int,
                    health: int,
