@@ -306,10 +306,10 @@ def compute_wall(data: tuple[str, int],
                  options: WotWOptions) -> float:
     """Return the energy cost for breaking a wall"""
     break_type, damage = data
-    if state.has_any(("Sword", "Hammer"), player) and break_type == "wall":
+    if state.has_any(("Sword", "Hammer"), player) and break_type in ("BreakWall", "Boss"):
         return 0
 
-    if break_type == "wall":
+    if break_type in ("BreakWall", "Boss"):
         weapons = ["Grenade", "Bow", "Shuriken", "Sentry", "Spear", "Blaze"]
     elif break_type == "shuriken":
         weapons = ["Shuriken"]
