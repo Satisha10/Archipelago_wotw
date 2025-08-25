@@ -6,7 +6,7 @@ Generated with `extract_rules.py`.
 """
 
 
-from .Rules_Functions import *
+from .RulesFunctions import *
 from worlds.generic.Rules import add_rule
 
 from typing import TYPE_CHECKING
@@ -15,7 +15,7 @@ if TYPE_CHECKING:
     from .Options import WotWOptions
 
 
-def set_moki_rules(world: Multiworld, player: int, options: WotWOptions):
+def set_moki_rules(world: "Multiworld", player: int, options: "WotWOptions"):
     """Moki (or easy, default) rules."""
     add_rule(world.get_entrance("HeaderStates -> SkipKwolok", player), lambda s: s.has("Impossible", player), "or")
     add_rule(world.get_entrance("HeaderStates -> SkipMora1", player), lambda s: s.has("Impossible", player), "or")
@@ -2719,7 +2719,7 @@ def set_moki_rules(world: Multiworld, player: int, options: WotWOptions):
     add_rule(world.get_entrance("TuleyShop -> TuleyShop.LastTree", player), lambda s: s.has("WoodsEntry.TreeSeed", player), "or")
 
 
-def set_gorlek_rules(world: Multiworld, player: int, options: WotWOptions):
+def set_gorlek_rules(world: "Multiworld", player: int, options: "WotWOptions"):
     """Gorlek (or medium) rules."""
     add_rule(world.get_entrance("MarshSpawn.Main -> MarshSpawn.GrappleHC", player), lambda s: s.has("Grapple", player) and s.has_any(("Dash", "Glide", "Sword", "Hammer"), player), "or")
     add_rule(world.get_entrance("MarshSpawn.Main -> MarshSpawn.GrappleHC", player), lambda s: s.has_all(("Bash", "Grapple"), player) and s.has("HowlsDen.RainLifted", player), "or")
@@ -4784,7 +4784,7 @@ def set_gorlek_rules(world: Multiworld, player: int, options: WotWOptions):
     add_rule(world.get_entrance("WillowsEnd.UpperHeartCheckpoint -> WillowsEnd.UpperLeftEX", player), lambda s: s.has_all(("Launch", "Double Jump", "Glide", "Bash"), player), "or")
 
 
-def set_gorlek_glitched_rules(world: Multiworld, player: int, options: WotWOptions):
+def set_gorlek_glitched_rules(world: "Multiworld", player: int, options: "WotWOptions"):
     """Gorlek (or medium) rules with glitches"""
     add_rule(world.get_entrance("MarshSpawn.Main -> MarshSpawn.GrappleHC", player), lambda s: s.has_all(("Launch", "Double Jump"), player) and has_enough_resources([('energy', ('SentryJump', 1))], [], "MarshSpawn.Main", s, player, options, False), "or")
     add_rule(world.get_entrance("MarshSpawn.OpherBarrier -> MarshSpawn.Main", player), lambda s: has_enough_resources([('energy', ('SentryJump', 1))], [], "MarshSpawn.OpherBarrier", s, player, options, False), "or")
@@ -5338,7 +5338,7 @@ def set_gorlek_glitched_rules(world: Multiworld, player: int, options: WotWOptio
     add_rule(world.get_entrance("WillowsEnd.GlideHeartPath -> WillowsEnd.GlideRooms", player), lambda s: has_enough_resources([('combat', 'Mantis'), ('energy', ('SentryJump', 1))], [('db', 20)], "WillowsEnd.GlideHeartPath", s, player, options, False), "or")
 
 
-def set_kii_rules(world: Multiworld, player: int, options: WotWOptions):
+def set_kii_rules(world: "Multiworld", player: int, options: "WotWOptions"):
     """Kii (or hard) rules"""
     add_rule(world.get_entrance("MarshSpawn.Main -> MarshSpawn.GrappleHC", player), lambda s: s.has("Grapple", player) and has_enough_resources([], [('energy', ('Sentry', 1)), ('energy', ('Shuriken', 1)), ('energy', ('Flash', 1))], "MarshSpawn.Main", s, player, options, False), "or")
     add_rule(world.get_entrance("MarshSpawn.Main -> MarshSpawn.GrappleHC", player), lambda s: s.has_all(("Bash", "Launch"), player) and s.has("HowlsDen.RainLifted", player), "or")
@@ -8454,7 +8454,7 @@ def set_kii_rules(world: Multiworld, player: int, options: WotWOptions):
     add_rule(world.get_entrance("WillowsEnd.UpperHeartCheckpoint -> WillowsEnd.UpperLeftEX", player), lambda s: s.has_all(("Launch", "Bash"), player), "or")
 
 
-def set_kii_glitched_rules(world: Multiworld, player: int, options: WotWOptions):
+def set_kii_glitched_rules(world: "Multiworld", player: int, options: "WotWOptions"):
     """Kii (or hard) rules with glitches."""
     add_rule(world.get_entrance("MarshSpawn.BeforeBurrows -> MarshSpawn.BurrowsEntry", player), lambda s: s.has("Water Dash", player) and s.has_any(("Dash", "Double Jump"), player) and has_enough_resources([('db', 20), ('energy', ('SentryJump', 1))], [], "MarshSpawn.BeforeBurrows", s, player, options, False), "or")
     add_rule(world.get_entrance("InnerWellspring.DrainRoom -> InnerWellspring.DrainAreaExit", player), lambda s: s.has("Double Jump", player) and has_enough_resources([('wall', ('shuriken', 10))], [('energy', ('Blaze', 4)), ('energy', ('Sentry', 3))], "InnerWellspring.DrainRoom", s, player, options, False), "or")
@@ -8478,7 +8478,7 @@ def set_kii_glitched_rules(world: Multiworld, player: int, options: WotWOptions)
     add_rule(world.get_entrance("LowerWastes.WestTP -> WeepingRidge.Bottom", player), lambda s: s.has_all(("Burrow", "Bash", "Double Jump"), player) and s.has("WindtornRuins.Seir", player) and can_enter_area(WeepingRidge, s, player, options) and has_enough_resources([('energy', ('Grenade', 2))], [], "LowerWastes.WestTP", s, player, options, False), "or")
 
 
-def set_unsafe_rules(world: Multiworld, player: int, options: WotWOptions):
+def set_unsafe_rules(world: "Multiworld", player: int, options: "WotWOptions"):
     """Unsafe rules."""
     add_rule(world.get_entrance("MarshSpawn.Main -> MarshSpawn.ToOpherBarrier", player), lambda s: s.has("HowlsDen.RainLifted", player), "or")
     add_rule(world.get_entrance("MarshSpawn.Main -> MarshSpawn.GrappleHC", player), lambda s: s.has("Launch", player), "or")
@@ -10395,7 +10395,7 @@ def set_unsafe_rules(world: Multiworld, player: int, options: WotWOptions):
     add_rule(world.get_entrance("WillowsEnd.UpperHeartCheckpoint -> WillowsEnd.UpperRightEX", player), lambda s: s.has("Double Jump", player), "or")
 
 
-def set_unsafe_glitched_rules(world: Multiworld, player: int, options: WotWOptions):
+def set_unsafe_glitched_rules(world: "Multiworld", player: int, options: "WotWOptions"):
     """Unsafe rules with glitches."""
     add_rule(world.get_entrance("MarshSpawn.Main -> MarshSpawn.GrappleHC", player), lambda s: s.has("Double Jump", player) and has_enough_resources([('energy', ('SentryJump', 1))], [], "MarshSpawn.Main", s, player, options, False), "or")
     add_rule(world.get_entrance("MarshSpawn.Main -> MarshSpawn.GrappleHC", player), lambda s: has_enough_resources([('energy', ('SwordSJump', 2))], [], "MarshSpawn.Main", s, player, options, False), "or")
