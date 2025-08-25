@@ -23,6 +23,7 @@ class WotWLogic(LogicMixin):
     def init_mixin(self, mw: "MultiWorld") -> None:
         self.wotw_max_resources = {player: (30, 3.0) for player in mw.get_game_players("Ori and the Will of the Wisps")}
         self.wotw_refill_amount = {player: (30, 1.0) for player in mw.get_game_players("Ori and the Will of the Wisps")}
+        self.wotw_enemies = {}
         for player in mw.get_game_players("Ori and the Will of the Wisps"):
             self.wotw_enemies.setdefault(player, {enemy: IMPOSSIBLE_COST for enemy in enemy_data.keys()})
 
