@@ -166,6 +166,10 @@ class WotWWorld(World):
             region = Region(region_name, player, world)
             world.regions.append(region)
 
+        for region_name in doors_map.keys():
+            region = Region(region_name, player, world)
+            world.regions.append(region)
+
         menu_region = Region("Menu", player, world)
         world.regions.append(menu_region)
 
@@ -245,23 +249,23 @@ class WotWWorld(World):
             removed_items.append("Sword")
 
         if not options.tp:
-            for item in item_groups["teleporters"]:
+            for item in item_groups["Teleporters"]:
                 removed_items.append(item)
 
         if not options.extratp:
-            for item in item_groups["extra_tp"]:
+            for item in item_groups["Extra Teleporters"]:
                 removed_items.append(item)
 
         if not options.bonus:
-            for item in item_groups["bonus"]:
+            for item in item_groups["Bonus"]:
                 removed_items.append(item)
 
         if not options.extra_bonus:
-            for item in item_groups["bonus+"]:
+            for item in item_groups["Bonus+"]:
                 removed_items.append(item)
 
         if not options.skill_upgrade:
-            for item in item_groups["skill_upgrades"]:
+            for item in item_groups["Skill Upgrades"]:
                 removed_items.append(item)
 
         if options.glades_done:
@@ -369,7 +373,7 @@ class WotWWorld(World):
         # Add rules depending on the logic difficulty.
         if difficulty == LogicDifficulty.option_moki:
             # Extra rule for a location that is inaccessible in the lowest difficulty.
-            add_rule(world.get_entrance("WestPools.Teleporter_to_WestPools.BurrowOre", player),
+            add_rule(world.get_entrance("WestPools.Teleporter -> WestPools.BurrowOre", player),
                      lambda state: state.has_all(("Burrow", "Clean Water", "Water Dash"), player), "or")
         if difficulty >= LogicDifficulty.option_gorlek:
             set_gorlek_rules(world, player, options)
@@ -433,7 +437,7 @@ class WotWWorld(World):
         def try_connect(region_in: Region, region_out: Region, connection: str | None = None, rule=None) -> None:
             """Create the region connection if it doesn't already exist."""
             if connection is None:
-                connection = f"{region_in.name}_to_{region_out.name}"
+                connection = f"{region_in.name} -> {region_out.name}"
             if not world.regions.entrance_cache[player].get(connection):
                 region_in.connect(region_out, connection, rule)
 
@@ -449,24 +453,24 @@ class WotWWorld(World):
             try_connect(menu, world.get_region("UpperWastes.LeverDoor", player))
 
         if "Everything" in options.no_combat or "Bosses" in options.no_combat:
-            for entrance in ("HeaderStates_to_SkipKwolok",
-                             "HeaderStates_to_SkipMora1",
-                             "HeaderStates_to_SkipMora2"):
+            for entrance in ("HeaderStates -> SkipKwolok",
+                             "HeaderStates -> SkipMora1",
+                             "HeaderStates -> SkipMora2"):
                 set_rule(world.get_entrance(entrance, player), lambda s: True)
         else:  # Connect these events when the seed is completed, to make them reachable.
-            set_rule(world.get_entrance("HeaderStates_to_SkipKwolok", player),
+            set_rule(world.get_entrance("HeaderStates -> SkipKwolok", player),
                      lambda s: s.has("Victory", player))
-            set_rule(world.get_entrance("HeaderStates_to_SkipMora1", player),
+            set_rule(world.get_entrance("HeaderStates -> SkipMora1", player),
                      lambda s: s.has("Victory", player))
-            set_rule(world.get_entrance("HeaderStates_to_SkipMora2", player),
+            set_rule(world.get_entrance("HeaderStates -> SkipMora2", player),
                      lambda s: s.has("Victory", player))
         if "Everything" in options.no_combat or "Shrines" in options.no_combat:
             for entrance in (
-                        "DenShrine_to_HowlsDen.CombatShrineCompleted",
-                        "MarshShrine_to_MarshPastOpher.CombatShrineCompleted",
-                        "GladesShrine_to_WestGlades.CombatShrineCompleted",
-                        "WoodsShrine_to_WoodsMain.CombatShrineCompleted",
-                        "DepthsShrine_to_LowerDepths.CombatShrineCompleted"):
+                        "DenShrine -> HowlsDen.CombatShrineCompleted",
+                        "MarshShrine -> MarshPastOpher.CombatShrineCompleted",
+                        "GladesShrine -> WestGlades.CombatShrineCompleted",
+                        "WoodsShrine -> WoodsMain.CombatShrineCompleted",
+                        "DepthsShrine -> LowerDepths.CombatShrineCompleted"):
                 set_rule(world.get_entrance(entrance, player), lambda s: True)
 
         if options.better_wellspring:
@@ -547,7 +551,7 @@ class WotWWorld(World):
     def connect_entrances(self) -> None:
         if self.options.door_rando:
             for entry, target in doors_vanilla:
-                disconnect_entrance_for_randomization(self.world.get_entrance(f"{entry} -> {target}"))
+                disconnect_entrance_for_randomization(self.world.get_entrance(f"{entry} -> {target}"))  # TODO fix
             randomize_entrances(self.world, True, {0: [0]})
 
 

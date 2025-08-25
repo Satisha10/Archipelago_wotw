@@ -67,7 +67,7 @@ enemy_data: dict[str, tuple[int, list[str]]] = {  # For each enemy: HP and comba
     "SneezeSlug": (32, ["Combat.Dangerous"]),
     "ShieldSlug": (24, []),
     "Lizard": (24, []),
-    "Combat.Bat": (32, ["Combat.Bat", "Combat.Aerial", "Combat.Ranged"]),
+    "Bat": (32, ["Combat.Bat", "Combat.Aerial", "Combat.Ranged"]),
     "Hornbug": (40, ["Combat.Dangerous", "Combat.Shielded"]),
     "Skeeto": (20, ["Combat.Aerial"]),
     "SmallSkeeto": (8, ["Combat.Aerial"]),
@@ -88,6 +88,28 @@ enemy_data: dict[str, tuple[int, list[str]]] = {  # For each enemy: HP and comba
     "Spiderling": (12, []),
 }
 
+area_data = {"MidnightBurrows": (25, False),  # For each area, minimum health and whether regenerate is needed
+             "EastHollow": (20, False),
+             "WestHollow": (20, False),
+             "WestGlades": (20, False),
+             "OuterWellspring": (25, False),
+             "InnerWellspring": (25, False),
+             "WoodsEntry": (40, True),
+             "WoodsMain": (40, True),
+             "LowerReach": (40, True),
+             "UpperReach": (40, True),
+             "UpperDepths": (40, True),
+             "LowerDepths": (40, True),
+             "PoolsApproach": (25, True),
+             "EastPools": (40, True),
+             "UpperPools": (40, True),
+             "WestPools": (40, True),
+             "LowerWastes": (50, True),
+             "UpperWastes": (50, True),
+             "WindtornRuins": (50, True),
+             "WeepingRidge": (60, True),
+             "WillowsEnd": (60, True),
+             }
 
 def get_max(state: "CollectionState", player: int) -> tuple[int, float]:
     """Return the current max health and energy."""
@@ -136,29 +158,6 @@ def can_enter_area(area: str, state: "CollectionState", player: int, options: "W
 
     if difficulty == 3:  # Unsafe difficulty: no restriction
         return True
-
-    area_data = {"MidnightBurrows": (25, False),  # For each area, minimum health and whether regenerate is needed
-                 "EastHollow": (20, False),
-                 "WestHollow": (20, False),
-                 "WestGlades": (20, False),
-                 "OuterWellspring": (25, False),
-                 "InnerWellspring": (25, False),
-                 "WoodsEntry": (40, True),
-                 "WoodsMain": (40, True),
-                 "LowerReach": (40, True),
-                 "UpperReach": (40, True),
-                 "UpperDepths": (40, True),
-                 "LowerDepths": (40, True),
-                 "PoolsApproach": (25, True),
-                 "EastPools": (40, True),
-                 "UpperPools": (40, True),
-                 "WestPools": (40, True),
-                 "LowerWastes": (50, True),
-                 "UpperWastes": (50, True),
-                 "WindtornRuins": (50, True),
-                 "WeepingRidge": (60, True),
-                 "WillowsEnd": (60, True),
-                 }
 
     if difficulty != 0:  # Kii and Gorlek: only check for regenerate
         if area_data[area][1]:  # Kii, Gorlek
