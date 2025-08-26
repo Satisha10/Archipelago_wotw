@@ -33,7 +33,8 @@ from .DoorData import doors_map, doors_vanilla
 
 from worlds.AutoWorld import World, WebWorld
 from worlds.generic.Rules import add_rule, set_rule
-from BaseClasses import Region, Location, Item, Tutorial, ItemClassification, LocationProgressType, CollectionState
+from BaseClasses import (Region, Location, Item, Tutorial, ItemClassification, LocationProgressType, CollectionState,
+                         EntranceType)
 
 
 class WotWWeb(WebWorld):
@@ -551,8 +552,10 @@ class WotWWorld(World):
     def connect_entrances(self) -> None:
         if self.options.door_rando:
             for entry, target in doors_vanilla:
-                disconnect_entrance_for_randomization(self.world.get_entrance(f"{entry} -> {target}"))  # TODO fix
-            randomize_entrances(self.world, True, {0: [0]})
+                entrance = self.multiworld.get_entrance(f"{entry} -> {target}", self.player)
+                entrance.randomization_type = EntranceType.TWO_WAY
+                disconnect_entrance_for_randomization(entrance)
+            randomize_entrances(self, True, {0: [0]})
 
 
     def fill_slot_data(self) -> dict[str, Any]:
