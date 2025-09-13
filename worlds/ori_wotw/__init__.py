@@ -550,16 +550,21 @@ class WotWWorld(World):
 
 
     def connect_entrances(self) -> None:
+        world = self.multiworld
+        player = self.player
         if self.options.door_rando:
-            for entry, target in doors_vanilla:
-                entrance = self.multiworld.get_entrance(f"{entry} -> {target}", self.player)
-                entrance.randomization_type = EntranceType.TWO_WAY
-                disconnect_entrance_for_randomization(entrance)
+            for door in doors_map:
+                door_region: Region = world.get_region(door, player)
+                door_region.create_exit(door)
+                door_region.create_er_target(door)
             randomize_entrances(self, True, {0: [0]})
+        else:
+            for entry, target in doors_vanilla:
+                world.get_region(entry, player).connect(world.get_region(target, player))
 
 
     def fill_slot_data(self) -> dict[str, Any]:
-        # TODO Relics
+        # TODO Relics + ER
         world = self.multiworld
         player = self.player
         options = self.options
