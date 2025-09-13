@@ -130,7 +130,7 @@ def get_refill(state: "CollectionState", player: int) -> tuple[int, int]:
 def get_enemy_cost(enemy: str, state: "CollectionState", player: int, options: "WotWOptions") -> float:
     """Return the energy cost to defeat the enemy (or IMPOSSIBLE_COST if the tags are not fulfilled)."""
     data = enemy_data[enemy]
-    if not state.has_all(data[1], player):
+    if not state.has_all(data[1], player):  # Check the tags
         return IMPOSSIBLE_COST
 
     if state.has_any(("Sword", "Hammer"), player):

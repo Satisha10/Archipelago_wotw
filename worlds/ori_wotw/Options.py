@@ -75,7 +75,7 @@ class Goal(OptionSet):
     display_name = "Goal"
     rich_text_doc = True
     valid_keys_casefold = True
-    valid_keys = ["trees", "wisps", "quests", "relics" "random"]
+    valid_keys = ["trees", "wisps", "quests", "relics", "random"]
     default = frozenset(["trees"])
 
 

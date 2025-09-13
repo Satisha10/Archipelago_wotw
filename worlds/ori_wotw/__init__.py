@@ -11,7 +11,7 @@
 from typing import Any
 from collections import Counter
 
-from entrance_rando import randomize_entrances, disconnect_entrance_for_randomization
+from entrance_rando import randomize_entrances
 from .Rules import (set_moki_rules, set_gorlek_rules, set_gorlek_glitched_rules, set_kii_rules,
                     set_kii_glitched_rules, set_unsafe_rules, set_unsafe_glitched_rules)
 from .AdditionalRules import combat_rules, glitch_rules, unreachable_rules
@@ -33,8 +33,7 @@ from .DoorData import doors_map, doors_vanilla
 
 from worlds.AutoWorld import World, WebWorld
 from worlds.generic.Rules import add_rule, set_rule
-from BaseClasses import (Region, Location, Item, Tutorial, ItemClassification, LocationProgressType, CollectionState,
-                         EntranceType)
+from BaseClasses import Region, Location, Item, Tutorial, ItemClassification, LocationProgressType, CollectionState
 
 
 class WotWWeb(WebWorld):
@@ -84,7 +83,7 @@ class WotWWorld(World):
                                     "LowerReach.ForestsMemory",
                                     "UpperDepths.ForestsEyes",
                                     "WestPools.ForestsStrength",
-                                    "WindtornRuins.Seir"):
+                                    "WindtornRuins.Seir",):
             state.wotw_max_resources[self.player] = get_max(state, self.player)
             state.wotw_refill_amount[self.player] = get_refill(state, self.player)
         # Update combat data
@@ -96,7 +95,14 @@ class WotWWorld(World):
                                       "Sentry",
                                       "Spear",
                                       "Blaze",
-                                      "Flash"):
+                                      "Flash",
+                                      "Combat.Ranged",
+                                      "Combat.Aerial",
+                                      "Combat.Dangerous",
+                                      "Combat.Shielded",
+                                      "Combat.Bat",
+                                      "Combat.Sand",
+                                      "BreakCrystal",):
             for enemy in state.wotw_enemies[self.player].keys():
                 state.wotw_enemies[self.player][enemy] = get_enemy_cost(enemy, state, self.player, self.options)
         return change
@@ -109,7 +115,7 @@ class WotWWorld(World):
                                     "LowerReach.ForestsMemory",
                                     "UpperDepths.ForestsEyes",
                                     "WestPools.ForestsStrength",
-                                    "WindtornRuins.Seir"):
+                                    "WindtornRuins.Seir",):
             state.wotw_max_resources[self.player] = get_max(state, self.player)
             state.wotw_refill_amount[self.player] = get_refill(state, self.player)
         # Update combat data
@@ -121,7 +127,15 @@ class WotWWorld(World):
                                       "Sentry",
                                       "Spear",
                                       "Blaze",
-                                      "Flash"):
+                                      "Flash",
+                                      "Combat.Ranged",
+                                      "Combat.Aerial",
+                                      "Combat.Dangerous",
+                                      "Combat.Shielded",
+                                      "Combat.Bat",
+                                      "Combat.Sand",
+                                      "BreakCrystal",
+                                      ):
             for enemy in state.wotw_enemies[self.player].keys():
                 state.wotw_enemies[self.player][enemy] = get_enemy_cost(enemy, state, self.player, self.options)
         return change
@@ -317,17 +331,12 @@ class WotWWorld(World):
             for _ in range(count):
                 pool.append(self.create_item(item))
 
-        extras = len(world.get_unfilled_locations(player=self.player)) - len(pool)
-        for _ in range(extras):
-            pool.append(self.create_item(self.get_filler_item_name()))
-
-        world.itempool += pool
-
         if options.difficulty == LogicDifficulty.option_moki:
             # Exclude a location that is inaccessible in the lowest difficulty.
             skipped_loc = world.get_location("WestPools.BurrowOre", player)
             skipped_loc.progress_type = LocationProgressType.EXCLUDED
 
+        # TODO Add relics to Items.py, and add for each area ? (or do that client side)
         if "relics" in options.goal:  # Put the relics at random places in the areas
             remaining_areas: list[str] = [
                 "Marsh",
@@ -348,9 +357,16 @@ class WotWWorld(World):
                 self.relic_areas.append(area)
 
                 relic_location: str = self.random.choice(location_regions[area])
-                while relic_location in self.excluded_locations:  # Reroll if the location is excluded
+                while relic_location in self.empty_locations:  # Reroll if the location is excluded
                     relic_location = self.random.choice(location_regions[area])
                 self.get_location(relic_location).place_locked_item(self.create_item("Relic"))
+
+        # Add filler items to have the same number of items and locations
+        extras = len(world.get_unfilled_locations(player=self.player)) - len(pool)
+        for _ in range(extras):
+            pool.append(self.create_item(self.get_filler_item_name()))
+
+        world.itempool += pool
 
     def create_event_item(self, event: str) -> "WotWItem":
         return WotWItem(event, ItemClassification.progression, None, self.player)
@@ -393,8 +409,7 @@ class WotWWorld(World):
         victory_conn = world.get_region("WillowsEnd.Upper", player).connect(world.get_region("Victory", player))
         set_rule(victory_conn, lambda s: s.has_any(("Sword", "Hammer"), player)
                          and s.has_all(("Double Jump", "Dash", "Bash", "Grapple", "Glide", "Burrow", "Launch"), player))
-
-        if "trees" in options.goal:
+        if "trees" in options.goal:  # TODO add indirect conditions
             add_rule(victory_conn, lambda s: all([s.can_reach_region(tree, player)
                           for tree in ["MarshSpawn.RegenTree",
                                        "MarshSpawn.DamageTree",

@@ -130,5 +130,6 @@ item_table = {  # The tuple contains the amount, the classification, the ID
     "Shard Slot": (5, IC.useful, 3363019522572288),
     "Health Fragment": (24, IC.progression_skip_balancing, 3363019522637824),
     "Energy Fragment": (24, IC.progression_skip_balancing, 3363019522703360),
+    "Relic": (0, IC.progression_skip_balancing, 0),
     "Nothing": (0, IC.filler, 3363019522310144)
     }
