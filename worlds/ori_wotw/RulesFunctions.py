@@ -304,7 +304,7 @@ def compute_wall(data: tuple[str, int],
                  state: "CollectionState",
                  player: int,
                  options: "WotWOptions") -> float:
-    """Return the energy cost for breaking a wall"""
+    """Return the energy cost for breaking a wall (or killing a boss)."""
     break_type, damage = data
     if state.has_any(("Sword", "Hammer"), player) and break_type in ("BreakWall", "Boss"):
         return 0

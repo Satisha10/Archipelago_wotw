@@ -219,22 +219,18 @@ class WotWWorld(World):
             parent_region = world.get_region(parent, player)
             connected_region = world.get_region(connected, player)
             entrance = parent_region.create_exit(entrance_name)
-            entrance.access_rule = lambda state: False
+            entrance.access_rule = lambda state: False  # The rules are mostly set with add_rule, so start with False.
             entrance.connect(connected_region)
 
-        region = Region("Victory", player, world)  # Victory event
-        ev = WotWLocation(player, "Victory", None, region)
-        ev.place_locked_item(WotWItem("Victory", ItemClassification.progression, None, player))
-        world.regions.append(region)
-        region.locations.append(ev)
+        self.create_event("Victory", show_spoiler=True)
 
         world.completion_condition[player] = lambda state: state.has("Victory", player)
 
-    def create_event(self, event: str) -> None:
+    def create_event(self, event: str, show_spoiler=False) -> None:
         """Create an event, place the item and attach it to an event region (all with the same name)."""
         event_region = Region(event, self.player, self.multiworld)
         event_location = WotWLocation(self.player, event, None, event_region)
-        event_location.show_in_spoiler = False
+        event_location.show_in_spoiler = show_spoiler
         event_location.place_locked_item(self.create_event_item(event))
         self.multiworld.regions.append(event_region)
         event_region.locations.append(event_location)
