@@ -154,7 +154,7 @@ def can_enter_area(area: str, state: "CollectionState", player: int, options: "W
     difficulty = options.difficulty.value
 
     if area in ("MarshSpawn", "HowlsDen", "MarshPastOpher", "GladesTown"):  # No restriction in these areas
-        return state.wotw_max_resources[player][0] > 30
+        return True
 
     if difficulty == 3:  # Unsafe difficulty: no restriction
         return True
@@ -270,7 +270,7 @@ def has_enough_resources(requirements_all: list[tuple[str, any]],
             return True
     if requirements_any:  # There is at least one requirement from `any`, and no requirement can be fulfilled: invalid
         return False
-    return False  # `All` requirements parsed, and not out of energy: path is valid
+    return True  # `All` requirements parsed, and not out of energy: path is valid
 
 
 def compute_dboost(damage: int,
