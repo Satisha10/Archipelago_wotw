@@ -7,10 +7,6 @@ Generated with `extract_data.py` by running `extract_events()`.
 
 
 event_table = [
-    "WaveDash",
-    "HammerJump",
-    "SwordJump",
-    "GlideHammerJump",
     "Combat.Ranged",
     "Combat.Aerial",
     "Combat.Dangerous",

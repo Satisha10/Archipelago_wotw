@@ -14,7 +14,7 @@ from collections import Counter
 from entrance_rando import randomize_entrances
 from .Rules import (set_moki_rules, set_gorlek_rules, set_gorlek_glitched_rules, set_kii_rules,
                     set_kii_glitched_rules, set_unsafe_rules, set_unsafe_glitched_rules)
-from .AdditionalRules import combat_rules, glitch_rules, unreachable_rules
+from .AdditionalRules import combat_rules, unreachable_rules
 from .Items import item_table
 from .Items_Icons import get_item_iconpath
 from .Locations import loc_table
@@ -28,7 +28,7 @@ from .Options import WotWOptions, option_groups, LogicDifficulty, Quests
 from .SpawnItems import spawn_items, spawn_names
 from .Presets import options_presets
 from .ItemGroups import item_groups
-from .RulesFunctions import get_max, get_refill, get_enemy_cost
+from .RulesFunctions import get_max, get_refill, get_enemy_cost, IMPOSSIBLE_COST
 from .DoorData import doors_map, doors_vanilla
 
 from worlds.AutoWorld import World, WebWorld
@@ -53,7 +53,8 @@ class WotWWeb(WebWorld):
 
 class WotWWorld(World):
     """Ori and the Will of the Wisps is a 2D Metroidvania;
-    The sequel to Ori and the blind forest, a platform game emphasizing exploration, collecting items and upgrades, and backtracking to previously inaccessible areas.
+    The sequel to Ori and the blind forest, a platform game emphasizing exploration, collecting items and upgrades, and
+    backtracking to previously inaccessible areas.
     The player controls the titular Ori, a white guardian spirit.
     """
     game = "Ori and the Will of the Wisps"
@@ -102,9 +103,11 @@ class WotWWorld(World):
                                       "Combat.Shielded",
                                       "Combat.Bat",
                                       "Combat.Sand",
-                                      "BreakCrystal",):
+                                      ):
             for enemy in state.wotw_enemies[self.player].keys():
-                state.wotw_enemies[self.player][enemy] = get_enemy_cost(enemy, state, self.player, self.options)
+                if state.wotw_enemies[self.player][enemy] == 0:
+                    # No need to recheck from collect when the cost is already 0
+                    state.wotw_enemies[self.player][enemy] = get_enemy_cost(enemy, state, self.player, self.options)
         return change
 
     def remove(self, state: CollectionState, item: Item) -> bool:
@@ -134,10 +137,11 @@ class WotWWorld(World):
                                       "Combat.Shielded",
                                       "Combat.Bat",
                                       "Combat.Sand",
-                                      "BreakCrystal",
                                       ):
             for enemy in state.wotw_enemies[self.player].keys():
-                state.wotw_enemies[self.player][enemy] = get_enemy_cost(enemy, state, self.player, self.options)
+                if state.wotw_enemies[self.player][enemy] == IMPOSSIBLE_COST:
+                    # No need to recheck from remove when it is already impossible
+                    state.wotw_enemies[self.player][enemy] = get_enemy_cost(enemy, state, self.player, self.options)
         return change
 
     def generate_early(self) -> None:
@@ -152,7 +156,7 @@ class WotWWorld(World):
             possible_goals.remove("random")
             selected_goal: list = []
             if not possible_goals:  # Only random selected, choose among all goals
-                possible_goals = ["trees", "wisps", "quests"]
+                possible_goals = ["trees", "wisps", "quests", "relics"]
             # Select a goal at random among the selected ones
             selected_goal.append(self.multiworld.random.choice(possible_goals))
             options.goal.value = set(selected_goal)
@@ -202,10 +206,10 @@ class WotWWorld(World):
             event_name = quest_name + ".quest"
             event_region = Region(event_name, player, world)  # Region that holds the event item
             world.regions.append(event_region)
-            event = WotWLocation(player, event_name, None, event_region)
-            event.show_in_spoiler = False
-            event.place_locked_item(self.create_event_item(quest_name))
-            event_region.locations.append(event)
+            event_loc = WotWLocation(player, event_name, None, event_region)
+            event_loc.show_in_spoiler = False
+            event_loc.place_locked_item(self.create_event_item(quest_name))
+            event_region.locations.append(event_loc)
             base_region = world.get_region(quest_name, player)  # Region that holds the location
             base_region.connect(event_region)  # Connect the event region to the base region
 
@@ -380,7 +384,6 @@ class WotWWorld(World):
         # Add the basic rules.
         set_moki_rules(world, player, options)
         combat_rules(world, player, options)
-        glitch_rules(world, player, options)
         unreachable_rules(world, player, options)
 
         # Add rules depending on the logic difficulty.
@@ -402,7 +405,7 @@ class WotWWorld(World):
                 set_unsafe_glitched_rules(world, player, options)
 
         # Add victory condition
-        victory_conn = world.get_region("WillowsEnd.Upper", player).connect(world.get_region("Victory", player))
+        victory_conn = world.get_region("WillowsEnd.ShriekArena", player).connect(world.get_region("Victory", player))
         set_rule(victory_conn, lambda s: s.has_any(("Sword", "Hammer"), player)
                          and s.has_all(("Double Jump", "Dash", "Bash", "Grapple", "Glide", "Burrow", "Launch"), player))
         if "trees" in options.goal:  # TODO add indirect conditions
@@ -444,7 +447,7 @@ class WotWWorld(World):
             add_rule(victory_conn, lambda s: s.has_all((quests for quests in quest_list), player))
 
         if "relics" in options.goal:
-            add_rule(victory_conn, lambda s: s.count("Relics", player) >= options.relic_count.value)
+            add_rule(victory_conn, lambda s: s.count("Relic", player) >= options.relic_count.value)
 
         def try_connect(region_in: Region, region_out: Region, connection: str | None = None, rule=None) -> None:
             """Create the region connection if it doesn't already exist."""

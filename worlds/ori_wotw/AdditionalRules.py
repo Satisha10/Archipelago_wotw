@@ -73,21 +73,6 @@ def combat_rules(world, player: int, options: WotWOptions):
                      rule=lambda s: s.has_any(("Sword", "Hammer", "Bow", "Shuriken", "Grenade", "Spear"), player))
 
 
-def glitch_rules(world, player: int, options: WotWOptions):
-    """Defines rules for some glitches."""
-    menu = world.get_region("Menu", player)
-    if options.glitches:
-        menu.connect(world.get_region("WaveDash", player), rule=lambda s: s.has_all(("Dash", "Regenerate"), player))
-        menu.connect(world.get_region("HammerJump", player), rule=lambda s: s.has_all(("Double Jump", "Hammer"), player))
-        menu.connect(world.get_region("SwordJump", player), rule=lambda s: s.has_all(("Double Jump", "Sword"), player))
-        menu.connect(world.get_region("GlideHammerJump", player), rule=lambda s: s.has_all(("Glide", "Hammer"), player))
-    else:  # Connect these events when the seed is completed, to make them reachable.
-        menu.connect(world.get_region("WaveDash", player), rule=lambda s: s.has("Victory", player))
-        menu.connect(world.get_region("HammerJump", player), rule=lambda s: s.has("Victory", player))
-        menu.connect(world.get_region("SwordJump", player), rule=lambda s: s.has("Victory", player))
-        menu.connect(world.get_region("GlideHammerJump", player), rule=lambda s: s.has("Victory", player))
-
-
 def unreachable_rules(world, player: int, options: WotWOptions):
     """Rules to handle unreachable events."""
     diff = options.difficulty
