@@ -194,9 +194,9 @@ class WotWWorld(World):
 
         spawn_name = spawn_names[options.spawn]
         spawn_region = world.get_region(spawn_name, player)  # Links menu with spawn point
-        menu_region.connect(spawn_region)
+        menu_region.connect(spawn_region, rule=lambda state: True)
 
-        menu_region.connect(world.get_region("HeaderStates", player))
+        menu_region.connect(world.get_region("HeaderStates", player), rule=lambda state: True)
 
         for loc_name in loc_table.keys():  # Create regions on locations
             region = Region(loc_name, player, world)
@@ -211,7 +211,7 @@ class WotWWorld(World):
             event_loc.place_locked_item(self.create_event_item(quest_name))
             event_region.locations.append(event_loc)
             base_region = world.get_region(quest_name, player)  # Region that holds the location
-            base_region.connect(event_region)  # Connect the event region to the base region
+            base_region.connect(event_region, rule=lambda state: True)  # Connect the event region to the base region
 
         for event in event_table:  # Various events
             self.create_event(event)
@@ -453,14 +453,16 @@ class WotWWorld(World):
             """Create the region connection if it doesn't already exist."""
             if connection is None:
                 connection = f"{region_in.name} -> {region_out.name}"
+            if rule is None:
+                rule = lambda state: True
             if not world.regions.entrance_cache[player].get(connection):
                 region_in.connect(region_out, connection, rule)
 
         # Rules for specific options
         if options.qol:
             try_connect(menu, world.get_region("GladesTown.TuleySpawned", player))
-            world.get_region("WoodsEntry.LastTreeBranch", player).connect(
-                world.get_region("WoodsEntry.TreeSeed", player))
+            try_connect(world.get_region("WoodsEntry.LastTreeBranch", player),
+                        world.get_region("WoodsEntry.TreeSeed", player))
         if options.better_spawn:
             try_connect(menu, world.get_region("MarshSpawn.HowlBurnt", player))
             try_connect(menu, world.get_region("HowlsDen.BoneBarrier", player))
