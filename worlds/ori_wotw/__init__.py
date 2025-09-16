@@ -177,40 +177,40 @@ class WotWWorld(World):
             self.empty_locations += ["GladesTown.FamilyReunionKey"]  # TODO remove when fixed
 
     def create_regions(self) -> None:
-        world = self.multiworld
+        mworld = self.multiworld
         player = self.player
         options = self.options
 
         for region_name in region_table:
-            region = Region(region_name, player, world)
-            world.regions.append(region)
+            region = Region(region_name, player, mworld)
+            mworld.regions.append(region)
 
         for region_name in doors_map.keys():
-            region = Region(region_name, player, world)
-            world.regions.append(region)
+            region = Region(region_name, player, mworld)
+            mworld.regions.append(region)
 
-        menu_region = Region("Menu", player, world)
-        world.regions.append(menu_region)
+        menu_region = Region("Menu", player, mworld)
+        mworld.regions.append(menu_region)
 
         spawn_name = spawn_names[options.spawn]
-        spawn_region = world.get_region(spawn_name, player)  # Links menu with spawn point
+        spawn_region = self.get_region(spawn_name)  # Links menu with spawn point
         menu_region.connect(spawn_region, rule=lambda state: True)
 
-        menu_region.connect(world.get_region("HeaderStates", player), rule=lambda state: True)
+        menu_region.connect(self.get_region("HeaderStates"), rule=lambda state: True)
 
         for loc_name in loc_table.keys():  # Create regions on locations
-            region = Region(loc_name, player, world)
-            world.regions.append(region)
+            region = Region(loc_name, player, mworld)
+            mworld.regions.append(region)
             region.locations.append(WotWLocation(player, loc_name, self.location_name_to_id[loc_name], region))
         for quest_name in quest_table:  # Quests are locations that have to be tracked like events
             event_name = quest_name + ".quest"
-            event_region = Region(event_name, player, world)  # Region that holds the event item
-            world.regions.append(event_region)
+            event_region = Region(event_name, player, mworld)  # Region that holds the event item
+            mworld.regions.append(event_region)
             event_loc = WotWLocation(player, event_name, None, event_region)
             event_loc.show_in_spoiler = False
             event_loc.place_locked_item(self.create_event_item(quest_name))
             event_region.locations.append(event_loc)
-            base_region = world.get_region(quest_name, player)  # Region that holds the location
+            base_region = self.get_region(quest_name)  # Region that holds the location
             base_region.connect(event_region, rule=lambda state: True)  # Connect the event region to the base region
 
         for event in event_table:  # Various events
@@ -220,15 +220,15 @@ class WotWWorld(World):
 
         for entrance_name in entrance_table:  # Create and connect the entrances
             (parent, connected) = entrance_name.split(" -> ")
-            parent_region = world.get_region(parent, player)
-            connected_region = world.get_region(connected, player)
+            parent_region = self.get_region(parent)
+            connected_region = self.get_region(connected)
             entrance = parent_region.create_exit(entrance_name)
             entrance.access_rule = lambda state: False  # The rules are mostly set with add_rule, so start with False.
             entrance.connect(connected_region)
 
         self.create_event("Victory", show_spoiler=True)
 
-        world.completion_condition[player] = lambda state: state.has("Victory", player)
+        mworld.completion_condition[player] = lambda state: state.has("Victory", player)
 
     def create_event(self, event: str, show_spoiler=False) -> None:
         """Create an event, place the item and attach it to an event region (all with the same name)."""
@@ -243,16 +243,15 @@ class WotWWorld(World):
         return WotWItem(name, item_table[name][1], item_table[name][2], player=self.player)
 
     def create_items(self) -> None:
-        world = self.multiworld
-        player = self.player
+        mworld = self.multiworld
         options = self.options
 
         skipped_items: list[str] = []  # Remove one instance of the item
         removed_items: list[str] = []  # Remove all instances of the item
 
         # TODO Check if random must be taken from mw or world
-        for item in spawn_items(world, options.spawn.value, options.difficulty.value):  # Staring items
-            world.push_precollected(self.create_item(item))
+        for item in spawn_items(mworld, options.spawn.value, options.difficulty.value):  # Staring items
+            mworld.push_precollected(self.create_item(item))
             skipped_items.append(item)
 
         for item, count in options.start_inventory.value.items():
@@ -260,7 +259,7 @@ class WotWWorld(World):
                 skipped_items.append(item)
 
         if options.sword:
-            world.push_precollected(self.create_item("Sword"))
+            mworld.push_precollected(self.create_item("Sword"))
             removed_items.append("Sword")
 
         if not options.tp:
@@ -305,16 +304,16 @@ class WotWWorld(World):
                           "TwillenShop.Energy": "Energy (Shard)",
                           "TwillenShop.Finesse": "Finesse"}
             for location, item in shop_items.items():
-                loc = world.get_location(location, player)
+                loc = self.get_location(location)
                 loc.place_locked_item(self.create_item(item))
                 removed_items.append(item)
 
         if options.launch_on_seir:
-            world.get_location("WindtornRuins.Seir", player).place_locked_item(self.create_item("Launch"))
+            self.get_location("WindtornRuins.Seir").place_locked_item(self.create_item("Launch"))
             removed_items.append("Launch")
 
         for location in self.empty_locations:  # TODO temporary workaround
-            loc = world.get_location(location, player)
+            loc = self.get_location(location)
             loc.place_locked_item(self.create_item("Nothing"))
 
         counter = Counter(skipped_items)
@@ -333,7 +332,7 @@ class WotWWorld(World):
 
         if options.difficulty == LogicDifficulty.option_moki:
             # Exclude a location that is inaccessible in the lowest difficulty.
-            skipped_loc = world.get_location("WestPools.BurrowOre", player)
+            skipped_loc = self.get_location("WestPools.BurrowOre")
             skipped_loc.progress_type = LocationProgressType.EXCLUDED
 
         # TODO Add relics to Items.py, and add for each area ? (or do that client side)
@@ -362,11 +361,11 @@ class WotWWorld(World):
                 self.get_location(relic_location).place_locked_item(self.create_item("Relic"))
 
         # Add filler items to have the same number of items and locations
-        extras = len(world.get_unfilled_locations(player=self.player)) - len(pool)
+        extras = len(mworld.get_unfilled_locations(player=self.player)) - len(pool)
         for _ in range(extras):
             pool.append(self.create_item(self.get_filler_item_name()))
 
-        world.itempool += pool
+        mworld.itempool += pool
 
     def create_event_item(self, event: str) -> "WotWItem":
         return WotWItem(event, ItemClassification.progression, None, self.player)
@@ -378,7 +377,7 @@ class WotWWorld(World):
         world = self.multiworld
         player = self.player
         options = self.options
-        menu = world.get_region("Menu", player)
+        menu = self.get_region("Menu")
         difficulty = options.difficulty
 
         # Add the basic rules.
@@ -389,7 +388,7 @@ class WotWWorld(World):
         # Add rules depending on the logic difficulty.
         if difficulty == LogicDifficulty.option_moki:
             # Extra rule for a location that is inaccessible in the lowest difficulty.
-            add_rule(world.get_entrance("WestPools.Teleporter -> WestPools.BurrowOre", player),
+            add_rule(self.get_entrance("WestPools.Teleporter -> WestPools.BurrowOre"),
                      lambda state: state.has_all(("Burrow", "Clean Water", "Water Dash"), player), "or")
         if difficulty >= LogicDifficulty.option_gorlek:
             set_gorlek_rules(world, player, options)
@@ -405,7 +404,7 @@ class WotWWorld(World):
                 set_unsafe_glitched_rules(world, player, options)
 
         # Add victory condition
-        victory_conn = world.get_region("WillowsEnd.ShriekArena", player).connect(world.get_region("Victory", player))
+        victory_conn = self.get_region("WillowsEnd.ShriekArena").connect(self.get_region("Victory"))
         set_rule(victory_conn, lambda s: s.has_any(("Sword", "Hammer"), player)
                          and s.has_all(("Double Jump", "Dash", "Bash", "Grapple", "Glide", "Burrow", "Launch"), player))
         if "trees" in options.goal:  # TODO add indirect conditions
@@ -455,31 +454,33 @@ class WotWWorld(World):
                 connection = f"{region_in.name} -> {region_out.name}"
             if rule is None:
                 rule = lambda state: True
-            if not world.regions.entrance_cache[player].get(connection):
+            if not self.multiworld.regions.entrance_cache[player].get(connection):
                 region_in.connect(region_out, connection, rule)
+            else:
+                print(f"Duplicate: {connection}")
 
         # Rules for specific options
         if options.qol:
-            try_connect(menu, world.get_region("GladesTown.TuleySpawned", player))
-            try_connect(world.get_region("WoodsEntry.LastTreeBranch", player),
-                        world.get_region("WoodsEntry.TreeSeed", player))
+            try_connect(menu, self.get_region("GladesTown.TuleySpawned"))
+            try_connect(self.get_region("WoodsEntry.LastTreeBranch"),
+                        self.get_region("WoodsEntry.TreeSeed"))
         if options.better_spawn:
-            try_connect(menu, world.get_region("MarshSpawn.HowlBurnt", player))
-            try_connect(menu, world.get_region("HowlsDen.BoneBarrier", player))
-            try_connect(menu, world.get_region("EastPools.EntryLever", player))
-            try_connect(menu, world.get_region("UpperWastes.LeverDoor", player))
+            try_connect(menu, self.get_region("MarshSpawn.HowlBurnt"))
+            try_connect(menu, self.get_region("HowlsDen.BoneBarrier"))
+            try_connect(menu, self.get_region("EastPools.EntryLever"))
+            try_connect(menu, self.get_region("UpperWastes.LeverDoor"))
 
         if "Everything" in options.no_combat or "Bosses" in options.no_combat:
             for entrance in ("HeaderStates -> SkipKwolok",
                              "HeaderStates -> SkipMora1",
                              "HeaderStates -> SkipMora2"):
-                set_rule(world.get_entrance(entrance, player), lambda s: True)
+                set_rule(self.get_entrance(entrance), lambda s: True)
         else:  # Connect these events when the seed is completed, to make them reachable.
-            set_rule(world.get_entrance("HeaderStates -> SkipKwolok", player),
+            set_rule(self.get_entrance("HeaderStates -> SkipKwolok"),
                      lambda s: s.has("Victory", player))
-            set_rule(world.get_entrance("HeaderStates -> SkipMora1", player),
+            set_rule(self.get_entrance("HeaderStates -> SkipMora1"),
                      lambda s: s.has("Victory", player))
-            set_rule(world.get_entrance("HeaderStates -> SkipMora2", player),
+            set_rule(self.get_entrance("HeaderStates -> SkipMora2"),
                      lambda s: s.has("Victory", player))
         if "Everything" in options.no_combat or "Shrines" in options.no_combat:
             for entrance in (
@@ -488,10 +489,10 @@ class WotWWorld(World):
                         "GladesShrine -> WestGlades.CombatShrineCompleted",
                         "WoodsShrine -> WoodsMain.CombatShrineCompleted",
                         "DepthsShrine -> LowerDepths.CombatShrineCompleted"):
-                set_rule(world.get_entrance(entrance, player), lambda s: True)
+                set_rule(self.get_entrance(entrance), lambda s: True)
 
         if options.better_wellspring:
-            try_connect(menu, world.get_region("InnerWellspring.TopDoorOpen", player))
+            try_connect(menu, self.get_region("InnerWellspring.TopDoorOpen"))
         if options.no_ks:
             for event in ("MarshSpawn.KeystoneDoor",
                           "HowlsDen.KeystoneDoor",
@@ -505,7 +506,7 @@ class WotWWorld(World):
                           "UpperPools.KeystoneRoomBubbleFree",
                           "UpperPools.KeystoneDoor",
                           "UpperWastes.KeystoneDoor"):
-                try_connect(menu, world.get_region(event, player))
+                try_connect(menu, self.get_region(event))
         if options.open_mode:
             for event in ("HowlsDen.BoneBarrier",
                           "MarshSpawn.ToOpherBarrier",
@@ -533,14 +534,14 @@ class WotWWorld(World):
                           "EastPools.CentralRoomPurpleWall",
                           "UpperPools.UpperWaterDrained",
                           "UpperPools.ButtonDoorAboveTree",):
-                try_connect(menu, world.get_region(event, player))
+                try_connect(menu, self.get_region(event))
         if options.no_rain:
             for event in ("HowlsDen.UpperLoopExitBarrier",
                           "HowlsDen.UpperLoopEntranceBarrier",
                           "HowlsDen.RainLifted",):
-                try_connect(menu, world.get_region(event, player))
+                try_connect(menu, self.get_region(event))
             if not options.better_spawn:
-                try_connect(menu, world.get_region("MarshSpawn.HowlBurnt", player))
+                try_connect(menu, self.get_region("MarshSpawn.HowlBurnt"))
         if options.glades_done:
             for quest in ("InnerWellspring.BlueMoonSeed",
                           "EastPools.GrassSeed",
@@ -550,39 +551,35 @@ class WotWWorld(World):
                           "WoodsEntry.TreeSeed",
                           "GladesTown.RebuildTheGlades",
                           "GladesTown.RegrowTheGlades",):
-                try_connect(menu, world.get_region(quest + ".quest", player))
+                try_connect(menu, self.get_region(quest + ".quest"))
             for event in ("GladesTown.BuildHuts",
                           "GladesTown.RoofsOverHeads",
                           "GladesTown.OnwardsAndUpwards",
                           "GladesTown.ClearThorns",
                           "GladesTown.CaveEntrance"):
-                try_connect(menu, world.get_region(event, player))
+                try_connect(menu, self.get_region(event))
 
         if options.quests != Quests.option_none:  # Open locations locked behind NPCs
             for quest in ("WoodsEntry.LastTreeBranch",
                           "WoodsEntry.DollQI",
                           "GladesTown.FamilyReunionKey"):
-                try_connect(menu, world.get_region(quest + ".quest", player))
+                try_connect(menu, self.get_region(quest + ".quest"))
 
 
     def connect_entrances(self) -> None:
-        world = self.multiworld
-        player = self.player
         if self.options.door_rando:
             for door in doors_map:
-                door_region: Region = world.get_region(door, player)
+                door_region: Region = self.get_region(door)
                 door_region.create_exit(door)
                 door_region.create_er_target(door)
             randomize_entrances(self, True, {0: [0]})
         else:
             for entry, target in doors_vanilla:
-                world.get_region(entry, player).connect(world.get_region(target, player))
+                self.get_region(entry).connect(self.get_region(target))
 
 
     def fill_slot_data(self) -> dict[str, Any]:
         # TODO Relics + ER
-        world = self.multiworld
-        player = self.player
         options = self.options
         logic_difficulty: list[str] = ["Moki", "Gorlek", "Kii", "Unsafe"]
         coord: list[list[int | str]] = [
@@ -630,7 +627,7 @@ class WotWWorld(World):
                             "LupoShop.ShardMapIcon"
                             ]
         for loc in shops:
-            item = world.get_location(loc, player).item
+            item = self.get_location(loc).item
             icon_path = get_item_iconpath(self, item, bool(options.shop_keywords))
             icons_paths.update({loc: icon_path})
 
