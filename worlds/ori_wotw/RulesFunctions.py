@@ -9,7 +9,6 @@ if TYPE_CHECKING:
     from .Options import WotWOptions
 
 
-# TODO Move combat events (dangerous, ranged...) here, and define a function that update the dict of enemy: defeatable
 class WotWLogic(LogicMixin):
     """
     Class to store the max health/energy, refill values and defeatable enemies.
@@ -19,6 +18,9 @@ class WotWLogic(LogicMixin):
     wotw_max_resources: dict[int, tuple[int, float]]  # Max health and energy
     wotw_refill_amount: dict[int, tuple[int, float]]  # Refill amounts for health and energy
     wotw_enemies: dict[int, dict[str, float]]  # Energy cost to defeat each enemy
+    wotw_resource_stale: dict[int, bool]  # Indicate if resource and refills have to be recomputed
+    wotw_enemies_stale_collect: dict[int, bool]  # Indicate if combat has to be recomputed from collect
+    wotw_enemies_stale_remove: dict[int, bool]  # Indicate if combat has to be recomputed from remove
 
     def init_mixin(self, mw: "MultiWorld") -> None:
         self.wotw_max_resources = {player: (30, 3.0) for player in mw.get_game_players("Ori and the Will of the Wisps")}
@@ -26,6 +28,17 @@ class WotWLogic(LogicMixin):
         self.wotw_enemies = {}
         for player in mw.get_game_players("Ori and the Will of the Wisps"):
             self.wotw_enemies.setdefault(player, {enemy: IMPOSSIBLE_COST for enemy in enemy_data.keys()})
+        self.wotw_resource_stale = {player: False for player in mw.get_game_players("Ori and the Will of the Wisps")}
+        self.wotw_enemies_stale_collect = {player: False for player in mw.get_game_players("Ori and the Will of the Wisps")}
+        self.wotw_enemies_stale_remove = {player: False for player in mw.get_game_players("Ori and the Will of the Wisps")}
+
+    def copy_mixin(self, new_state: "CollectionState") -> "CollectionState":
+        new_state.wotw_max_resources = self.wotw_max_resources.copy()
+        new_state.wotw_refill_amount = self.wotw_refill_amount.copy()
+        new_state.wotw_enemies = {player: enemies.copy() for player, enemies in self.wotw_enemies.items()}
+        new_state.wotw_enemies_stale_collect = self.wotw_enemies_stale_collect.copy()
+        new_state.wotw_enemies_stale_remove = self.wotw_enemies_stale_remove.copy()
+        return new_state
 
 # Rules for some glitches
 def can_wavedash(state: "CollectionState", player: int) -> bool:
