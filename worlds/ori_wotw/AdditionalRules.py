@@ -14,7 +14,7 @@ def combat_rules(world: "WotWWorld"):
 
     if diff == 0:  # Moki
         menu.connect(world.get_region("DepthsLight"),
-                     rule=lambda state: state.has_any(("UpperDepths.ForestsEyes", "Flash")))
+                     rule=lambda state: state.has_any(("UpperDepths.ForestsEyes", "Flash"), player))
         menu.connect(world.get_region("Combat.Ranged"),
                      rule=lambda state: state.has_any(("Bow", "Spear"), player))
         menu.connect(world.get_region("Combat.Aerial"),
