@@ -355,8 +355,7 @@ class WotWWorld(World):
 
         # Add filler items to have the same number of items and locations
         extras = len(mworld.get_unfilled_locations(player=self.player)) - len(pool)
-        for _ in range(extras):
-            pool.append(self.create_item(self.get_filler_item_name()))
+        pool += [self.create_item(self.get_filler_item_name()) for _ in range(extras)]
 
         mworld.itempool += pool
 
@@ -365,6 +364,11 @@ class WotWWorld(World):
 
     def get_filler_item_name(self) -> str:
         return self.random.choice(["50 Spirit Light", "100 Spirit Light"])
+
+    def connect_to_menu(self, region: str) -> None:
+        """Connect the region to menu (if the connection does not already exist)."""
+        if not self.multiworld.regions.entrance_cache[self.player].get(f"Menu -> {region}"):
+            self.get_region("Menu").connect(self.get_region(region))
 
     def set_rules(self) -> None:
         world = self.multiworld
@@ -443,13 +447,13 @@ class WotWWorld(World):
 
         # Rules for specific options
         if options.qol:
-            menu.connect(self.get_region("GladesTown.TuleySpawned"))
+            self.connect_to_menu("GladesTown.TuleySpawned")
             self.get_region("WoodsEntry.LastTreeBranch").connect(self.get_region("WoodsEntry.TreeSeed"))
         if options.better_spawn:
-            menu.connect(self.get_region("MarshSpawn.HowlBurnt"))
-            menu.connect(self.get_region("HowlsDen.BoneBarrier"))
-            menu.connect(self.get_region("EastPools.EntryLever"))
-            menu.connect(self.get_region("UpperWastes.LeverDoor"))
+            self.connect_to_menu("MarshSpawn.HowlBurnt")
+            self.connect_to_menu("HowlsDen.BoneBarrier")
+            self.connect_to_menu("EastPools.EntryLever")
+            self.connect_to_menu("UpperWastes.LeverDoor")
 
         if "Everything" in options.no_combat or "Bosses" in options.no_combat:
             for entrance in ("HeaderStates -> SkipKwolok",
@@ -473,7 +477,7 @@ class WotWWorld(World):
                 set_rule(self.get_entrance(entrance), lambda s: True)
 
         if options.better_wellspring:
-            menu.connect(self.get_region("InnerWellspring.TopDoorOpen"))
+            self.connect_to_menu("InnerWellspring.TopDoorOpen")
         if options.no_ks:
             for event in ("MarshSpawn.KeystoneDoor",
                           "HowlsDen.KeystoneDoor",
@@ -487,7 +491,7 @@ class WotWWorld(World):
                           "UpperPools.KeystoneRoomBubbleFree",
                           "UpperPools.KeystoneDoor",
                           "UpperWastes.KeystoneDoor"):
-                menu.connect(self.get_region(event))
+                self.connect_to_menu(event)
         if options.open_mode:
             for event in ("HowlsDen.BoneBarrier",
                           "MarshSpawn.ToOpherBarrier",
@@ -515,14 +519,14 @@ class WotWWorld(World):
                           "EastPools.CentralRoomPurpleWall",
                           "UpperPools.UpperWaterDrained",
                           "UpperPools.ButtonDoorAboveTree",):
-                menu.connect(self.get_region(event))
+                self.connect_to_menu(event)
         if options.no_rain:
             for event in ("HowlsDen.UpperLoopExitBarrier",
                           "HowlsDen.UpperLoopEntranceBarrier",
                           "HowlsDen.RainLifted",):
-                menu.connect(self.get_region(event))
+                self.connect_to_menu(event)
             if not options.better_spawn:
-                menu.connect(self.get_region("MarshSpawn.HowlBurnt"))
+                self.connect_to_menu("MarshSpawn.HowlBurnt")
         if options.glades_done:
             for quest in ("InnerWellspring.BlueMoonSeed",
                           "EastPools.GrassSeed",
@@ -532,19 +536,19 @@ class WotWWorld(World):
                           "WoodsEntry.TreeSeed",
                           "GladesTown.RebuildTheGlades",
                           "GladesTown.RegrowTheGlades",):
-                menu.connect(self.get_region(quest + ".quest"))
+                self.connect_to_menu(quest + ".quest")  # Connect the location of the quest event, so ".quest" is added.
             for event in ("GladesTown.BuildHuts",
                           "GladesTown.RoofsOverHeads",
                           "GladesTown.OnwardsAndUpwards",
                           "GladesTown.ClearThorns",
                           "GladesTown.CaveEntrance"):
-                menu.connect(self.get_region(event))
+                self.connect_to_menu(event)
 
         if options.quests != Quests.option_none:  # Open locations locked behind NPCs
             for quest in ("WoodsEntry.LastTreeBranch",
                           "WoodsEntry.DollQI",
                           "GladesTown.FamilyReunionKey"):
-                menu.connect(self.get_region(quest + ".quest"))
+                self.connect_to_menu(quest + ".quest")
 
 
     def connect_entrances(self) -> None:
