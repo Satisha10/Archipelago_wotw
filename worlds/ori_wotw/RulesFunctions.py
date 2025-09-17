@@ -231,7 +231,7 @@ def has_enough_resources(requirements_all: list[tuple[str, any]],
 
     :param requirements_all: List of requirements, the tuples contain a key (str) and a data object.
                              All of them must be satisfied from the same initial health/energy pool.
-    :param requirements_any: List of requirements, only one must be valid.T
+    :param requirements_any: List of requirements, at least one must be valid.
                              The health/energy pool is reset each time, from what remains after the all part.
     :param region: The starting region of the path.
     :param state: The CollectionState object.
@@ -239,6 +239,11 @@ def has_enough_resources(requirements_all: list[tuple[str, any]],
     :param options: The WotWOptions object.
     :param is_moki: Whether the path is moki (lowest difficulty).
     """
+    if state.wotw_resource_stale[player]:  # Update the resources and refill values if needed
+        state.wotw_max_resources[player] = get_max(state, player)
+        state.wotw_refill_amount[player] = get_refill(state, player)
+        state.wotw_resource_stale[player] = False
+
     max_h, max_e = state.wotw_max_resources[player]
     health, energy = 10, 1.0  # Minimal values, can lead to softlocks in specific situations
     refill_e, refill_h, refill_type = refills[region]
@@ -268,7 +273,7 @@ def has_enough_resources(requirements_all: list[tuple[str, any]],
             # in requirements_any, and health does not affect the other types of requirements.
         elif req_type == "combat":
             cast(str, data)
-            energy_cost = compute_combat(data, state, player)
+            energy_cost = compute_combat(data, state, player, options)
         elif req_type == "wall":
             cast(tuple[str, int], data)
             energy_cost = compute_wall(data, state, player, options)
@@ -308,8 +313,19 @@ def compute_dboost(damage: int,
 
 def compute_combat(enemy: str,
                    state: "CollectionState",
-                   player: int) -> float:
+                   player: int,
+                   options: "WotWOptions") -> float:
     """Return the energy cost to defeat the enemy."""
+    # Update the energy cost for combat if required
+    if state.wotw_enemies_stale_collect[player] or state.wotw_enemies_stale_remove[player]:
+        for enemy in state.wotw_enemies[player].keys():
+            if (state.wotw_enemies[player][enemy] == 0 and not state.wotw_enemies_stale_remove[player]
+              or state.wotw_enemies[player][enemy] == IMPOSSIBLE_COST and not state.wotw_enemies_stale_collect[player]):
+                # No need to recheck the cost when it is 0 and no release happened
+                # And same when the enemy cannot be defeated and no collect happened
+                state.wotw_enemies[player][enemy] = get_enemy_cost(enemy, state, player, options)
+        state.wotw_enemies_stale_collect[player] = False
+        state.wotw_enemies_stale_remove[player] = False
     return state.wotw_enemies[player][enemy]
 
 

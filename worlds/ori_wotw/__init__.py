@@ -77,7 +77,7 @@ class WotWWorld(World):
 
     def collect(self, state: CollectionState, item: Item) -> bool:
         change = super().collect(state, item)
-        # Update the max health and the refills
+        # Ask to update the max resources and the refills on the next call to `RulesFunctions.has_enough_resources`
         if change and item.name in ("Health Fragment",
                                     "Energy Fragment",
                                     "EastHollow.ForestsVoice",
@@ -85,10 +85,9 @@ class WotWWorld(World):
                                     "UpperDepths.ForestsEyes",
                                     "WestPools.ForestsStrength",
                                     "WindtornRuins.Seir",):
-            state.wotw_max_resources[self.player] = get_max(state, self.player)
-            state.wotw_refill_amount[self.player] = get_refill(state, self.player)
-        # Update combat data
-        elif change and item.name in ("Hammer",  # TODO Also when tags change
+            state.wotw_resource_stale[self.player] = True
+        # Ask to update the combat data on the next call to `RulesFunctions.compute_combat`
+        elif change and item.name in ("Hammer",
                                       "Sword",
                                       "Grenade",
                                       "Bow",
@@ -104,14 +103,12 @@ class WotWWorld(World):
                                       "Combat.Bat",
                                       "Combat.Sand",
                                       ):
-            for enemy in state.wotw_enemies[self.player].keys():
-                if state.wotw_enemies[self.player][enemy] == 0:
-                    # No need to recheck from collect when the cost is already 0
-                    state.wotw_enemies[self.player][enemy] = get_enemy_cost(enemy, state, self.player, self.options)
+            state.wotw_enemies_stale_collect[self.player] = True
         return change
 
     def remove(self, state: CollectionState, item: Item) -> bool:
-        change = super().remove(state, item)
+        change = super().collect(state, item)
+        # Ask to update the max resources and the refills on the next call to `RulesFunctions.has_enough_resources`
         if change and item.name in ("Health Fragment",
                                     "Energy Fragment",
                                     "EastHollow.ForestsVoice",
@@ -119,10 +116,9 @@ class WotWWorld(World):
                                     "UpperDepths.ForestsEyes",
                                     "WestPools.ForestsStrength",
                                     "WindtornRuins.Seir",):
-            state.wotw_max_resources[self.player] = get_max(state, self.player)
-            state.wotw_refill_amount[self.player] = get_refill(state, self.player)
-        # Update combat data
-        elif change and item.name in ("Hammer",  # TODO Also when tags change
+            state.wotw_resource_stale[self.player] = True
+        # Ask to update the combat data on the next call to `RulesFunctions.compute_combat`
+        elif change and item.name in ("Hammer",
                                       "Sword",
                                       "Grenade",
                                       "Bow",
@@ -138,10 +134,7 @@ class WotWWorld(World):
                                       "Combat.Bat",
                                       "Combat.Sand",
                                       ):
-            for enemy in state.wotw_enemies[self.player].keys():
-                if state.wotw_enemies[self.player][enemy] == IMPOSSIBLE_COST:
-                    # No need to recheck from remove when it is already impossible
-                    state.wotw_enemies[self.player][enemy] = get_enemy_cost(enemy, state, self.player, self.options)
+            state.wotw_enemies_stale_remove[self.player] = True
         return change
 
     def generate_early(self) -> None:
