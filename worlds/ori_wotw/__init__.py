@@ -107,7 +107,7 @@ class WotWWorld(World):
         return change
 
     def remove(self, state: CollectionState, item: Item) -> bool:
-        change = super().collect(state, item)
+        change = super().remove(state, item)
         # Ask to update the max resources and the refills on the next call to `RulesFunctions.has_enough_resources`
         if change and item.name in ("Health Fragment",
                                     "Energy Fragment",
@@ -371,7 +371,6 @@ class WotWWorld(World):
             self.get_region("Menu").connect(self.get_region(region))
 
     def set_rules(self) -> None:
-        world = self.multiworld
         player = self.player
         options = self.options
         difficulty = options.difficulty
