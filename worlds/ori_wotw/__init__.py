@@ -374,13 +374,12 @@ class WotWWorld(World):
         world = self.multiworld
         player = self.player
         options = self.options
-        menu = self.get_region("Menu")
         difficulty = options.difficulty
 
         # Add the basic rules.
-        set_moki_rules(world, player, options)
-        combat_rules(world, player, options)
-        unreachable_rules(world, player, options)
+        set_moki_rules(self)
+        combat_rules(self)
+        unreachable_rules(self)
 
         # Add rules depending on the logic difficulty.
         if difficulty == LogicDifficulty.option_moki:
@@ -388,17 +387,17 @@ class WotWWorld(World):
             add_rule(self.get_entrance("WestPools.Teleporter -> WestPools.BurrowOre"),
                      lambda state: state.has_all(("Burrow", "Clean Water", "Water Dash"), player), "or")
         if difficulty >= LogicDifficulty.option_gorlek:
-            set_gorlek_rules(world, player, options)
+            set_gorlek_rules(self)
             if options.glitches:
-                set_gorlek_glitched_rules(world, player, options)
+                set_gorlek_glitched_rules(self)
         if difficulty >= LogicDifficulty.option_kii:
-            set_kii_rules(world, player, options)
+            set_kii_rules(self)
             if options.glitches:
-                set_kii_glitched_rules(world, player, options)
+                set_kii_glitched_rules(self)
         if difficulty == LogicDifficulty.option_unsafe:
-            set_unsafe_rules(world, player, options)
+            set_unsafe_rules(self)
             if options.glitches:
-                set_unsafe_glitched_rules(world, player, options)
+                set_unsafe_glitched_rules(self)
 
         # Add victory condition
         victory_conn = self.get_region("WillowsEnd.ShriekArena").connect(self.get_region("Victory"))
