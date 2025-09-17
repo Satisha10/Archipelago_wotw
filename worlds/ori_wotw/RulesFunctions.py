@@ -319,8 +319,10 @@ def compute_combat(enemy: str,
     # Update the energy cost for combat if required
     if state.wotw_enemies_stale_collect[player] or state.wotw_enemies_stale_remove[player]:
         for enemy in state.wotw_enemies[player].keys():
-            if (state.wotw_enemies[player][enemy] == 0 and not state.wotw_enemies_stale_remove[player]
-              or state.wotw_enemies[player][enemy] == IMPOSSIBLE_COST and not state.wotw_enemies_stale_collect[player]):
+            if ((state.wotw_enemies[player][enemy] != 0
+                     or state.wotw_enemies_stale_remove[player])
+                and (state.wotw_enemies[player][enemy] != IMPOSSIBLE_COST
+                     or state.wotw_enemies_stale_collect[player])):
                 # No need to recheck the cost when it is 0 and no release happened
                 # And same when the enemy cannot be defeated and no collect happened
                 state.wotw_enemies[player][enemy] = get_enemy_cost(enemy, state, player, options)
