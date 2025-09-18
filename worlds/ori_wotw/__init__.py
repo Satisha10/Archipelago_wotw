@@ -479,6 +479,7 @@ class WotWWorld(World):
         if options.no_ks:
             for event in ("MarshSpawn.KeystoneDoor",
                           "HowlsDen.KeystoneDoor",
+                          "MarshPastOpher.EyestoneDoor",
                           "MidnightBurrows.KeystoneDoor",
                           "WoodsEntry.KeystoneDoor",
                           "WoodsMain.KeystoneDoor",
@@ -486,7 +487,6 @@ class WotWWorld(World):
                           "UpperReach.KeystoneDoor",
                           "UpperDepths.EntryKeystoneDoor",
                           "UpperDepths.CentralKeystoneDoor",
-                          "UpperPools.KeystoneRoomBubbleFree",
                           "UpperPools.KeystoneDoor",
                           "UpperWastes.KeystoneDoor"):
                 self.connect_to_menu(event)
