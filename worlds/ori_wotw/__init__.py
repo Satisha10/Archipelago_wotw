@@ -402,25 +402,25 @@ class WotWWorld(World):
         victory_conn = self.get_region("WillowsEnd.ShriekArena").connect(self.get_region("Victory"))
         set_rule(victory_conn, lambda s: s.has_any(("Sword", "Hammer"), player)
                          and s.has_all(("Double Jump", "Dash", "Bash", "Grapple", "Glide", "Burrow", "Launch"), player))
-        if "trees" in options.goal:  # TODO add indirect conditions
-            add_rule(victory_conn, lambda s: all([s.can_reach_region(tree, player)
-                          for tree in ["MarshSpawn.RegenTree",
-                                       "MarshSpawn.DamageTree",
-                                       "HowlsDen.SwordTree",
-                                       "HowlsDen.DoubleJumpTree",
-                                       "MarshPastOpher.BowTree",
-                                       "WestHollow.DashTree",
-                                       "EastHollow.BashTree",
-                                       "GladesTown.DamageTree",
-                                       "InnerWellspring.GrappleTree",
-                                       "UpperPools.SwimDashTree",
-                                       "UpperReach.LightBurstTree",
-                                       "LowerDepths.FlashTree",
-                                       "LowerWastes.BurrowTree",
-                                       "WeepingRidge.LaunchTree",
-                                       ]
-                          ])
-                     )
+        if "trees" in options.goal:
+            for tree in ["MarshSpawn.RegenTree",
+                         "MarshSpawn.DamageTree",
+                         "HowlsDen.SwordTree",
+                         "HowlsDen.DoubleJumpTree",
+                         "MarshPastOpher.BowTree",
+                         "WestHollow.DashTree",
+                         "EastHollow.BashTree",
+                         "GladesTown.DamageTree",
+                         "InnerWellspring.GrappleTree",
+                         "UpperPools.SwimDashTree",
+                         "UpperReach.LightBurstTree",
+                         "LowerDepths.FlashTree",
+                         "LowerWastes.BurrowTree",
+                         "WeepingRidge.LaunchTree",
+                         ]:
+                add_rule(victory_conn, lambda s: s.can_reach_region(tree, player))
+                # The entrance checks for regions, so we need to add an indirect condition
+                self.multiworld.register_indirect_condition(self.get_region(tree), victory_conn)
 
         if "wisps" in options.goal:
             add_rule(victory_conn, lambda s: s.has_all(("EastHollow.ForestsVoice", "LowerReach.ForestsMemory",
