@@ -2,7 +2,7 @@
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from BaseClasses import MultiWorld
+    from . import WotWWorld
 
 spawn_names = ["MarshSpawn.Main",
                "MidnightBurrows.Teleporter",
@@ -22,14 +22,14 @@ spawn_names = ["MarshSpawn.Main",
                "WindtornRuins.RuinsTP",
                "WillowsEnd.InnerTP",]
 
-def spawn_items(world: "MultiWorld", spawn: int, difficulty: int) -> list[str]:
+def spawn_items(world: "WotWWorld", spawn: int, difficulty: int) -> list[str]:
     """
     Returns a set of spawn items for the chosen spawn point and difficulty.
 
     The items are stored in a list of dimension 3 for each difficulty ;
     with spawn location, item groups, items along 1st, 2nd, 3rd indexes respectively.
     """
-    rand = world.random
+    rand = world.multiworld.random
     moki: list[list[list[str]]] = [
             [["Inkwater Marsh TP"]],
             [["Midnight Burrows TP", "Bash", "Double Jump"],

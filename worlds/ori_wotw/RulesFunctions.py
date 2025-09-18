@@ -1,9 +1,9 @@
 from math import ceil, floor
 from .Refills import refills
 from worlds.AutoWorld import LogicMixin
-from .Options import LogicDifficulty
+from .Options import LogicDifficulty, StartingLocation
 
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING, cast, Any
 if TYPE_CHECKING:
     from BaseClasses import CollectionState, MultiWorld
     from .Options import WotWOptions
@@ -29,8 +29,12 @@ class WotWLogic(LogicMixin):
         for player in mw.get_game_players("Ori and the Will of the Wisps"):
             self.wotw_enemies.setdefault(player, {enemy: IMPOSSIBLE_COST for enemy in enemy_data.keys()})
         self.wotw_resource_stale = {player: False for player in mw.get_game_players("Ori and the Will of the Wisps")}
-        self.wotw_enemies_stale_collect = {player: False for player in mw.get_game_players("Ori and the Will of the Wisps")}
-        self.wotw_enemies_stale_remove = {player: False for player in mw.get_game_players("Ori and the Will of the Wisps")}
+        self.wotw_enemies_stale_collect = {
+            player: False for player in mw.get_game_players("Ori and the Will of the Wisps")
+        }
+        self.wotw_enemies_stale_remove = {
+            player: False for player in mw.get_game_players("Ori and the Will of the Wisps")
+        }
 
     def copy_mixin(self, new_state: "CollectionState") -> "CollectionState":
         new_state.wotw_max_resources = self.wotw_max_resources.copy()
@@ -193,7 +197,7 @@ def can_buy_shop(state: "CollectionState", player: int) -> bool:
     return state.count("200 Spirit Light", player) >= 6
 
 
-def can_open_door(door_name: str, state: "CollectionState", player: int) -> bool:
+def can_open_door(door_name: str, state: "CollectionState", player: int, spawn: int) -> bool:
     """
     Return if the door can be opened. The keystone (KS) costs are arbitrary.
 
@@ -201,26 +205,43 @@ def can_open_door(door_name: str, state: "CollectionState", player: int) -> bool
     14 KS are mid-game doors that cost 2 KS (these doors are relevant early with random spawn).
     22 KS for mid-game doors at 4 KS.
     34 KS (enough KS to open everything) for doors that can be avoided or only lock a few items (and no trees).
+    Depending on the spawn, some doors are made accessible very early, to avoid a fill error when teleporters are not
+    in the pool (this concern doors that you need to cross to get access to most of the map).
     """
-    keystone_data: dict[str, int] = {
-        "MarshSpawn.KeystoneDoor": 10,
-        "HowlsDen.KeystoneDoor": 10,
-        "MarshPastOpher.EyestoneDoor": 10,
-        "MidnightBurrows.KeystoneDoor": 34,
-        "WoodsEntry.KeystoneDoor": 14,
-        "WoodsMain.KeystoneDoor": 22,
-        "LowerReach.KeystoneDoor": 34,
-        "UpperReach.KeystoneDoor": 22,
-        "UpperDepths.EntryKeystoneDoor": 14,
-        "UpperDepths.CentralKeystoneDoor": 34,
-        "UpperPools.KeystoneDoor": 22,
-        "UpperWastes.KeystoneDoor": 14,
-    }
-    return state.count("Keystone", player) >= keystone_data[door_name]
+    required_ks: int
+    # Early game doors: 10 KS (or less if spawning nearby).
+    if door_name == "MarshSpawn.KeystoneDoor":
+        required_ks = 2 if spawn == StartingLocation.option_marsh else 10
+    elif door_name == "HowlsDen.KeystoneDoor":
+        required_ks = 2 if spawn == StartingLocation.option_howlsden else 10
+    elif door_name == "MarshPastOpher.EyestoneDoor":
+        required_ks = 10
+    # Midgame doors that lock access to some areas: 14 KS (or less if spawning nearby)
+    elif door_name == "WoodsEntry.KeystoneDoor":
+        required_ks = 6 if spawn in (StartingLocation.option_westwoods,
+                                     StartingLocation.option_eastwoods,
+                                     StartingLocation.option_westwastes) else 14
+    elif door_name == "WoodsMain.KeystoneDoor":
+        required_ks = 6 if spawn in (StartingLocation.option_westwoods,
+                                     StartingLocation.option_eastwoods,
+                                     StartingLocation.option_westwastes) else 14
+    elif door_name == "UpperDepths.EntryKeystoneDoor":
+        required_ks = 14 if spawn == StartingLocation.option_depths else 2
+    elif door_name == "UpperWastes.KeystoneDoor":
+        required_ks = 14 if spawn == StartingLocation.option_outerruins else 2
+    # Midgame doors that are less critical, but usually required for completion: 22 KS
+    elif door_name in ("UpperReach.KeystoneDoor", "UpperPools.KeystoneDoor"):
+        required_ks = 22
+    # Misc doors that are rarely used: 34 KS (which is enough to open every door)
+    elif door_name in ("MidnightBurrows.KeystoneDoor", "UpperDepths.CentralKeystoneDoor", "LowerReach.KeystoneDoor"):
+        required_ks = 34
+    else:
+        raise ValueError(f"Unknown keystone door: {door_name}.")
+    return state.count("Keystone", player) >= required_ks
 
 
-def has_enough_resources(requirements_all: list[tuple[str, any]],
-                         requirements_any: list[tuple[str, any]],
+def has_enough_resources(requirements_all: list[tuple[str, Any]],
+                         requirements_any: list[tuple[str, Any]],
                          region: str,
                          state: "CollectionState",
                          player: int,
