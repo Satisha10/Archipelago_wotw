@@ -226,7 +226,8 @@ def can_open_door(door_name: str, state: "CollectionState", player: int, spawn: 
                                      StartingLocation.option_eastwoods,
                                      StartingLocation.option_westwastes) else 14
     elif door_name == "UpperDepths.EntryKeystoneDoor":
-        required_ks = 14 if spawn == StartingLocation.option_depths else 2
+        required_ks = 14 if spawn in (StartingLocation.option_depths,
+                                      StartingLocation.option_innerruins) else 2
     elif door_name == "UpperWastes.KeystoneDoor":
         required_ks = 14 if spawn == StartingLocation.option_outerruins else 2
     # Midgame doors that are less critical, but usually required for completion: 22 KS
