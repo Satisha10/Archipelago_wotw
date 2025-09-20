@@ -1,10 +1,12 @@
 """Function for handling spawn items for random spawn."""
 
+from .Options import StartingLocation
+
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from . import WotWWorld
 
-spawn_names = ["MarshSpawn.Main",
+spawn_names = ["MarshSpawn.Main",  # Name of the region linked to the teleporter
                "MidnightBurrows.Teleporter",
                "HowlsDen.Teleporter",
                "EastHollow.Teleporter",
@@ -53,7 +55,7 @@ def spawn_items(world: "WotWWorld", spawn: int, difficulty: int) -> list[str]:
             [["Mouldwood Depths TP", "Glide", "Regenerate", "Health Fragment", "Health Fragment", "Health Fragment"]],
             [["Central Luma TP", "Clean Water", "Bash", "Regenerate", "Health Fragment", "Health Fragment",
               "Health Fragment"]],
-            [["Luma Boss TP", "Clean Water", "Water Dash", "Water Breath", "Regenerate", "Health Fragment",
+            [["Luma Boss TP", "Clean Water", "Water Dash", "Water Breath", "Bash", "Regenerate", "Health Fragment",
               "Health Fragment", "Health Fragment"]],
             [["Feeding Grounds TP", "Double Jump", "Grapple", "Regenerate", "Health Fragment", "Health Fragment",
               "Health Fragment", "Health Fragment",
@@ -72,7 +74,7 @@ def spawn_items(world: "WotWWorld", spawn: int, difficulty: int) -> list[str]:
               "Health Fragment", "Health Fragment", "Health Fragment", "Health Fragment"],
              ["Inner Ruins TP", "Burrow", "Double Jump", "Glide", "Grapple", "Regenerate", "Health Fragment",
               "Health Fragment", "Health Fragment", "Health Fragment", "Health Fragment"]],
-            [["Willow's End TP", "Launch", "200 Spirit Light", "200 Spirit Light", "Regenerate", "Health Fragment",
+            [["Willow's End TP", "Grapple", "Launch", "Glide", "Regenerate", "Health Fragment",
               "Health Fragment", "Health Fragment", "Health Fragment", "Health Fragment", "Health Fragment",
               "Health Fragment"]],
             ]
@@ -99,11 +101,10 @@ def spawn_items(world: "WotWWorld", spawn: int, difficulty: int) -> list[str]:
               [["Woods Entrance TP", "Regenerate"]],
               [["Woods Exit TP", "Double Jump", "Grapple", "Glide", "Regenerate"],
                ["Woods Exit TP", "Dash", "Grapple", "Glide", "Regenerate"]],
-              [["Baur's Reach TP", "Flap", "Double Jump", "Bash", "Grenade", "Regenerate"],
-               ["Baur's Reach TP", "Flap", "Glide", "Grenade", "200 Spirit Light", "200 Spirit Light", "Regenerate"]],
+              [["Baur's Reach TP", "Flap", "Double Jump", "Bash", "Grenade", "Regenerate"]],
               [["Mouldwood Depths TP", "Glide", "Regenerate"]],
               [["Central Luma TP", "Clean Water", "Bash", "Regenerate"]],
-              [["Luma Boss TP", "Clean Water", "Water Dash", "Regenerate"]],
+              [["Luma Boss TP", "Clean Water", "Water Dash", "Bash", "Regenerate"]],
               [["Feeding Grounds TP", "Double Jump", "Grapple", "Regenerate"],
                ["Feeding Grounds TP", "Double Jump", "Burrow", "Regenerate"],
                ["Feeding Grounds TP", "Double Jump", "Triple Jump", "Regenerate"],
@@ -114,7 +115,7 @@ def spawn_items(world: "WotWWorld", spawn: int, difficulty: int) -> list[str]:
                ["Inner Ruins TP", "Burrow", "Glide", "Sword", "Grapple", "Regenerate"],
                ["Inner Ruins TP", "Burrow", "Double Jump", "Hammer", "Grapple", "Regenerate"],
                ["Inner Ruins TP", "Burrow", "Glide", "Hammer", "Grapple", "Regenerate"]],
-              [["Willow's End TP", "Launch", "200 Spirit Light", "200 Spirit Light", "Regenerate"]],
+              [["Willow's End TP", "Launch", "Grapple", "Glide", "Regenerate"]],
               ]
 
     kii: list[list[list[str]]] = [
@@ -140,7 +141,7 @@ def spawn_items(world: "WotWWorld", spawn: int, difficulty: int) -> list[str]:
             ["Baur's Reach TP", "Flap", "Bash", "Grenade", "Regenerate"]],
            [["Mouldwood Depths TP", "Glide", "Regenerate"]],
            [["Central Luma TP", "Clean Water", "Regenerate"]],
-           [["Luma Boss TP", "Clean Water", "Water Dash", "Regenerate"]],
+           [["Luma Boss TP", "Clean Water", "Water Dash", "Bash", "Regenerate"]],
            [["Feeding Grounds TP", "Hammer", "Grapple", "Regenerate"],
             ["Feeding Grounds TP", "Double Jump", "Sword", "Regenerate"],
             ["Feeding Grounds TP", "Double Jump", "Triple Jump", "Regenerate"],
@@ -151,7 +152,7 @@ def spawn_items(world: "WotWWorld", spawn: int, difficulty: int) -> list[str]:
             ["Inner Ruins TP", "Burrow", "Glide", "Grapple", "Regenerate"],
             ["Inner Ruins TP", "Burrow", "Hammer", "Dash", "Regenerate"],
             ["Inner Ruins TP", "Burrow", "Double Jump", "Grapple", "Regenerate"]],
-           [["Willow's End TP", "Launch", "200 Spirit Light", "200 Spirit Light", "Regenerate"]],
+           [["Willow's End TP", "Launch", "Double Jump", "Regenerate"]],
            ]
 
     unsafe: list[list[list[str]]] = [
@@ -185,7 +186,7 @@ def spawn_items(world: "WotWWorld", spawn: int, difficulty: int) -> list[str]:
                ["Inner Ruins TP", "Burrow", "Glide", "Grapple"],
                ["Inner Ruins TP", "Burrow", "Hammer", "Dash"],
                ["Inner Ruins TP", "Burrow", "Double Jump", "Grapple"]],
-              [["Willow's End TP", "Launch", "200 Spirit Light", "200 Spirit Light"]],
+              [["Willow's End TP", "Launch"]],
               ]
 
     if difficulty == 0:
@@ -198,3 +199,60 @@ def spawn_items(world: "WotWWorld", spawn: int, difficulty: int) -> list[str]:
         sets = unsafe[spawn]
     i = rand.randrange(len(sets))
     return sets[i]
+
+
+def early_items(world: "WotWWorld", spawn: int) -> tuple[list[str], int]:
+    """Return a list of items to put on sphere 1, and the amount of keystones to put on sphere 1."""
+    item_list: list[list[list[str]]] = [
+        [[]],  # Marsh
+        [["Hammer"],  # Burrows
+         ["Sword"]],
+        [[]],  # Howl's Den
+        [[]],  # Hollow
+        [["Grapple"]],  # Glades
+        [["Grapple", "Glide"],  # Wellspring
+         ["Grapple", "Double Jump"],
+         ["Grapple", "Dash"],
+         ["Grapple", "Clean Water"]],
+        [["Clean Water", "Bash"],  # Woods entrance
+         ["Double Jump"],
+         ["Glide"],
+         ["Dash"]],
+        [["Burrow"]],  # Woods exit
+        [[]],  # Reach
+        [["Flash"]],  # Depths
+        [["Water Dash"]],  # Central Luma
+        [["Sword"],  # Luma Boss
+         ["Hammer"]],
+        [["Burrow", "Glide"]],  # Feeding grounds
+        [["Keystone", "Keystone", "Bash"],  # Central wastes
+         ["Keystone", "Keystone", "Double Jump"]],
+        [["Keystone", "Keystone", "Double Jump"]],  # Outer ruins
+        [["Keystone", "Keystone"]],  # Inner ruins
+        [["Bash", "Glide"],  # Willow
+         ["Bash", "Double Jump"],
+         ["Bash", "Dash"]],
+    ]
+
+    early_keystones: dict[int, int] = {
+        StartingLocation.option_marsh: 2,
+        StartingLocation.option_burrows: 0,
+        StartingLocation.option_howlsden: 2,
+        StartingLocation.option_hollow: 0,
+        StartingLocation.option_glades: 0,
+        StartingLocation.option_wellspring: 0,
+        StartingLocation.option_westwoods: 2,
+        StartingLocation.option_eastwoods: 0,
+        StartingLocation.option_reach: 0,
+        StartingLocation.option_depths: 2,
+        StartingLocation.option_eastpools: 0,
+        StartingLocation.option_westpools: 0,
+        StartingLocation.option_westwastes: 0,
+        StartingLocation.option_eastwastes: 2,
+        StartingLocation.option_outerruins: 2,
+        StartingLocation.option_innerruins: 2,
+        StartingLocation.option_willow: 0,
+    }
+
+    i = world.multiworld.random.randrange(len(item_list[spawn]))
+    return item_list[spawn][i], early_keystones[spawn]

@@ -24,8 +24,8 @@ from .Events import event_table
 from .Regions import region_table
 from .Entrances import entrance_table
 from .Refills import refill_events
-from .Options import WotWOptions, option_groups, LogicDifficulty, Quests
-from .SpawnItems import spawn_items, spawn_names
+from .Options import WotWOptions, option_groups, LogicDifficulty, Quests, StartingLocation
+from .SpawnItems import spawn_items, spawn_names, early_items
 from .Presets import options_presets
 from .ItemGroups import item_groups
 from .RulesFunctions import get_max, get_refill, get_enemy_cost, IMPOSSIBLE_COST
@@ -142,6 +142,9 @@ class WotWWorld(World):
         # Options checking
         if options.open_mode:
             options.no_rain.value = True
+        # Escaping from Willow require to complete the elevator fight, so a tp is needed to escape.
+        if options.spawn.value == StartingLocation.option_willow and not options.tp:
+            options.spawn.value = StartingLocation.option_marsh  # No TP in pool: spawn somewhere else.
 
         # Selection of a random goal
         if "random" in options.goal:
@@ -352,6 +355,13 @@ class WotWWorld(World):
                 while relic_location in self.empty_locations:  # Reroll if the location is excluded
                     relic_location = self.random.choice(location_regions[area])
                 self.get_location(relic_location).place_locked_item(self.create_item("Relic"))
+
+        # Add some items to sphere 1
+        items, ks_amount = early_items(self, options.spawn.value)
+        for item in items:
+            self.multiworld.local_early_items[self.player][item] = 1
+        if not options.no_ks and ks_amount > 0:
+            self.multiworld.local_early_items[self.player]["Keystone"] = ks_amount
 
         # Add filler items to have the same number of items and locations
         extras = len(mworld.get_unfilled_locations(player=self.player)) - len(pool)

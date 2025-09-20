@@ -218,18 +218,17 @@ def can_open_door(door_name: str, state: "CollectionState", player: int, spawn: 
         required_ks = 10
     # Midgame doors that lock access to some areas: 14 KS (or less if spawning nearby)
     elif door_name == "WoodsEntry.KeystoneDoor":
-        required_ks = 6 if spawn in (StartingLocation.option_westwoods,
-                                     StartingLocation.option_eastwoods,
-                                     StartingLocation.option_westwastes) else 14
+        required_ks = 2 if spawn == StartingLocation.option_westwoods else 14
     elif door_name == "WoodsMain.KeystoneDoor":
         required_ks = 6 if spawn in (StartingLocation.option_westwoods,
                                      StartingLocation.option_eastwoods,
                                      StartingLocation.option_westwastes) else 14
     elif door_name == "UpperDepths.EntryKeystoneDoor":
-        required_ks = 14 if spawn in (StartingLocation.option_depths,
-                                      StartingLocation.option_innerruins) else 2
+        required_ks = 2 if spawn == StartingLocation.option_depths else 14
     elif door_name == "UpperWastes.KeystoneDoor":
-        required_ks = 14 if spawn == StartingLocation.option_outerruins else 2
+        required_ks = 2 if spawn in (StartingLocation.option_outerruins,
+                                     StartingLocation.option_innerruins,
+                                     StartingLocation.option_eastwastes) else 14
     # Midgame doors that are less critical, but usually required for completion: 22 KS
     elif door_name in ("UpperReach.KeystoneDoor", "UpperPools.KeystoneDoor"):
         required_ks = 22
