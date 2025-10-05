@@ -1,7 +1,7 @@
 """Options for Ori and the Will of the Wisps Randomizer."""
 
 from Options import (Choice, Toggle, DefaultOnToggle, PerGameCommonOptions, OptionGroup, OptionSet, StartInventoryPool,
-                     Range)
+                     Range, DeathLink)
 from dataclasses import dataclass
 
 
@@ -301,3 +301,4 @@ class WotWOptions(PerGameCommonOptions):
     vanilla_shop_upgrades: VanillaShopUpgrades
     launch_on_seir: LaunchOnSeir
     start_inventory_from_pool: StartInventoryPool
+    death_link: DeathLink

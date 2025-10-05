@@ -657,7 +657,8 @@ class WotWWorld(World):
             "open_mode": bool(options.open_mode),
             "glades_done": bool(options.glades_done),
             "shop_icons": icons_paths,
-            "bonus": bool(options.extra_bonus or options.skill_upgrade)
+            "bonus": bool(options.extra_bonus or options.skill_upgrade),
+            "death_link": bool(options.death_link.value),
         }
 
         return slot_data
