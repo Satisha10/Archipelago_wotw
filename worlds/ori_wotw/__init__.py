@@ -74,6 +74,7 @@ class WotWWorld(World):
         super(WotWWorld, self).__init__(multiworld, player)
         self.relic_areas: list[str] = []  # Store which areas contain a relic
         self.empty_locations: list[str] = []  # Excluded locations, for now hold a Nothing item
+        self.er_door_ids: list[tuple[int, int]] = []  # Contain the pairings of door IDs if ER is enabled
 
     def collect(self, state: CollectionState, item: Item) -> bool:
         change = super().collect(state, item)
@@ -570,7 +571,9 @@ class WotWWorld(World):
                 door_region: Region = self.get_region(door)
                 door_region.create_exit(door)
                 door_region.create_er_target(door)
-            randomize_entrances(self, True, {0: [0]})
+            er_results = randomize_entrances(self, True, {0: [0]})
+            for (source_exit, target_entrance) in er_results.pairings:
+                self.er_door_ids.append((doors_map[source_exit], doors_map[target_entrance]))
         else:
             for entry, target in doors_vanilla:
                 self.get_region(entry).connect(self.get_region(target))
@@ -659,6 +662,7 @@ class WotWWorld(World):
             "shop_icons": icons_paths,
             "bonus": bool(options.extra_bonus or options.skill_upgrade),
             "death_link": bool(options.death_link.value),
+            "door_rando": self.er_door_ids
         }
 
         return slot_data
