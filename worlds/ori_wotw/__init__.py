@@ -72,9 +72,10 @@ class WotWWorld(World):
 
     def __init__(self, multiworld, player) -> None:
         super(WotWWorld, self).__init__(multiworld, player)
-        self.relic_areas: list[str] = []  # Store which areas contain a relic
+        self.relic_placements: list[tuple[int, int]] = []  # Store the area ID and location ID of the relics
         self.empty_locations: list[str] = []  # Excluded locations, for now hold a Nothing item
-        self.er_door_ids: list[tuple[int, int]] = []  # Contain the pairings of door IDs if ER is enabled
+        self.er_door_ids: list[int] = []  # Contain the data of door IDs if ER is enabled
+        # The list index corresponds to the exit door ID minus one, and the int in the list is the target door ID
 
     def collect(self, state: CollectionState, item: Item) -> bool:
         change = super().collect(state, item)
@@ -335,30 +336,30 @@ class WotWWorld(World):
             skipped_loc = self.get_location("WestPools.BurrowOre")
             skipped_loc.progress_type = LocationProgressType.EXCLUDED
 
-        # TODO Add relics to Items.py, and add for each area ? (or do that client side)
         if "relics" in options.goal:  # Put the relics at random places in the areas
-            remaining_areas: list[str] = [
-                "Marsh",
-                "Burrows",
-                "Hollow",
-                "Glades",
-                "Wellspring",
-                "Woods",
-                "Reach",
-                "Pools",
-                "Depths",
-                "Wastes",
-                "Willow",
-            ]
+            area_data: dict[str, int] = {  # Map of each area to the area ID used in the client
+                "Marsh": 0,
+                "Hollow": 1,
+                "Glades": 2,
+                "Wellspring": 3,
+                "Pools": 4,
+                "Burrows": 5,
+                "Reach": 6,
+                "Woods": 7,
+                "Depths": 8,
+                "Wastes": 9,
+                "Willow": 11,
+                }
+            remaining_areas: list[str] = list(area_data.keys())
             for _ in range(options.relic_count.value):
                 area: str = self.random.choice(remaining_areas)
                 remaining_areas.remove(area)
-                self.relic_areas.append(area)
 
                 relic_location: str = self.random.choice(location_regions[area])
                 while relic_location in self.empty_locations:  # Reroll if the location is excluded
                     relic_location = self.random.choice(location_regions[area])
                 self.get_location(relic_location).place_locked_item(self.create_item("Relic"))
+                self.relic_placements.append((area_data[area], self.location_name_to_id[relic_location]))
 
         # Add some items to sphere 1
         items, ks_amount = early_items(self, options.spawn.value)
@@ -572,8 +573,9 @@ class WotWWorld(World):
                 door_region.create_exit(door)
                 door_region.create_er_target(door)
             er_results = randomize_entrances(self, True, {0: [0]})
+            self.er_door_ids = [0] * 32
             for (source_exit, target_entrance) in er_results.pairings:
-                self.er_door_ids.append((doors_map[source_exit], doors_map[target_entrance]))
+                self.er_door_ids[doors_map[source_exit] - 1] = doors_map[target_entrance]
         else:
             for entry, target in doors_vanilla:
                 self.get_region(entry).connect(self.get_region(target))
@@ -661,8 +663,11 @@ class WotWWorld(World):
             "glades_done": bool(options.glades_done),
             "shop_icons": icons_paths,
             "bonus": bool(options.extra_bonus or options.skill_upgrade),
+            "door_rando": bool(options.door_rando),
+            "door_data": self.er_door_ids,
+            "relic_locs": self.relic_placements,
             "death_link": bool(options.death_link.value),
-            "door_rando": self.er_door_ids
+            "ap_version": 1,
         }
 
         return slot_data
