@@ -643,6 +643,7 @@ class WotWWorld(World):
             "goal_trees": bool("trees" in options.goal),
             "goal_quests": bool("quests" in options.goal),
             "goal_wisps": bool("wisps" in options.goal),
+            "goal_relics": bool("relics" in options.goal),
             "hard": bool(options.hard_mode.value),
             "qol": bool(options.qol.value),
             "hints": bool(options.hints.value),
