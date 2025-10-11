@@ -1,4 +1,7 @@
 from test.general.test_client_server_interaction import TestClient
+from test.general.test_entrance_rando import (TestEntranceLookup, TestRandomizeEntrances,
+                                              TestDisconnectForRandomization, TestBakeTargetGroupLookup)
+from test.general.test_entrances import TestBase as TestEntrance
 from test.general.test_fill import TestFillRestrictive, TestDistributeItemsRestrictive, TestBalanceMultiworldProgression
 from test.general.test_groups import TestNameGroups
 from test.general.test_helpers import TestHelpers
@@ -15,6 +18,26 @@ from test.general.test_reachability import TestBase as TestReach
 
 
 class WotWTestClient(TestClient):
+    game = "Ori and the Will of the Wisps"
+
+
+class WotWTestEntranceLookup(TestEntranceLookup):
+    game = "Ori and the Will of the Wisps"
+
+
+class WotWTestRandomizeEntrances(TestRandomizeEntrances):
+    game = "Ori and the Will of the Wisps"
+
+
+class WotWTestDisconnect(TestDisconnectForRandomization):
+    game = "Ori and the Will of the Wisps"
+
+
+class WotWTestGroupLookup(TestBakeTargetGroupLookup):
+    game = "Ori and the Will of the Wisps"
+
+
+class WotWTestEntrance(TestEntrance):
     game = "Ori and the Will of the Wisps"
 
 
