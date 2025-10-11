@@ -159,7 +159,7 @@ class WotWWorld(World):
             if not possible_goals:  # Only random selected, choose among all goals
                 possible_goals = ["trees", "wisps", "quests", "relics"]
             # Select a goal at random among the selected ones
-            selected_goal.append(self.multiworld.random.choice(possible_goals))
+            selected_goal.append(self.random.choice(possible_goals))
             options.goal.value = set(selected_goal)
 
 

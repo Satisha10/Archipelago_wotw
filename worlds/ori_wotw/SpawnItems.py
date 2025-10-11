@@ -31,7 +31,6 @@ def spawn_items(world: "WotWWorld", spawn: int, difficulty: int) -> list[str]:
     The items are stored in a list of dimension 3 for each difficulty ;
     with spawn location, item groups, items along 1st, 2nd, 3rd indexes respectively.
     """
-    rand = world.multiworld.random
     moki: list[list[list[str]]] = [
             [["Inkwater Marsh TP"]],
             [["Midnight Burrows TP", "Bash", "Double Jump"],
@@ -197,7 +196,7 @@ def spawn_items(world: "WotWWorld", spawn: int, difficulty: int) -> list[str]:
         sets = kii[spawn]
     else:
         sets = unsafe[spawn]
-    i = rand.randrange(len(sets))
+    i = world.random.randrange(len(sets))
     return sets[i]
 
 
@@ -254,5 +253,5 @@ def early_items(world: "WotWWorld", spawn: int) -> tuple[list[str], int]:
         StartingLocation.option_willow: 0,
     }
 
-    i = world.multiworld.random.randrange(len(item_list[spawn]))
+    i = world.random.randrange(len(item_list[spawn]))
     return item_list[spawn][i], early_keystones[spawn]
