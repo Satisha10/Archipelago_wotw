@@ -57,6 +57,17 @@ def can_swordjump(state: "CollectionState", player: int) -> bool:
 def can_glidehammerjump(state: "CollectionState", player: int) -> bool:
     return state.has_all(("Glide", "Hammer"), player)
 
+def can_glidebashchain(state: "CollectionState", player: int) -> bool:
+    return state.has_all(("Glide", "Bash"), player)
+
+def can_doublejumpbashchain(state: "CollectionState", player: int) -> bool:
+    return state.has_all(("Glide", "Bash"), player)
+
+def can_launchbashchain(state: "CollectionState", player: int) -> bool:
+    return state.has_all(("Launch", "Bash"), player)
+
+def can_pausefloat(state: "CollectionState", player: int) -> bool:
+    return True
 
 IMPOSSIBLE_COST = 1000.0  # Extremely high energy cost, used when a requirement is not met
 # The value is arbitrary value, but it must be higher than 20 (which is the max energy that you can get)
