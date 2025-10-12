@@ -85,6 +85,7 @@ def unreachable_rules(world: "WotWWorld"):
     if diff == 0:
         unreach = ["WestHollow.AboveJumppad -> WestHollow.LowerTongueRetracted",
                    "OuterWellspring.EntranceDoor -> OuterWellspring.FallingWheel",
+                   "UpperWastes.OutsideRuins -> UpperWastes.WormEscapeEnd",
                    "MarshSpawn.PoolsBurrowsSignpost -> E.MarshSpawn.PoolsBurrowsSignpost",
                    "OuterWellspring.EntranceDoor -> H.OuterWellspring.EntranceDoor",
                    "OuterWellspring.EntranceDoor -> E.OuterWellspring.EntranceDoor",
@@ -100,6 +101,7 @@ def unreachable_rules(world: "WotWWorld"):
                    "WillowsEnd.Upper -> E.WillowsEnd.Upper"]
     elif diff == 1:
         unreach = ["OuterWellspring.EntranceDoor -> OuterWellspring.FallingWheel",
+                   "UpperWastes.OutsideRuins -> UpperWastes.WormEscapeEnd",
                    "MarshSpawn.PoolsBurrowsSignpost -> E.MarshSpawn.PoolsBurrowsSignpost",
                    "OuterWellspring.EntranceDoor -> E.OuterWellspring.EntranceDoor",
                    "WoodsMain.TrialStart -> C.WoodsMain.TrialStart",
@@ -110,6 +112,7 @@ def unreachable_rules(world: "WotWWorld"):
                    "UpperDepths.Central -> E.UpperDepths.Central"]
     elif diff == 2:
         unreach = ["OuterWellspring.EntranceDoor -> OuterWellspring.FallingWheel",
+                   "UpperWastes.OutsideRuins -> UpperWastes.WormEscapeEnd",
                    "OuterWellspring.EntranceDoor -> E.OuterWellspring.EntranceDoor",
                    "WoodsMain.TrialStart -> C.WoodsMain.TrialStart",
                    "WoodsMain.AbovePit -> E.WoodsMain.AbovePit",
