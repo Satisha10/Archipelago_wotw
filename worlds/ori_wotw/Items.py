@@ -131,5 +131,5 @@ item_table = {  # The tuple contains the amount, the classification, the ID
     "Health Fragment": (24, IC.progression_skip_balancing, 3363019522637824),
     "Energy Fragment": (24, IC.progression_skip_balancing, 3363019522703360),
     "Nothing": (0, IC.filler, 3363019522310144),
-    "Relic": (0, IC.progression, 3363019523096576)
+    "Relic": (0, IC.progression, 3363019522768896)
     }
