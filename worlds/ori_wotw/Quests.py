@@ -16,6 +16,7 @@ quest_table = [
     "MidnightBurrows.TabletQI",
     "EastHollow.HandToHandMap",
     "EastHollow.ForestsVoice",
+    "EastHollow.WellspringDoneTalk",
     "EastHollow.KwolokAmuletQuest",
     "GladesTown.RebuildTheGlades",
     "GladesTown.HandToHandLantern",

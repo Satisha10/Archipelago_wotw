@@ -79,7 +79,7 @@ loc_table = {
     "WestHollow.LupoMap": 3363012946572801,
     "WestHollow.TrialHC": 3363013768355585,
     "WestHollow.SpiritTrial": 3363013690378498,
-    "WestHollow.BelowLupoEX": 3363013780062209,
+    "WestHollow.FallingSlugEX": 3363013780062209,
     "WestHollow.AboveDashEX": 3363013783531521,
     "WestHollow.DashRightEX": 3363013777434113,
     "WestHollow.CrusherEX": 3363013780570113,
