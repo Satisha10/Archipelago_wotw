@@ -33,7 +33,8 @@ from .DoorData import doors_map, doors_vanilla
 
 from worlds.AutoWorld import World, WebWorld
 from worlds.generic.Rules import add_rule, set_rule
-from BaseClasses import Region, Location, Item, Tutorial, ItemClassification, LocationProgressType, CollectionState
+from BaseClasses import (Region, Location, Item, Tutorial, ItemClassification, LocationProgressType, CollectionState,
+                         EntranceType, Entrance)
 
 
 class WotWWeb(WebWorld):
@@ -568,12 +569,25 @@ class WotWWorld(World):
 
     def connect_entrances(self) -> None:
         if self.options.door_rando:
+            er_targets: list[Entrance] = []
+            exits: list[Entrance] = []
             for door in doors_map:
                 door_region: Region = self.get_region(door)
-                door_region.create_exit(door)
-                door_region.create_er_target(door)
-            er_results = randomize_entrances(self, True, {0: [0]})
-            self.er_door_ids = [0] * 32
+                er_target = door_region.create_er_target(door)
+                er_target.randomization_type = EntranceType.TWO_WAY
+                er_targets.append(er_target)
+
+                exit_entrance = door_region.create_exit(door)
+                exit_entrance.randomization_type = EntranceType.TWO_WAY
+                exits.append(exit_entrance)
+
+            er_results = randomize_entrances(self,
+                                             coupled=True,
+                                             target_group_lookup={0: [0]},
+                                             er_targets=er_targets,
+                                             exits=exits)
+
+            self.er_door_ids = [0] * 32  # This contains the ER results for slot_data
             for (source_exit, target_entrance) in er_results.pairings:
                 self.er_door_ids[doors_map[source_exit] - 1] = doors_map[target_entrance]
         else:
@@ -582,7 +596,7 @@ class WotWWorld(World):
 
 
     def fill_slot_data(self) -> dict[str, Any]:
-        # TODO Relics + ER
+        # TODO Death link count
         options = self.options
         logic_difficulty: list[str] = ["Moki", "Gorlek", "Kii", "Unsafe"]
         coord: list[list[int | str]] = [
