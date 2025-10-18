@@ -69,7 +69,7 @@ class WotWWorld(World):
     options_dataclass = WotWOptions
     options: WotWOptions
 
-    required_client_version = (0, 5, 0)
+    required_client_version = (0, 6, 3)
 
     def __init__(self, multiworld, player) -> None:
         super(WotWWorld, self).__init__(multiworld, player)
