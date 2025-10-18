@@ -1,7 +1,7 @@
 """Options for Ori and the Will of the Wisps Randomizer."""
 
 from Options import (Choice, Toggle, DefaultOnToggle, PerGameCommonOptions, OptionGroup, OptionSet, StartInventoryPool,
-                     Range, DeathLink)
+                     Range, NamedRange)
 from dataclasses import dataclass
 
 
@@ -110,6 +110,19 @@ class ShrineTrialHints(DefaultOnToggle):
 class KnowledgeHints(DefaultOnToggle):
     """Display useful hints on randomizer knowledge while playing the seed."""
     display_name = "Knowledge hints"
+
+
+class DeathLink(NamedRange):
+    """Disable/enable death link. Set this to a non-zero integer to specify how many deaths are needed to trigger it."""
+    display_name = "DeathLink amount"
+    range_start = 0
+    range_end = 10
+    special_range_names = {
+        "disable": 0,
+        "enable": 1,
+    }
+    default = 0
+
 
 
 class Teleporters(DefaultOnToggle):
@@ -235,18 +248,20 @@ option_groups = [
         Glitches,
         StartingLocation,
         Goal,
+        RelicCount,
         HardMode,
         RandomizeDoors,
         QualityOfLife,
         ShrineTrialHints,
-        KnowledgeHints
+        KnowledgeHints,
+        DeathLink,
     ]),
     OptionGroup("Item Pool", [
         Teleporters,
         ExtraTeleporters,
         BonusItems,
         ExtraBonusItems,
-        SkillUpgrades
+        SkillUpgrades,
     ]),
     OptionGroup("World Changes", [
         BetterSpawn,
@@ -259,12 +274,12 @@ option_groups = [
         NoKeystonesDoors,
         OpenMode,
         GladesDone,
-        ShopKeywordsIcons
+        ShopKeywordsIcons,
     ]),
     OptionGroup("Item Placements", [
         SpawnSword,
         VanillaShopUpgrades,
-        LaunchOnSeir
+        LaunchOnSeir,
     ])
 ]
 

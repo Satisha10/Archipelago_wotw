@@ -681,7 +681,7 @@ class WotWWorld(World):
             "door_rando": bool(options.door_rando),
             "door_data": self.er_door_ids,
             "relic_locs": self.relic_placements,
-            "death_link": bool(options.death_link.value),
+            "death_link": int(options.death_link.value),
             "ap_version": 1,
         }
 
