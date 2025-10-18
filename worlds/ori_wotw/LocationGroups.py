@@ -4,6 +4,7 @@ loc_sets: dict[str, list[str]] = {
         "MarshSpawn.MokkFangQuest",
         "MarshSpawn.TokkTabletQuest",
         "EastHollow.KwolokAmuletQuest",
+        "EastHollow.WellspringDoneTalk",
         "OuterWellspring.TheLostCompass",
         "WoodsEntry.TreeSeed",
         "EastPools.KwolokAmuletQI",
