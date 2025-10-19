@@ -679,7 +679,7 @@ class WotWWorld(World):
             "shop_icons": icons_paths,
             "bonus": bool(options.extra_bonus or options.skill_upgrade),
             "door_rando": bool(options.door_rando),
-            "door_data": self.er_door_ids,
+            "door_connections": self.er_door_ids,
             "relic_locs": self.relic_placements,
             "death_link": int(options.death_link.value),
             "ap_version": 1,
