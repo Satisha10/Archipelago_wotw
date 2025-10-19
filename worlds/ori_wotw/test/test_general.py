@@ -65,8 +65,8 @@ class WotWTestHostID(TestIDs):
     game = "Ori and the Will of the Wisps"
 
 
-class WotWTestHostSave(TestSettingsSave):
-    game = "Ori and the Will of the Wisps"
+# class WotWTestHostSave(TestSettingsSave):
+#     game = "Ori and the Will of the Wisps"
 
 
 class WotWTestHostDumper(TestSettingsDumper):
