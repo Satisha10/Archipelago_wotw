@@ -1,11 +1,8 @@
 """AP world for Ori and the Will of the Wisps."""
 
-# TODO Relics ? Black market ?
-# TODO fix the in-game location counter
-# TODO rename MultiWorld to mw and use new world API for regions
-# TODO location groups (as a set)
-# TODO Add relics to slot_data and client implementation
+# TODO Black market ?
 # TODO rename spawn locations and add aliases
+# TODO Check that random is taken from world
 
 
 from typing import Any
@@ -65,6 +62,7 @@ class WotWWorld(World):
     location_name_to_id = loc_table
 
     item_name_groups = item_groups
+    location_name_groups = location_regions
 
     options_dataclass = WotWOptions
     options: WotWOptions
@@ -175,8 +173,6 @@ class WotWWorld(World):
             self.empty_locations += loc_sets["HandToHand"].copy()
         if options.quests == Quests.option_none:
             self.empty_locations += loc_sets["Quests"].copy()
-        else:
-            self.empty_locations += ["GladesTown.FamilyReunionKey"]  # TODO remove when fixed
 
     def create_regions(self) -> None:
         mworld = self.multiworld
@@ -596,7 +592,6 @@ class WotWWorld(World):
 
 
     def fill_slot_data(self) -> dict[str, Any]:
-        # TODO Death link count
         options = self.options
         logic_difficulty: list[str] = ["Moki", "Gorlek", "Kii", "Unsafe"]
         coord: list[list[int | str]] = [
