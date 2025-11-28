@@ -547,7 +547,7 @@ class WotWWorld(World):
                           "TuleyShop.LastTree"):
                 self.connect_to_menu(event)
             # This location is unaccessible without Ore, so it is manually collected in this case
-            self.connect_to_menu("GladesTown.RegrowTheGlades")
+            self.connect_to_menu("GladesTown.RebuildTheGlades")
             for event in ("GladesTown.BuildHuts",
                           "GladesTown.RoofsOverHeads",
                           "GladesTown.OnwardsAndUpwards",
@@ -555,7 +555,7 @@ class WotWWorld(World):
                           "GladesTown.CaveEntrance"):
                 self.connect_to_menu(event)
 
-        if options.quests != Quests.option_none:  # Open locations locked behind NPCs
+        if options.quests == Quests.option_none:  # Open locations locked behind NPCs
             # Connecting the other quests is not necessary, as their event don't appear in logic for non-quest locations
             for quest in ("WoodsEntry.LastTreeBranch",
                           "WoodsEntry.DollQI",
