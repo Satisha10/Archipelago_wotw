@@ -247,7 +247,6 @@ class WotWWorld(World):
         skipped_items: list[str] = []  # Remove one instance of the item
         removed_items: list[str] = []  # Remove all instances of the item
 
-        # TODO Check if random must be taken from mw or world
         for item in spawn_items(self, options.spawn.value, options.difficulty.value):  # Staring items
             mworld.push_precollected(self.create_item(item))
             skipped_items.append(item)
