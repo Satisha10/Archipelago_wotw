@@ -107,6 +107,11 @@ class ShrineTrialHints(DefaultOnToggle):
     display_name = "Shrines and trials hints"
 
 
+class ZoneHints(DefaultOnToggle):
+    """Lupo sells hints that indicate how many progression items are in the area."""
+    display_name = "Zone hints"
+
+
 class KnowledgeHints(DefaultOnToggle):
     """Display useful hints on randomizer knowledge while playing the seed."""
     display_name = "Knowledge hints"
@@ -122,7 +127,6 @@ class DeathLink(NamedRange):
         "enable": 1,
     }
     default = 0
-
 
 
 class Teleporters(DefaultOnToggle):
@@ -254,6 +258,7 @@ option_groups = [
         RandomizeDoors,
         QualityOfLife,
         ShrineTrialHints,
+        ZoneHints,
         KnowledgeHints,
         DeathLink,
     ]),
@@ -296,6 +301,7 @@ class WotWOptions(PerGameCommonOptions):
     door_rando: RandomizeDoors
     qol: QualityOfLife
     hints: ShrineTrialHints
+    zone_hints: ZoneHints
     knowledge_hints: KnowledgeHints
     tp: Teleporters  # Item Pool
     extratp: ExtraTeleporters

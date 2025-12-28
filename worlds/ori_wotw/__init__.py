@@ -62,7 +62,7 @@ class WotWWorld(World):
     location_name_to_id = loc_table
 
     item_name_groups = item_groups
-    location_name_groups = location_regions
+    location_name_groups = location_regions  # TODO Convert list to set (not directly in LocationGroups though)
 
     options_dataclass = WotWOptions
     options: WotWOptions
@@ -642,6 +642,20 @@ class WotWWorld(World):
             icon_path = get_item_iconpath(self, item, bool(options.shop_keywords))
             icons_paths.update({loc: icon_path})
 
+        location_flags = 0b000000
+        if options.quests != Quests.option_none:
+            location_flags += 0b000001
+        if options.quests == Quests.option_all:
+            location_flags += 0b000010
+        if not options.glades_done:
+            location_flags += 0b000100
+        if not options.no_trials:
+            location_flags += 0b001000
+        if not options.qol:
+            location_flags += 0b010000
+        if not options.zone_hints:
+            location_flags += 0b100000
+
         slot_data: dict[str, Any] = {
             "difficulty": logic_difficulty[options.difficulty.value],
             "glitches": bool(options.glitches.value),
@@ -654,7 +668,9 @@ class WotWWorld(World):
             "goal_relics": bool("relics" in options.goal),
             "hard": bool(options.hard_mode.value),
             "qol": bool(options.qol.value),
-            "hints": bool(options.hints.value),
+            "shrine_hints": bool(options.hints.value and "shrines" not in options.no_combat),
+            "trial_hints": bool(options.hints.value and not options.no_trials),
+            "zone_hints": bool(options.zone_hints.value),
             "knowledge_hints": bool(options.knowledge_hints.value),
             "better_spawn": bool(options.better_spawn.value),
             "better_wellspring": bool(options.better_wellspring.value),
@@ -677,6 +693,7 @@ class WotWWorld(World):
             "relic_locs": self.relic_placements,
             "death_link": int(options.death_link.value),
             "ap_version": 1,
+            "location_flags": location_flags,
         }
 
         return slot_data
