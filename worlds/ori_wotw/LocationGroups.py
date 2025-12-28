@@ -285,6 +285,7 @@ loc_sets: dict[str, list[str]] = {
         "LowerReach.IcefallOre",
         "LowerReach.IcefallEX",
         "LowerReach.AboveDoorEX",
+        "LowerReach.HiddenOre",
         "LowerReach.MeltIceEX",
         "LowerReach.BurrowEX",
         "LowerReach.TPLeftEX",

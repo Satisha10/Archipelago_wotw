@@ -72,7 +72,8 @@ class WotWWorld(World):
     def __init__(self, multiworld, player) -> None:
         super(WotWWorld, self).__init__(multiworld, player)
         self.relic_placements: list[tuple[int, int]] = []  # Store the area ID and location ID of the relics
-        self.empty_locations: list[str] = []  # Excluded locations, for now hold a Nothing item
+        self.empty_locations: list[str] = []  # Excluded locations
+        self.filled_locations: list[str] = [] # Locations holding an item
         self.er_door_ids: list[int] = []  # Contain the data of door IDs if ER is enabled
         # The list index corresponds to the exit door ID minus one, and the int in the list is the target door ID
 
@@ -139,7 +140,7 @@ class WotWWorld(World):
         return change
 
     def generate_early(self) -> None:
-        options = self.options
+        options = self.options  # TODO Use option error instead for some cases
         # Options checking
         if options.open_mode:
             options.no_rain.value = True
@@ -162,17 +163,33 @@ class WotWWorld(World):
             options.goal.value = set(selected_goal)
 
 
-        # Construct the excluded locations list
+        # Construct the excluded and used locations lists
         if options.glades_done:
             self.empty_locations += loc_sets["Rebuild"].copy()
+        else:
+            self.filled_locations += loc_sets["Rebuild"].copy()
         if options.no_trials:
             self.empty_locations += loc_sets["Trials"].copy()
+        else:
+            self.filled_locations += loc_sets["Trials"].copy()
         if options.qol or options.quests == Quests.option_none:
             self.empty_locations += loc_sets["QOL"].copy()
+        else:
+            self.filled_locations += loc_sets["QOL"].copy()
         if options.quests != Quests.option_all:
             self.empty_locations += loc_sets["HandToHand"].copy()
+        else:
+            self.filled_locations += loc_sets["HandToHand"].copy()
         if options.quests == Quests.option_none:
             self.empty_locations += loc_sets["Quests"].copy()
+        else:
+            self.filled_locations += loc_sets["Quests"].copy()
+        if options.zone_hints:
+            self.empty_locations += loc_sets["Maps"].copy()
+        else:
+            self.filled_locations += loc_sets["Maps"].copy()
+        self.filled_locations += loc_sets["Base"].copy()
+        self.filled_locations += loc_sets["ExtraQuests"].copy()
 
     def create_regions(self) -> None:
         mworld = self.multiworld
@@ -196,10 +213,15 @@ class WotWWorld(World):
 
         menu_region.connect(self.get_region("HeaderStates"), rule=lambda state: True)
 
-        for loc_name in loc_table.keys():  # Create regions on locations
+        # Create regions on locations, and create a location on top of it if needed
+        for loc_name in self.filled_locations:
             region = Region(loc_name, player, mworld)
             mworld.regions.append(region)
             region.locations.append(WotWLocation(player, loc_name, self.location_name_to_id[loc_name], region))
+        # For empty locations, only create the base region
+        for loc_name in self.empty_locations:
+            region = Region(loc_name, player, mworld)
+            mworld.regions.append(region)
         for quest_name in quest_table:  # Quests are locations that have to be tracked like events
             event_name = quest_name + ".quest"
             event_region = Region(event_name, player, mworld)  # Region that holds the event item
@@ -308,10 +330,6 @@ class WotWWorld(World):
         if options.launch_on_seir:
             self.get_location("WindtornRuins.Seir").place_locked_item(self.create_item("Launch"))
             removed_items.append("Launch")
-
-        for location in self.empty_locations:  # TODO temporary workaround
-            loc = self.get_location(location)
-            loc.place_locked_item(self.create_item("Nothing"))
 
         counter = Counter(skipped_items)
         pool: list[WotWItem] = []
