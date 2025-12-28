@@ -651,10 +651,10 @@ class WotWWorld(World):
                             "OpherShop.StaticStar",
                             "OpherShop.ChargeBlaze",
                             "OpherShop.RapidSentry",
-                            "LupoShop.HCMapIcon",
-                            "LupoShop.ECMapIcon",
                             "LupoShop.ShardMapIcon"
                             ]
+        if not options.zone_hints:
+            shops += ["LupoShop.HCMapIcon", "LupoShop.ECMapIcon",]
         for loc in shops:
             item = self.get_location(loc).item
             icon_path = get_item_iconpath(self, item, bool(options.shop_keywords))
