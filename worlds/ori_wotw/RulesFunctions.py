@@ -28,7 +28,7 @@ class WotWLogic(LogicMixin):
         self.wotw_enemies = {}
         for player in mw.get_game_players("Ori and the Will of the Wisps"):
             self.wotw_enemies.setdefault(player, {enemy: IMPOSSIBLE_COST for enemy in enemy_data.keys()})
-        self.wotw_resource_stale = {player: False for player in mw.get_game_players("Ori and the Will of the Wisps")}
+        self.wotw_resource_stale = {player: True for player in mw.get_game_players("Ori and the Will of the Wisps")}
         self.wotw_enemies_stale_collect = {
             player: False for player in mw.get_game_players("Ori and the Will of the Wisps")
         }
