@@ -710,7 +710,7 @@ class WotWWorld(World):
             "door_connections": self.er_door_ids,
             "relic_locs": self.relic_placements,
             "death_link": int(options.death_link.value),
-            "ap_version": 1,
+            "ap_version": 2,
             "location_flags": location_flags,
         }
 

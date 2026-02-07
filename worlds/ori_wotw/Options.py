@@ -121,7 +121,7 @@ class DeathLink(NamedRange):
     """Disable/enable death link. Set this to a non-zero integer to specify how many deaths are needed to trigger it."""
     display_name = "DeathLink amount"
     range_start = 0
-    range_end = 10
+    range_end = 99
     special_range_names = {
         "disable": 0,
         "enable": 1,
