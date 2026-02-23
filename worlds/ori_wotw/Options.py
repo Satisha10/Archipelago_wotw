@@ -185,7 +185,7 @@ class SkillUpgrades(Toggle):
     display_name = "Skill upgrades"
 
 
-class BetterSpawn(Toggle):
+class BetterSpawn(DefaultOnToggle):
     """Open some doors so random spawn works better."""
     display_name = "Better random spawn"
 
