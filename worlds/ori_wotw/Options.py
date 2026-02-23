@@ -87,6 +87,26 @@ class RelicCount(Range):
     default = 7
 
 
+class LaunchFragments(Toggle):
+    display_name = "Launch Fragments"
+
+
+class FragmentsRequired(Range):
+    """How many areas contain a relic (no effect without the relic goal)."""
+    display_name = "Required Launch Fragments"
+    range_start = 1
+    range_end = 10
+    default = 3
+
+
+class FragmentsCount(Range):
+    """How many areas contain a relic (no effect without the relic goal)."""
+    display_name = "Total Launch Fragments"
+    range_start = 1
+    range_end = 10
+    default = 5
+
+
 class RandomizeDoors(Toggle):
     """Enable door randomizer."""
     display_name = "Randomize Doors"
@@ -254,6 +274,9 @@ option_groups = [
         StartingLocation,
         Goal,
         RelicCount,
+        LaunchFragments,
+        FragmentsRequired,
+        FragmentsCount,
         HardMode,
         RandomizeDoors,
         QualityOfLife,
@@ -297,6 +320,9 @@ class WotWOptions(PerGameCommonOptions):
     spawn: StartingLocation
     goal: Goal
     relic_count: RelicCount
+    launch_fragments: LaunchFragments
+    fragments_required: FragmentsRequired
+    fragments_count: FragmentsCount
     hard_mode: HardMode
     door_rando: RandomizeDoors
     qol: QualityOfLife

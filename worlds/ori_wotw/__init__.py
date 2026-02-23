@@ -709,6 +709,7 @@ class WotWWorld(World):
             "door_rando": bool(options.door_rando),
             "door_connections": self.er_door_ids,
             "relic_locs": self.relic_placements,
+            "launch_frag": options.fragments_required.value if options.launch_fragments else 0,
             "death_link": int(options.death_link.value),
             "ap_version": 2,
             "location_flags": location_flags,
