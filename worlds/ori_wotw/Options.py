@@ -88,11 +88,12 @@ class RelicCount(Range):
 
 
 class LaunchFragments(Toggle):
+    """Spilt launch into multiple fragments."""
     display_name = "Launch Fragments"
 
 
 class FragmentsRequired(Range):
-    """How many areas contain a relic (no effect without the relic goal)."""
+    """Set the amount of launch fragments needed to get Launch."""
     display_name = "Required Launch Fragments"
     range_start = 1
     range_end = 10
@@ -100,7 +101,7 @@ class FragmentsRequired(Range):
 
 
 class FragmentsCount(Range):
-    """How many areas contain a relic (no effect without the relic goal)."""
+    """Set the amount of launch fragments in the pool. Launch is in logic when all fragments are accessible."""
     display_name = "Total Launch Fragments"
     range_start = 1
     range_end = 10

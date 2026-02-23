@@ -150,6 +150,12 @@ class WotWWorld(World):
         # Without TP in the pool, some random spawn are dead-ends without better random spawn
         if not options.tp and not options.better_spawn:
             options.better_spawn.value = True
+        if options.fragments_count.value < options.fragments_required.value:
+            options.fragments_count.value = options.fragments_required.value
+        # Spawning on willow usually gives Launch on spawn, which defeats the purpose of the options that affect Launch
+        if (options.spawn.value == StartingLocation.option_willow
+                and (options.launch_on_seir or options.launch_fragments)):
+            options.spawn.value = StartingLocation.option_marsh
 
         # Selection of a random goal
         if "random" in options.goal:
@@ -330,6 +336,15 @@ class WotWWorld(World):
         if options.launch_on_seir:
             self.get_location("WindtornRuins.Seir").place_locked_item(self.create_item("Launch"))
             removed_items.append("Launch")
+
+        if options.launch_fragments:
+            menu_region = self.get_region("Menu")
+            event_loc = WotWLocation(self.player, "LaunchFromFragments", None, menu_region)
+            menu_region.locations.append(event_loc)
+            event_loc.place_locked_item(self.create_item("Launch"))
+            # Give logical launch when all fragments are collected
+            set_rule(event_loc, lambda state: state.has("Launch Fragments", self.player, options.fragments_count.value))
+
 
         counter = Counter(skipped_items)
         pool: list[WotWItem] = []
