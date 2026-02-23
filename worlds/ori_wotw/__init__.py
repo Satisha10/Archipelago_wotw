@@ -593,6 +593,9 @@ class WotWWorld(World):
                           "WoodsEntry.DollQI",
                           "GladesTown.FamilyReunionKey"):
                 self.connect_to_menu(quest + ".quest")
+        if options.unpopular:
+            self.create_event("Unpopular")
+            self.connect_to_menu("Unpopular")
 
 
     def connect_entrances(self) -> None:

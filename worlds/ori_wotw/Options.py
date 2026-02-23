@@ -88,7 +88,7 @@ class RelicCount(Range):
 
 
 class LaunchFragments(Toggle):
-    """Spilt launch into multiple fragments."""
+    """Spilt Launch into multiple fragments."""
     display_name = "Launch Fragments"
 
 
@@ -136,6 +136,16 @@ class ZoneHints(DefaultOnToggle):
 class KnowledgeHints(DefaultOnToggle):
     """Display useful hints on randomizer knowledge while playing the seed."""
     display_name = "Knowledge hints"
+
+
+class Unpopular(Toggle):
+    """
+    Enable unpopular paths for unsafe.
+
+    These involve tedious or extremely hard tricks, and remove the restrictions on teleporter logic.
+    No effect without unsafe and glitches.
+    """
+    display_name = "Unpopular paths"
 
 
 class DeathLink(NamedRange):
@@ -284,6 +294,7 @@ option_groups = [
         ShrineTrialHints,
         ZoneHints,
         KnowledgeHints,
+        Unpopular,
         DeathLink,
     ]),
     OptionGroup("Item Pool", [
@@ -329,6 +340,7 @@ class WotWOptions(PerGameCommonOptions):
     qol: QualityOfLife
     hints: ShrineTrialHints
     zone_hints: ZoneHints
+    unpopular: Unpopular
     knowledge_hints: KnowledgeHints
     tp: Teleporters  # Item Pool
     extratp: ExtraTeleporters
