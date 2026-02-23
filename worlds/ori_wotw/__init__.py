@@ -274,6 +274,7 @@ class WotWWorld(World):
 
         skipped_items: list[str] = []  # Remove one instance of the item
         removed_items: list[str] = []  # Remove all instances of the item
+        pool: list[WotWItem] = []
 
         for item in spawn_items(self, options.spawn.value, options.difficulty.value):  # Staring items
             mworld.push_precollected(self.create_item(item))
@@ -338,16 +339,19 @@ class WotWWorld(World):
             removed_items.append("Launch")
 
         if options.launch_fragments:
+            removed_items.append("Launch")
+            pool += [self.create_item("Launch Fragment") for _ in range(options.fragments_count.value)]
+
             menu_region = self.get_region("Menu")
             event_loc = WotWLocation(self.player, "LaunchFromFragments", None, menu_region)
             menu_region.locations.append(event_loc)
             event_loc.place_locked_item(self.create_item("Launch"))
             # Give logical launch when all fragments are collected
-            set_rule(event_loc, lambda state: state.has("Launch Fragments", self.player, options.fragments_count.value))
+            set_rule(event_loc, lambda state: state.has("Launch Fragment", self.player, options.fragments_count.value))
 
 
         counter = Counter(skipped_items)
-        pool: list[WotWItem] = []
+
 
         for item, data in item_table.items():
             if item in removed_items:
