@@ -466,7 +466,7 @@ class WotWWorld(World):
                          "LowerWastes.BurrowTree",
                          "WeepingRidge.LaunchTree",
                          ]:
-                add_rule(victory_conn, lambda s: s.can_reach_region(tree, player))
+                add_rule(victory_conn, lambda s, tree=tree: s.can_reach_region(tree, player))
                 # The entrance checks for regions, so we need to add an indirect condition
                 self.multiworld.register_indirect_condition(self.get_region(tree), victory_conn)
 
