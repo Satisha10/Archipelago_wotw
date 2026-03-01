@@ -234,6 +234,7 @@ class WotWWorld(World):
             }
             goals: set[str] = set()
             combat: set[str] = set()
+
             self.options.difficulty.value = difficulty_dict[slot_data["difficulty"]]
             self.options.glitches.value = slot_data["glitches"]
             self.options.unpopular.value = slot_data["unpopular"]
@@ -246,6 +247,7 @@ class WotWWorld(World):
                 goals.add("wisps")
             if slot_data["goal_relics"]:
                 goals.add("relics")
+                self.options.relic_count.value = len(slot_data["relic_locs"])
             self.options.goal.value = goals
             self.options.hard_mode.value = slot_data["hard"]
             self.options.qol.value = slot_data["qol"]
@@ -274,7 +276,9 @@ class WotWWorld(World):
             self.options.no_ks.value = slot_data["no_ks"]
             self.options.open_mode.value = slot_data["open_mode"]
             self.options.glades_done.value = slot_data["glades_done"]
-            self.options.launch_fragments.value = bool(slot_data["launch_frag"] != 0)
+            if slot_data["launch_frag"] != 0:
+                self.options.launch_fragments.value = True
+                self.options.fragments_count.value = slot_data["total_frag"]
             self.options.door_rando.value = slot_data["door_rando"]
 
     def create_regions(self) -> None:
@@ -807,10 +811,10 @@ class WotWWorld(World):
             "better_spawn": bool(options.better_spawn.value),
             "better_wellspring": bool(options.better_wellspring.value),
             "no_rain": bool(options.no_rain.value),
-            "skip_boss": bool("Everything" in options.no_combat or "Bosses" in options.no_combat),
-            "skip_demi_boss": bool("Everything" in options.no_combat or "Demi Bosses" in options.no_combat),
-            "skip_shrine": bool("Everything" in options.no_combat or "Shrines" in options.no_combat),
-            "skip_arena": bool("Everything" in options.no_combat or "Arenas" in options.no_combat),
+            "skip_boss": bool("everything" in options.no_combat or "bosses" in options.no_combat),
+            "skip_demi_boss": bool("everything" in options.no_combat or "demi bosses" in options.no_combat),
+            "skip_shrine": bool("everything" in options.no_combat or "shrines" in options.no_combat),
+            "skip_arena": bool("everything" in options.no_combat or "arenas" in options.no_combat),
             "no_trials": bool(options.no_trials.value),
             "no_hearts": bool(options.no_hearts.value),
             "no_hand_quest": bool(options.quests == Quests.option_no_hand or options.quests == Quests.option_none),
@@ -824,6 +828,7 @@ class WotWWorld(World):
             "door_connections": self.er_door_ids,
             "relic_locs": self.relic_placements,
             "launch_frag": options.fragments_required.value if options.launch_fragments else 0,
+            "total_frag": options.fragments_count.value,  # Only used by UT
             "death_link": int(options.death_link.value),
             "ap_version": 2,
             "location_flags": location_flags,
