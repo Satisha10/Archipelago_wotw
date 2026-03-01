@@ -69,6 +69,12 @@ class WotWWorld(World):
 
     required_client_version = (0, 6, 3)
 
+    # Universal tracker support
+    @staticmethod
+    def interpret_slot_data(slot_data: dict[str, Any]) -> dict[str, Any]:
+        return slot_data
+    ut_can_gen_without_yaml = True
+
     def __init__(self, multiworld, player) -> None:
         super(WotWWorld, self).__init__(multiworld, player)
         self.relic_placements: list[tuple[int, int]] = []  # Store the area ID and location ID of the relics
@@ -196,6 +202,80 @@ class WotWWorld(World):
             self.filled_locations += loc_sets["Maps"].copy()
         self.filled_locations += loc_sets["Base"].copy()
         self.filled_locations += loc_sets["ExtraQuests"].copy()
+
+        # Universal Tracker support
+        re_gen_passthrough = getattr(self.multiworld, "re_gen_passthrough", {})
+        if re_gen_passthrough and self.game in re_gen_passthrough:
+            slot_data: dict[str, Any] = re_gen_passthrough[self.game]
+            difficulty_dict: dict[str, int] = {
+                "Moki": LogicDifficulty.option_moki,
+                "Gorlek": LogicDifficulty.option_gorlek,
+                "Kii": LogicDifficulty.option_kii,
+                "Unsafe": LogicDifficulty.option_unsafe,
+            }
+            spawn_dict: dict[str, int] = {
+                "MarshSpawn.Main": StartingLocation.option_marsh,
+                "MidnightBurrows.Teleporter": StartingLocation.option_burrows,
+                "HowlsDen.Teleporter": StartingLocation.option_howlsden,
+                "EastHollow.Teleporter": StartingLocation.option_hollow,
+                "GladesTown.Teleporter": StartingLocation.option_glades,
+                "InnerWellspring.Teleporter": StartingLocation.option_wellspring,
+                "WoodsEntry.Teleporter": StartingLocation.option_westwoods,
+                "WoodsMain.Teleporter": StartingLocation.option_eastwoods,
+                "LowerReach.Teleporter": StartingLocation.option_reach,
+                "UpperDepths.Teleporter": StartingLocation.option_depths,
+                "EastPools.Teleporter": StartingLocation.option_eastpools,
+                "WestPools.Teleporter": StartingLocation.option_westpools,
+                "LowerWastes.WestTP": StartingLocation.option_westwastes,
+                "LowerWastes.EastTP": StartingLocation.option_eastwastes,
+                "UpperWastes.NorthTP": StartingLocation.option_outerruins,
+                "WindtornRuins.RuinsTP": StartingLocation.option_innerruins,
+                "WillowsEnd.InnerTP": StartingLocation.option_willow,
+            }
+            goals: set[str] = set()
+            combat: set[str] = set()
+            self.options.difficulty.value = difficulty_dict[slot_data["difficulty"]]
+            self.options.glitches.value = slot_data["glitches"]
+            self.options.unpopular.value = slot_data["unpopular"]
+            self.options.spawn.value = spawn_dict[slot_data["spawn_anchor"]]
+            if slot_data["goal_trees"]:
+                goals.add("trees")
+            if slot_data["goal_quests"]:
+                goals.add("quests")
+            if slot_data["goal_wisps"]:
+                goals.add("wisps")
+            if slot_data["goal_relics"]:
+                goals.add("relics")
+            self.options.goal.value = goals
+            self.options.hard_mode.value = slot_data["hard"]
+            self.options.qol.value = slot_data["qol"]
+            self.options.zone_hints.value = slot_data["zone_hints"]
+            self.options.better_spawn.value = slot_data["better_spawn"]
+            self.options.better_wellspring.value = slot_data["better_wellspring"]
+            self.options.no_rain.value = slot_data["no_rain"]
+            if slot_data["skip_boss"]:
+                combat.add("bosses")
+            if slot_data["skip_demi_boss"]:
+                combat.add("demi bosses")
+            if slot_data["skip_shrine"]:
+                combat.add("shrines")
+            if slot_data["skip_arena"]:
+                combat.add("arenas")
+            self.options.no_combat.value = combat
+            self.options.no_trials.value = slot_data["no_trials"]
+            self.options.no_hearts.value = slot_data["no_hearts"]
+            if slot_data["no_hand_quest"]:
+                if slot_data["no_quests"]:
+                    self.options.quests.value = Quests.option_none
+                else:
+                    self.options.quests.value = Quests.option_no_hand
+            else:
+                self.options.quests.value = Quests.option_all
+            self.options.no_ks.value = slot_data["no_ks"]
+            self.options.open_mode.value = slot_data["open_mode"]
+            self.options.glades_done.value = slot_data["glades_done"]
+            self.options.launch_fragments.value = bool(slot_data["launch_frag"] != 0)
+            self.options.door_rando.value = slot_data["door_rando"]
 
     def create_regions(self) -> None:
         mworld = self.multiworld
@@ -604,27 +684,38 @@ class WotWWorld(World):
 
     def connect_entrances(self) -> None:
         if self.options.door_rando:
-            er_targets: list[Entrance] = []
-            exits: list[Entrance] = []
-            for door in doors_map:
-                door_region: Region = self.get_region(door)
-                er_target = door_region.create_er_target(door)
-                er_target.randomization_type = EntranceType.TWO_WAY
-                er_targets.append(er_target)
 
-                exit_entrance = door_region.create_exit(door)
-                exit_entrance.randomization_type = EntranceType.TWO_WAY
-                exits.append(exit_entrance)
+            # Universal Tracker support
+            re_gen_passthrough = getattr(self.multiworld, "re_gen_passthrough", {})
+            if re_gen_passthrough and self.game in re_gen_passthrough:
+                slot_data: dict[str, Any] = re_gen_passthrough[self.game]
+                id_to_door_map = {door_id: door_name for door_name, door_id in doors_map.items()}
+                for entry_index, target_index in enumerate(slot_data["door_connections"]):
+                    entry, target = id_to_door_map[entry_index + 1], id_to_door_map[target_index]
+                    self.get_region(entry).connect(self.get_region(target))
 
-            er_results = randomize_entrances(self,
-                                             coupled=True,
-                                             target_group_lookup={0: [0]},
-                                             er_targets=er_targets,
-                                             exits=exits)
+            else:
+                er_targets: list[Entrance] = []
+                exits: list[Entrance] = []
+                for door in doors_map:
+                    door_region: Region = self.get_region(door)
+                    er_target = door_region.create_er_target(door)
+                    er_target.randomization_type = EntranceType.TWO_WAY
+                    er_targets.append(er_target)
 
-            self.er_door_ids = [0] * 32  # This contains the ER results for slot_data
-            for (source_exit, target_entrance) in er_results.pairings:
-                self.er_door_ids[doors_map[source_exit] - 1] = doors_map[target_entrance]
+                    exit_entrance = door_region.create_exit(door)
+                    exit_entrance.randomization_type = EntranceType.TWO_WAY
+                    exits.append(exit_entrance)
+
+                er_results = randomize_entrances(self,
+                                                 coupled=True,
+                                                 target_group_lookup={0: [0]},
+                                                 er_targets=er_targets,
+                                                 exits=exits)
+
+                self.er_door_ids = [0] * 32  # This contains the ER results for slot_data
+                for (source_exit, target_entrance) in er_results.pairings:
+                    self.er_door_ids[doors_map[source_exit] - 1] = doors_map[target_entrance]
         else:
             for entry, target in doors_vanilla:
                 self.get_region(entry).connect(self.get_region(target))
@@ -699,6 +790,7 @@ class WotWWorld(World):
         slot_data: dict[str, Any] = {
             "difficulty": logic_difficulty[options.difficulty.value],
             "glitches": bool(options.glitches.value),
+            "unpopular": bool(options.unpopular),
             "spawn_x": coord[options.spawn.value][0],
             "spawn_y": coord[options.spawn.value][1],
             "spawn_anchor": coord[options.spawn.value][2],
