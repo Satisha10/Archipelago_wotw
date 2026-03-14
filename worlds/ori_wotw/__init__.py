@@ -165,7 +165,7 @@ class WotWWorld(World):
 
         # Selection of a random goal
         if "random" in options.goal:
-            possible_goals = list(options.goal.value)
+            possible_goals = sorted(list(options.goal.value))
             possible_goals.remove("random")
             selected_goal: list = []
             if not possible_goals:  # Only random selected, choose among all goals
