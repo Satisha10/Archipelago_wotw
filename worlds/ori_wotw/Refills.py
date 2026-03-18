@@ -8,7 +8,7 @@ Generated with `extract_rules.py`.
 
 refills: dict[str, tuple[int, int, int]] = {  # key: region name. Tuple: [health restored, energy restored, refill type]
     # For refill type: 0 is no refill, 1 is Checkpoint, 2 is Full refill.
-    "HeaderStates": (0, 0, 0),
+    "ExternalStates": (0, 0, 0),
     "Teleporters": (0, 0, 0),
     "MarshSpawn.Main": (0, 0, 2),
     "MarshSpawn.OpherBarrier": (0, 0, 1),
@@ -102,6 +102,7 @@ refills: dict[str, tuple[int, int, int]] = {  # key: region name. Tuple: [health
     "EastHollow.KwolokPathGrapplePlant": (0, 0, 1),
     "EastHollow.KwolokPathLantern": (0, 0, 0),
     "EastHollow.Kwolok": (0, 0, 1),
+    "EastHollow.KwolokShrine": (0, 0, 1),
     "GladesTown.Teleporter": (0, 0, 2),
     "GladesTown.ThornyBranch": (0, 0, 0),
     "GladesTown.TwillenHome": (0, 0, 1),
@@ -318,7 +319,7 @@ refills: dict[str, tuple[int, int, int]] = {  # key: region name. Tuple: [health
     "WindtornRuins.FallenPillar": (0, 0, 0),
     "WindtornRuins.RuinsTP": (0, 0, 2),
     "WindtornRuins.Escape": (0, 0, 2),
-    "WindtornRuins.LowerRuins": (0, 0, 0),
+    "WindtornRuins.MapstoneAltar": (0, 0, 0),
     "WeepingRidge.Bottom": (1, 3, 1),
     "WeepingRidge.Elevator": (0, 0, 1),
     "WeepingRidge.TopElevator": (1, 0, 1),
@@ -438,6 +439,7 @@ refill_events: list[str] = [
     "E.EastHollow.AboveDepths",
     "C.EastHollow.KwolokPathGrapplePlant",
     "C.EastHollow.Kwolok",
+    "C.EastHollow.KwolokShrine",
     "F.GladesTown.Teleporter",
     "C.GladesTown.TwillenHome",
     "C.GladesTown.West",

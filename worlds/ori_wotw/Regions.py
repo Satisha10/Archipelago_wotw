@@ -7,7 +7,7 @@ Generated with `extract_data.py` by running `extract_regions()`.
 
 
 region_table = [
-    "HeaderStates",
+    "ExternalStates",
     "Teleporters",
     "MarshSpawn.Main",
     "MarshSpawn.OpherBarrier",
@@ -101,6 +101,7 @@ region_table = [
     "EastHollow.KwolokPathGrapplePlant",
     "EastHollow.KwolokPathLantern",
     "EastHollow.Kwolok",
+    "EastHollow.KwolokShrine",
     "GladesTown.Teleporter",
     "GladesTown.ThornyBranch",
     "GladesTown.TwillenHome",
@@ -317,7 +318,7 @@ region_table = [
     "WindtornRuins.FallenPillar",
     "WindtornRuins.RuinsTP",
     "WindtornRuins.Escape",
-    "WindtornRuins.LowerRuins",
+    "WindtornRuins.MapstoneAltar",
     "WeepingRidge.Bottom",
     "WeepingRidge.Elevator",
     "WeepingRidge.TopElevator",

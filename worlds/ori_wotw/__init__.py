@@ -5,7 +5,7 @@
 # TODO Check that random is taken from world
 
 
-from typing import Any
+from typing import Any, Callable
 from collections import Counter
 
 from entrance_rando import randomize_entrances
@@ -280,6 +280,8 @@ class WotWWorld(World):
                 self.options.launch_fragments.value = True
                 self.options.fragments_count.value = slot_data["total_frag"]
             self.options.door_rando.value = slot_data["door_rando"]
+            self.options.free_teleporters.value = slot_data["free_tp"]
+            self.options.regenerate_requirements.value = slot_data["regen"]
 
     def create_regions(self) -> None:
         mworld = self.multiworld
@@ -301,7 +303,7 @@ class WotWWorld(World):
         spawn_region = self.get_region(spawn_name)  # Links menu with spawn point
         menu_region.connect(spawn_region, rule=lambda state: True)
 
-        menu_region.connect(self.get_region("HeaderStates"), rule=lambda state: True)
+        menu_region.connect(self.get_region("ExternalStates"), rule=lambda state: True)
 
         # Create regions on locations, and create a location on top of it if needed
         for loc_name in self.filled_locations:
@@ -371,6 +373,10 @@ class WotWWorld(World):
         if options.sword:
             mworld.push_precollected(self.create_item("Sword"))
             removed_items.append("Sword")
+
+        if options.regenerate:
+            mworld.push_precollected(self.create_item("Regenerate"))
+            removed_items.append("Regenerate")
 
         if not options.tp:
             for item in item_groups["Teleporters"]:
@@ -497,10 +503,10 @@ class WotWWorld(World):
     def get_filler_item_name(self) -> str:
         return self.random.choice(["50 Spirit Light", "100 Spirit Light"])
 
-    def connect_to_menu(self, region: str) -> None:
+    def connect_to_menu(self, region: str, rule: Callable[[CollectionState], bool] | None = None) -> None:
         """Connect the region to menu (if the connection does not already exist)."""
         if not self.multiworld.regions.entrance_cache[self.player].get(f"Menu -> {region}"):
-            self.get_region("Menu").connect(self.get_region(region))
+            self.get_region("Menu").connect(self.get_region(region), rule=rule)
 
     def set_rules(self) -> None:
         player = self.player
@@ -586,16 +592,16 @@ class WotWWorld(World):
             self.connect_to_menu("UpperWastes.LeverDoor")
 
         if "Everything" in options.no_combat or "Bosses" in options.no_combat:
-            for entrance in ("HeaderStates -> SkipKwolok",
-                             "HeaderStates -> SkipMora1",
-                             "HeaderStates -> SkipMora2"):
+            for entrance in ("ExternalStates -> SkipKwolok",
+                             "ExternalStates -> SkipMora1",
+                             "ExternalStates -> SkipMora2"):
                 set_rule(self.get_entrance(entrance), lambda s: True)
         else:  # Connect these events when the seed is completed, to make them reachable.
-            set_rule(self.get_entrance("HeaderStates -> SkipKwolok"),
+            set_rule(self.get_entrance("ExternalStates -> SkipKwolok"),
                      lambda s: s.has("Victory", player))
-            set_rule(self.get_entrance("HeaderStates -> SkipMora1"),
+            set_rule(self.get_entrance("ExternalStates -> SkipMora1"),
                      lambda s: s.has("Victory", player))
-            set_rule(self.get_entrance("HeaderStates -> SkipMora2"),
+            set_rule(self.get_entrance("ExternalStates -> SkipMora2"),
                      lambda s: s.has("Victory", player))
         if "Everything" in options.no_combat or "Shrines" in options.no_combat:
             for entrance in (
@@ -684,6 +690,16 @@ class WotWWorld(World):
         if options.unpopular:
             self.create_event("Unpopular")
             self.connect_to_menu("Unpopular")
+
+        if options.free_teleporters:
+            self.connect_to_menu("RemoveTPLocks")
+        else:
+            self.connect_to_menu("RemoveTPLocks", rule=lambda s: s.has("Victory", player))
+
+        if options.regenerate_requirements <= options.difficulty:
+            self.connect_to_menu("RemoveRegionRegen")
+        else:
+            self.connect_to_menu("RemoveRegionRegen", rule=lambda s: s.has("Victory", player))
 
 
     def connect_entrances(self) -> None:
@@ -829,6 +845,8 @@ class WotWWorld(World):
             "relic_locs": self.relic_placements,
             "launch_frag": options.fragments_required.value if options.launch_fragments else 0,
             "total_frag": options.fragments_count.value,  # Only used by UT
+            "free_tp": options.free_teleporters.value,
+            "regen": options.regenerate_requirements.value,
             "death_link": int(options.death_link.value),
             "ap_version": 2,
             "location_flags": location_flags,

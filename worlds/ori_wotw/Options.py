@@ -74,7 +74,6 @@ class Goal(OptionSet):
     """
     display_name = "Goal"
     rich_text_doc = True
-    valid_keys_casefold = True
     valid_keys = ["trees", "wisps", "quests", "relics", "random"]
     default = frozenset(["trees"])
 
@@ -113,6 +112,24 @@ class RandomizeDoors(Toggle):
     display_name = "Randomize Doors"
 
 
+class RegenerateRequirements(Choice):
+    """Set a logic difficulty at and above which Regenerate is ignored in region requirements."""
+    display_name = "Region Requirements"
+    default = 2
+    option_moki = 0
+    option_gorlek = 1
+    option_kii = 2
+    option_unsafe = 3
+    alias_easy = 0
+    alias_medium = 1
+    alias_hard = 2
+
+
+class FreeTeleporters(Toggle):
+    """Remove the requirements on teleporters for their hard lock skill (e.g. Reach TP requires Flap)."""
+    display_name = "Free Teleporters"
+
+
 class HardMode(Toggle):
     """Play the game in hard difficulty."""
     display_name = "Hard mode"
@@ -142,8 +159,7 @@ class Unpopular(Toggle):
     """
     Enable unpopular paths for unsafe.
 
-    These involve tedious or extremely hard tricks, and remove the restrictions on teleporter logic.
-    No effect without unsafe and glitches.
+    These involve tedious or extremely hard tricks. No effect without unsafe and glitches.
     """
     display_name = "Unpopular paths"
 
@@ -211,7 +227,6 @@ class NoCombat(OptionSet):
     """
     display_name = "No Combat"
     rich_text_doc = True
-    valid_keys_casefold = True
     valid_keys = ["everything", "shrines", "arenas", "demi bosses", "bosses"]
     default = frozenset()
 
@@ -268,6 +283,11 @@ class SpawnSword(DefaultOnToggle):
     display_name = "Spawn with Sword"
 
 
+class SpawnRegenerate(Toggle):
+    """Choose to have Regenerate at the beginning."""
+    display_name = "Spawn with Regenerate"
+
+
 class VanillaShopUpgrades(Toggle):
     """Weapon upgrades and shards in shops are not randomized."""
     display_name = "Vanilla shop upgrades"
@@ -290,6 +310,8 @@ option_groups = [
         FragmentsCount,
         HardMode,
         RandomizeDoors,
+        RegenerateRequirements,
+        FreeTeleporters,
         QualityOfLife,
         ShrineTrialHints,
         ZoneHints,
@@ -319,6 +341,7 @@ option_groups = [
     ]),
     OptionGroup("Item Placements", [
         SpawnSword,
+        SpawnRegenerate,
         VanillaShopUpgrades,
         LaunchOnSeir,
     ])
@@ -336,6 +359,8 @@ class WotWOptions(PerGameCommonOptions):
     fragments_required: FragmentsRequired
     fragments_count: FragmentsCount
     hard_mode: HardMode
+    regenerate_requirements: RegenerateRequirements
+    free_teleporters: FreeTeleporters
     door_rando: RandomizeDoors
     qol: QualityOfLife
     hints: ShrineTrialHints
@@ -359,6 +384,7 @@ class WotWOptions(PerGameCommonOptions):
     glades_done: GladesDone
     shop_keywords: ShopKeywordsIcons
     sword: SpawnSword  # Item Placements
+    regenerate: SpawnRegenerate
     vanilla_shop_upgrades: VanillaShopUpgrades
     launch_on_seir: LaunchOnSeir
     start_inventory_from_pool: StartInventoryPool

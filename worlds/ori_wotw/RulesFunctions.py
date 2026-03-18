@@ -116,28 +116,6 @@ enemy_data: dict[str, tuple[int, list[str]]] = {  # For each enemy: HP and comba
     "Spiderling": (12, []),
 }
 
-area_data = {"MidnightBurrows": (25, False),  # For each area, minimum health and whether regenerate is needed
-             "EastHollow": (20, False),
-             "WestHollow": (20, False),
-             "WestGlades": (20, False),
-             "OuterWellspring": (25, False),
-             "InnerWellspring": (25, False),
-             "WoodsEntry": (40, True),
-             "WoodsMain": (40, True),
-             "LowerReach": (40, True),
-             "UpperReach": (40, True),
-             "UpperDepths": (40, True),
-             "LowerDepths": (40, True),
-             "PoolsApproach": (25, True),
-             "EastPools": (40, True),
-             "UpperPools": (40, True),
-             "WestPools": (40, True),
-             "LowerWastes": (50, True),
-             "UpperWastes": (50, True),
-             "WindtornRuins": (50, True),
-             "WeepingRidge": (60, True),
-             "WillowsEnd": (60, True),
-             }
 
 def get_max(state: "CollectionState", player: int) -> tuple[int, float]:
     """Return the current max health and energy."""
@@ -177,25 +155,12 @@ def get_enemy_cost(enemy: str, state: "CollectionState", player: int, options: "
             cost = min(cost, weapon_data[weapon][1] * ceil(data[0] / weapon_data[weapon][0]))
     return cost
 
-def can_enter_area(area: str, state: "CollectionState", player: int, options: "WotWOptions") -> bool:
-    """Check if the requirement to enter an area is fulfilled."""
-    difficulty = options.difficulty.value
 
-    if area in ("MarshSpawn", "HowlsDen", "MarshPastOpher", "GladesTown"):  # No restriction in these areas
-        return True
-
-    if difficulty == 3:  # Unsafe difficulty: no restriction
-        return True
-
-    if difficulty != 0:  # Kii and Gorlek: only check for regenerate
-        if area_data[area][1]:  # Kii, Gorlek
-            return state.has("Regenerate", player)
-        return True
-
-    # Moki difficulty: check for health and regenerate
-    if area_data[area][1]:
-        return state.has("Regenerate", player) and state.wotw_max_resources[player][0] >= area_data[area][0]
-    return state.wotw_max_resources[player][0] >= area_data[area][0]
+def has_enough_max_health(state: "CollectionState", player: int, options: "WotWOptions", value: int) -> bool:
+    """Check if the player has enough max health to solve the region requirement."""
+    if options.hard_mode:
+        return state.wotw_max_resources[player][0] > 2 * value
+    return state.wotw_max_resources[player][0] > value
 
 
 def can_buy_map(state: "CollectionState", player: int) -> bool:
