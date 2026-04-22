@@ -198,3 +198,4 @@ Thumbs.db
 fuzz.py
 /fuzz_output
 /hooks
+/worlds/tracker

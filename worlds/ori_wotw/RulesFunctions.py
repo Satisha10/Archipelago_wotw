@@ -30,10 +30,10 @@ class WotWLogic(LogicMixin):
             self.wotw_enemies.setdefault(player, {enemy: IMPOSSIBLE_COST for enemy in enemy_data.keys()})
         self.wotw_resource_stale = {player: True for player in mw.get_game_players("Ori and the Will of the Wisps")}
         self.wotw_enemies_stale_collect = {
-            player: False for player in mw.get_game_players("Ori and the Will of the Wisps")
+            player: True for player in mw.get_game_players("Ori and the Will of the Wisps")
         }
         self.wotw_enemies_stale_remove = {
-            player: False for player in mw.get_game_players("Ori and the Will of the Wisps")
+            player: True for player in mw.get_game_players("Ori and the Will of the Wisps")
         }
 
     def copy_mixin(self, new_state: "CollectionState") -> "CollectionState":
@@ -158,6 +158,11 @@ def get_enemy_cost(enemy: str, state: "CollectionState", player: int, options: "
 
 def has_enough_max_health(state: "CollectionState", player: int, options: "WotWOptions", value: int) -> bool:
     """Check if the player has enough max health to solve the region requirement."""
+    if state.wotw_resource_stale[player]:  # Update the resources and refill values if needed
+        state.wotw_max_resources[player] = get_max(state, player)
+        state.wotw_refill_amount[player] = get_refill(state, player)
+        state.wotw_resource_stale[player] = False
+
     if options.hard_mode:
         return state.wotw_max_resources[player][0] > 2 * value
     return state.wotw_max_resources[player][0] > value
