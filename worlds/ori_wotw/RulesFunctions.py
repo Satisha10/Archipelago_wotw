@@ -313,7 +313,7 @@ def compute_dboost(damage: int,
     return health, n_regen
 
 
-def compute_combat(enemy: str,
+def compute_combat(defeat_enemy: str,
                    state: "CollectionState",
                    player: int,
                    options: "WotWOptions") -> float:
@@ -330,7 +330,9 @@ def compute_combat(enemy: str,
                 state.wotw_enemies[player][enemy] = get_enemy_cost(enemy, state, player, options)
         state.wotw_enemies_stale_collect[player] = False
         state.wotw_enemies_stale_remove[player] = False
-    return state.wotw_enemies[player][enemy]
+
+    # Return the energy cost for the enemy that the rule require to defeat
+    return state.wotw_enemies[player][defeat_enemy]
 
 
 def compute_wall(data: tuple[str, int],
