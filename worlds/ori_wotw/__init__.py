@@ -1,8 +1,10 @@
-"""AP world for Ori and the Will of the Wisps."""
+"""Definition of the World class and world structure for Ori and the Will of the Wisps."""
 
-# TODO Black market ?
-# TODO rename spawn locations and add aliases
-# TODO Check that random is taken from world
+
+# TODO list spawn items:
+# Add regen/health region req directly (+ extract the data from areas.wotw)
+# Make the new spawn points (list extracted from areas)
+# New spawn options: vanilla, TP, random TP (with weights ?), random anchor
 
 
 from typing import Any, Callable
@@ -86,6 +88,7 @@ class WotWWorld(World):
     def collect(self, state: CollectionState, item: Item) -> bool:
         change = super().collect(state, item)
         # Ask to update the max resources and the refills on the next call to `RulesFunctions.has_enough_resources`
+        # or `RulesFunctions.has_enough_max_health`
         if change and item.name in ("Health Fragment",
                                     "Energy Fragment",
                                     "EastHollow.ForestsVoice",
@@ -117,6 +120,7 @@ class WotWWorld(World):
     def remove(self, state: CollectionState, item: Item) -> bool:
         change = super().remove(state, item)
         # Ask to update the max resources and the refills on the next call to `RulesFunctions.has_enough_resources`
+        # or `RulesFunctions.has_enough_max_health`
         if change and item.name in ("Health Fragment",
                                     "Energy Fragment",
                                     "EastHollow.ForestsVoice",
@@ -342,6 +346,17 @@ class WotWWorld(World):
 
         mworld.completion_condition[player] = lambda state: state.has("Victory", player)
 
+        # TODO Handle regen + health separately
+        if options.spawn != StartingLocation.option_marsh:
+            for i in range(1, 11):
+                name = f"Spawn item {i}"
+                spawn_loc = WotWLocation(player, name, self.location_name_to_id[name], menu_region)
+                menu_region.locations.append(spawn_loc)
+                spawn_loc.progress_type = LocationProgressType.PRIORITY  # TODO only a few priority locs ?
+                # Spawn items need to be local, and exclude launch fragments from there
+                spawn_loc.item_rule = lambda item: item.player == self.player and item.name != "Launch Fragment"
+
+
     def create_event(self, event: str, show_spoiler=False) -> None:
         """Create an event, place the item and attach it to an event region (all with the same name)."""
         event_region = Region(event, self.player, self.multiworld)
@@ -362,9 +377,9 @@ class WotWWorld(World):
         removed_items: list[str] = []  # Remove all instances of the item
         pool: list[WotWItem] = []
 
-        for item in spawn_items(self, options.spawn.value, options.difficulty.value):  # Staring items
-            mworld.push_precollected(self.create_item(item))
-            skipped_items.append(item)
+        #for item in spawn_items(self, options.spawn.value, options.difficulty.value):  # Staring items
+        #    mworld.push_precollected(self.create_item(item))
+        #    skipped_items.append(item)
 
         for item, count in options.start_inventory.value.items():
             for _ in range(count):
@@ -508,6 +523,9 @@ class WotWWorld(World):
         if not self.multiworld.regions.entrance_cache[self.player].get(f"Menu -> {region}"):
             self.get_region("Menu").connect(self.get_region(region), rule=rule)
 
+    def precollect_event(self, event: str) -> None:
+        self.push_precollected(self.create_event_item(event))
+
     def set_rules(self) -> None:
         player = self.player
         options = self.options
@@ -583,13 +601,13 @@ class WotWWorld(World):
 
         # Rules for specific options
         if options.qol:
-            self.connect_to_menu("GladesTown.TuleySpawned")
+            self.precollect_event("GladesTown.TuleySpawned")
             self.get_region("WoodsEntry.LastTreeBranch").connect(self.get_region("WoodsEntry.TreeSeed"))
         if options.better_spawn:
-            self.connect_to_menu("MarshSpawn.HowlBurnt")
-            self.connect_to_menu("HowlsDen.BoneBarrier")
-            self.connect_to_menu("EastPools.EntryLever")
-            self.connect_to_menu("UpperWastes.LeverDoor")
+            self.precollect_event("MarshSpawn.HowlBurnt")
+            self.precollect_event("HowlsDen.BoneBarrier")
+            self.precollect_event("EastPools.EntryLever")
+            self.precollect_event("UpperWastes.LeverDoor")
 
         if "Everything" in options.no_combat or "Bosses" in options.no_combat:
             for entrance in ("ExternalStates -> SkipKwolok",
@@ -613,7 +631,7 @@ class WotWWorld(World):
                 set_rule(self.get_entrance(entrance), lambda s: True)
 
         if options.better_wellspring:
-            self.connect_to_menu("InnerWellspring.TopDoorOpen")
+            self.precollect_event("InnerWellspring.TopDoorOpen")
         if options.no_ks:
             for event in ("MarshSpawn.KeystoneDoor",
                           "HowlsDen.KeystoneDoor",
@@ -627,7 +645,7 @@ class WotWWorld(World):
                           "UpperDepths.CentralKeystoneDoor",
                           "UpperPools.KeystoneDoor",
                           "UpperWastes.KeystoneDoor"):
-                self.connect_to_menu(event)
+                self.precollect_event(event)
         if options.open_mode:
             for event in ("HowlsDen.BoneBarrier",
                           "MarshSpawn.ToOpherBarrier",
@@ -655,14 +673,14 @@ class WotWWorld(World):
                           "EastPools.CentralRoomPurpleWall",
                           "UpperPools.UpperWaterDrained",
                           "UpperPools.ButtonDoorAboveTree",):
-                self.connect_to_menu(event)
+                self.precollect_event(event)
         if options.no_rain:
             for event in ("HowlsDen.UpperLoopExitBarrier",
                           "HowlsDen.UpperLoopEntranceBarrier",
                           "HowlsDen.RainLifted",):
-                self.connect_to_menu(event)
+                self.precollect_event(event)
             if not options.better_spawn:
-                self.connect_to_menu("MarshSpawn.HowlBurnt")
+                self.precollect_event("MarshSpawn.HowlBurnt")
         if options.glades_done:
             for event in ("TuleyShop.LastTreeBranchRejected",
                           "TuleyShop.SelaFlowers",
@@ -671,15 +689,15 @@ class WotWWorld(World):
                           "TuleyShop.BlueMoon",
                           "TuleyShop.SpringPlants",
                           "TuleyShop.LastTree"):
-                self.connect_to_menu(event)
-            # This location is unaccessible without Ore, so it is manually collected in this case
+                self.precollect_event(event)
+            # This location is inaccessible without Ore, so it is manually collected in this case
             self.connect_to_menu("GladesTown.RebuildTheGlades")
             for event in ("GladesTown.BuildHuts",
                           "GladesTown.RoofsOverHeads",
                           "GladesTown.OnwardsAndUpwards",
                           "GladesTown.ClearThorns",
                           "GladesTown.CaveEntrance"):
-                self.connect_to_menu(event)
+                self.precollect_event(event)
 
         if options.quests == Quests.option_none:  # Open locations locked behind NPCs
             # Connecting the other quests is not necessary, as their event don't appear in logic for non-quest locations
@@ -688,16 +706,15 @@ class WotWWorld(World):
                           "GladesTown.FamilyReunionKey"):
                 self.connect_to_menu(quest + ".quest")
         if options.unpopular:
-            self.create_event("Unpopular")
-            self.connect_to_menu("Unpopular")
+            self.precollect_event("Unpopular")
 
         if options.free_teleporters:
-            self.connect_to_menu("RemoveTPLocks")
+            self.precollect_event("RemoveTPLocks")
         else:
             self.connect_to_menu("RemoveTPLocks", rule=lambda s: s.has("Victory", player))
 
         if options.regenerate_requirements <= options.difficulty:
-            self.connect_to_menu("RemoveRegionRegen")
+            self.precollect_event("RemoveRegionRegen")
         else:
             self.connect_to_menu("RemoveRegionRegen", rule=lambda s: s.has("Victory", player))
 
