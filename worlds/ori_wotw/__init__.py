@@ -292,7 +292,7 @@ class WotWWorld(World):
         player = self.player
         options = self.options
 
-        for region_name in region_table:
+        for region_name in region_table.keys():
             region = Region(region_name, player, mworld)
             mworld.regions.append(region)
 
