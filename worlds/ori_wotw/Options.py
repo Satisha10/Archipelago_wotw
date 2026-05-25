@@ -39,9 +39,20 @@ class Glitches(Toggle):
 
 
 class StartingLocation(Choice):
-    """Choose the starting location."""
+    """
+    Choose the starting location.
+
+    - **vanilla**: spawn in Inkwater Marsh.
+    - Teleporter name: spawn in this teleporter.
+      Possible values: marsh, burrows, howlsden, hollow, glades, wellspring, westwoods, eastwoods,
+      reach, depths, eastpools, westpools, westwastes, eastwastes, outerruins, innerruins, willow, shriek.
+    - **random_tp**: Spawn at a random teleporter (there are weights applied internally for this option).
+    - **random_loc**: Spawn at a random location (usually placed on a checkpoint).
+    """
     display_name = "Starting location"
-    option_marsh = 0
+    rich_text_doc = True
+
+    option_vanilla = 0
     option_burrows = 1
     option_howlsden = 2
     option_hollow = 3
@@ -58,6 +69,19 @@ class StartingLocation(Choice):
     option_outerruins = 14
     option_innerruins = 15
     option_willow = 16
+    option_shriek = 17
+
+    alias_marsh = 0
+    alias_woodsentrance = 6  # TODO check here and in item names that these are the right TP names
+    alias_woodsexit = 7
+    alias_centralluma = 10
+    alias_lumaboss = 11
+    alias_feedinggrounds = 12
+    alias_centralwastes = 12
+
+    option_random_tp = 18
+    option_random_loc = 19  # TODO option name
+
     default = 0
 
 

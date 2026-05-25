@@ -156,7 +156,7 @@ class WotWWorld(World):
             options.no_rain.value = True
         # Escaping from Willow require to complete the elevator fight, so a tp is needed to escape.
         if options.spawn.value == StartingLocation.option_willow and not options.tp:
-            options.spawn.value = StartingLocation.option_marsh  # No TP in pool: spawn somewhere else.
+            options.spawn.value = StartingLocation.option_vanilla  # No TP in pool: spawn somewhere else.
         # Without TP in the pool, some random spawn are dead-ends without better random spawn
         if not options.tp and not options.better_spawn:
             options.better_spawn.value = True
@@ -165,7 +165,7 @@ class WotWWorld(World):
         # Spawning on willow usually gives Launch on spawn, which defeats the purpose of the options that affect Launch
         if (options.spawn.value == StartingLocation.option_willow
                 and (options.launch_on_seir or options.launch_fragments)):
-            options.spawn.value = StartingLocation.option_marsh
+            options.spawn.value = StartingLocation.option_vanilla
 
         # Selection of a random goal
         if "random" in options.goal:
@@ -218,7 +218,7 @@ class WotWWorld(World):
                 "Unsafe": LogicDifficulty.option_unsafe,
             }
             spawn_dict: dict[str, int] = {
-                "MarshSpawn.Main": StartingLocation.option_marsh,
+                "MarshSpawn.Main": StartingLocation.option_vanilla,
                 "MidnightBurrows.Teleporter": StartingLocation.option_burrows,
                 "HowlsDen.Teleporter": StartingLocation.option_howlsden,
                 "EastHollow.Teleporter": StartingLocation.option_hollow,
@@ -235,6 +235,7 @@ class WotWWorld(World):
                 "UpperWastes.NorthTP": StartingLocation.option_outerruins,
                 "WindtornRuins.RuinsTP": StartingLocation.option_innerruins,
                 "WillowsEnd.InnerTP": StartingLocation.option_willow,
+                "WillowsEnd.ShriekArena": StartingLocation.option_shriek,
             }
             goals: set[str] = set()
             combat: set[str] = set()
@@ -347,7 +348,7 @@ class WotWWorld(World):
         mworld.completion_condition[player] = lambda state: state.has("Victory", player)
 
         # TODO Handle regen + health separately
-        if options.spawn != StartingLocation.option_marsh:
+        if options.spawn != StartingLocation.option_vanilla:
             for i in range(1, 11):
                 name = f"Spawn item {i}"
                 spawn_loc = WotWLocation(player, name, self.location_name_to_id[name], menu_region)
