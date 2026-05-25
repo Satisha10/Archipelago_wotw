@@ -4,7 +4,7 @@
 # TODO list spawn items:
 # Add regen/health region req directly (+ extract the data from areas.wotw)
 # Make the new spawn points
-# Put new spawn locs outside of data files
+# Put new spawn locs outside of data files (or add them auto)
 # New spawn options: vanilla, TP, random TP (with weights ?), random anchor
 # UT support for random name + add spawn info to slot data
 # Change KS logic for spawn ?
@@ -171,27 +171,27 @@ class WotWWorld(World):
             options.spawn.value = StartingLocation.option_vanilla
 
         # Selection of a random spawn location
-        spawn_dict: dict[str, int] = {  # Map from TP region name to associated spawn option
-            "MarshSpawn.Main": StartingLocation.option_vanilla,
-            "MidnightBurrows.Teleporter": StartingLocation.option_burrows,
-            "HowlsDen.Teleporter": StartingLocation.option_howlsden,
-            "EastHollow.Teleporter": StartingLocation.option_hollow,
-            "GladesTown.Teleporter": StartingLocation.option_glades,
-            "InnerWellspring.Teleporter": StartingLocation.option_wellspring,
-            "WoodsEntry.Teleporter": StartingLocation.option_westwoods,
-            "WoodsMain.Teleporter": StartingLocation.option_eastwoods,
-            "LowerReach.Teleporter": StartingLocation.option_reach,
-            "UpperDepths.Teleporter": StartingLocation.option_depths,
-            "EastPools.Teleporter": StartingLocation.option_eastpools,
-            "WestPools.Teleporter": StartingLocation.option_westpools,
-            "LowerWastes.WestTP": StartingLocation.option_westwastes,
-            "LowerWastes.EastTP": StartingLocation.option_eastwastes,
-            "UpperWastes.NorthTP": StartingLocation.option_outerruins,
-            "WindtornRuins.RuinsTP": StartingLocation.option_innerruins,
-            "WillowsEnd.InnerTP": StartingLocation.option_willow,
-            "WillowsEnd.ShriekArena": StartingLocation.option_shriek,
+        spawn_dict: dict[str, tuple[int, int]] = {  # Map from TP region name to associated spawn option and weight
+            "MarshSpawn.Main": (StartingLocation.option_vanilla, 3),  # TODO change data structure ?
+            "MidnightBurrows.Teleporter": (StartingLocation.option_burrows, 10),
+            "HowlsDen.Teleporter": (StartingLocation.option_howlsden, 10),
+            "EastHollow.Teleporter": (StartingLocation.option_hollow, 10),
+            "GladesTown.Teleporter": (StartingLocation.option_glades, 10),
+            "InnerWellspring.Teleporter": (StartingLocation.option_wellspring, 10),
+            "WoodsEntry.Teleporter": (StartingLocation.option_westwoods, 7),
+            "WoodsMain.Teleporter": (StartingLocation.option_eastwoods, 7),
+            "LowerReach.Teleporter": (StartingLocation.option_reach, 10),
+            "UpperDepths.Teleporter": (StartingLocation.option_depths, 10),
+            "EastPools.Teleporter": (StartingLocation.option_eastpools, 7),
+            "WestPools.Teleporter": (StartingLocation.option_westpools, 7),
+            "LowerWastes.WestTP": (StartingLocation.option_westwastes, 5),
+            "LowerWastes.EastTP": (StartingLocation.option_eastwastes, 5),
+            "UpperWastes.NorthTP": (StartingLocation.option_outerruins, 5),
+            "WindtornRuins.RuinsTP": (StartingLocation.option_innerruins, 3),
+            "WillowsEnd.InnerTP": (StartingLocation.option_willow, 3),
+            "WillowsEnd.ShriekArena": (StartingLocation.option_shriek, 3),
         }
-        spawn_dict_reverse: dict[int, str] = {option: region for region, option in spawn_dict.items()}
+        spawn_dict_reverse: dict[int, str] = {option[0]: region for region, option in spawn_dict.items()}
 
         if options.spawn.value == StartingLocation.option_random_loc:
             spawn_regions_candidates: list[str] = []
@@ -201,8 +201,15 @@ class WotWWorld(World):
             self.spawn_region_name = self.random.choice(spawn_regions_candidates)
         else:  # options.spawn.value != StartingLocation.option_random_loc
             if options.spawn.value == StartingLocation.option_random_tp:
-                # TODO weights
-                options.spawn.value = self.random.randint(StartingLocation.option_vanilla, StartingLocation.option_shriek)
+                weights = [data[1] for data in spawn_dict.values()]
+                total_weight = sum(weights)
+                for i, weight in enumerate(weights):  # TODO data structure here: option value, weight (don't rely on same order)
+                    if self.random.random() < weight / total_weight:
+                        options.spawn.value = i
+                        break
+                    else:
+                        total_weight -= weight
+                assert options.spawn.value != StartingLocation.option_random_tp  # TODO debug, remove
             self.spawn_region_name = spawn_dict_reverse[options.spawn.value]
 
         # Selection of a random goal
@@ -261,7 +268,8 @@ class WotWWorld(World):
             self.options.difficulty.value = difficulty_dict[slot_data["difficulty"]]
             self.options.glitches.value = slot_data["glitches"]
             self.options.unpopular.value = slot_data["unpopular"]
-            self.options.spawn.value = spawn_dict[slot_data["spawn_anchor"]]
+            # Overrides the random spawn selection done previously in generate_early
+            self.spawn_region_name = slot_data["spawn_anchor"]
             if slot_data["goal_trees"]:
                 goals.add("trees")
             if slot_data["goal_quests"]:
@@ -772,25 +780,6 @@ class WotWWorld(World):
     def fill_slot_data(self) -> dict[str, Any]:
         options = self.options
         logic_difficulty: list[str] = ["Moki", "Gorlek", "Kii", "Unsafe"]
-        coord: list[list[int | str]] = [
-            [-799, -4310, "MarshSpawn.Main"],
-            [-945, -4582, "MidnightBurrows.Teleporter"],
-            [-328, -4536, "HowlsDen.Teleporter"],
-            [-150, -4238, "EastHollow.Teleporter"],
-            [-307, -4153, "GladesTown.Teleporter"],
-            [-1308, -3675, "InnerWellspring.Teleporter"],
-            [611, -4162, "WoodsEntry.Teleporter"],
-            [1083, -4052, "WoodsMain.Teleporter"],
-            [-259, -3962, "LowerReach.Teleporter"],
-            [513, -4361, "UpperDepths.Teleporter"],
-            [-1316, -4153, "EastPools.Teleporter"],
-            [-1656, -4171, "WestPools.Teleporter"],
-            [1456, -3997, "LowerWastes.WestTP"],
-            [1992, -3902, "LowerWastes.EastTP"],
-            [2044, -3679, "UpperWastes.NorthTP"],
-            [2130, -3984, "WindtornRuins.RuinsTP"],
-            [422, -3864, "WillowsEnd.InnerTP"]
-        ]
         icons_paths: dict[str, str] = {}
         shops: list[str] = ["TwillenShop.Overcharge",
                             "TwillenShop.TripleJump",
@@ -839,9 +828,9 @@ class WotWWorld(World):
             "difficulty": logic_difficulty[options.difficulty.value],
             "glitches": bool(options.glitches.value),
             "unpopular": bool(options.unpopular),
-            "spawn_x": coord[options.spawn.value][0],
-            "spawn_y": coord[options.spawn.value][1],
-            "spawn_anchor": coord[options.spawn.value][2],
+            "spawn_x": region_table[self.spawn_region_name][1],
+            "spawn_y": region_table[self.spawn_region_name][2],
+            "spawn_anchor": region_table[self.spawn_region_name][0],
             "goal_trees": bool("trees" in options.goal),
             "goal_quests": bool("quests" in options.goal),
             "goal_wisps": bool("wisps" in options.goal),
