@@ -3,8 +3,11 @@
 
 # TODO list spawn items:
 # Add regen/health region req directly (+ extract the data from areas.wotw)
-# Make the new spawn points (list extracted from areas)
+# Make the new spawn points
+# Put new spawn locs outside of data files
 # New spawn options: vanilla, TP, random TP (with weights ?), random anchor
+# UT support for random name + add spawn info to slot data
+# Change KS logic for spawn ?
 
 
 from typing import Any, Callable
@@ -24,7 +27,6 @@ from .Regions import region_table
 from .Entrances import entrance_table
 from .Refills import refill_events
 from .Options import WotWOptions, option_groups, LogicDifficulty, Quests, StartingLocation
-from .SpawnItems import spawn_items, spawn_names, early_items
 from .Presets import options_presets
 from .ItemGroups import item_groups
 from .RulesFunctions import get_max, get_refill, get_enemy_cost, IMPOSSIBLE_COST
@@ -84,6 +86,7 @@ class WotWWorld(World):
         self.filled_locations: list[str] = [] # Locations holding an item
         self.er_door_ids: list[int] = []  # Contain the data of door IDs if ER is enabled
         # The list index corresponds to the exit door ID minus one, and the int in the list is the target door ID
+        self.spawn_region_name: str = "MarshSpawn.Main"
 
     def collect(self, state: CollectionState, item: Item) -> bool:
         change = super().collect(state, item)
@@ -167,6 +170,41 @@ class WotWWorld(World):
                 and (options.launch_on_seir or options.launch_fragments)):
             options.spawn.value = StartingLocation.option_vanilla
 
+        # Selection of a random spawn location
+        spawn_dict: dict[str, int] = {  # Map from TP region name to associated spawn option
+            "MarshSpawn.Main": StartingLocation.option_vanilla,
+            "MidnightBurrows.Teleporter": StartingLocation.option_burrows,
+            "HowlsDen.Teleporter": StartingLocation.option_howlsden,
+            "EastHollow.Teleporter": StartingLocation.option_hollow,
+            "GladesTown.Teleporter": StartingLocation.option_glades,
+            "InnerWellspring.Teleporter": StartingLocation.option_wellspring,
+            "WoodsEntry.Teleporter": StartingLocation.option_westwoods,
+            "WoodsMain.Teleporter": StartingLocation.option_eastwoods,
+            "LowerReach.Teleporter": StartingLocation.option_reach,
+            "UpperDepths.Teleporter": StartingLocation.option_depths,
+            "EastPools.Teleporter": StartingLocation.option_eastpools,
+            "WestPools.Teleporter": StartingLocation.option_westpools,
+            "LowerWastes.WestTP": StartingLocation.option_westwastes,
+            "LowerWastes.EastTP": StartingLocation.option_eastwastes,
+            "UpperWastes.NorthTP": StartingLocation.option_outerruins,
+            "WindtornRuins.RuinsTP": StartingLocation.option_innerruins,
+            "WillowsEnd.InnerTP": StartingLocation.option_willow,
+            "WillowsEnd.ShriekArena": StartingLocation.option_shriek,
+        }
+        spawn_dict_reverse: dict[int, str] = {option: region for region, option in spawn_dict.items()}
+
+        if options.spawn.value == StartingLocation.option_random_loc:
+            spawn_regions_candidates: list[str] = []
+            for region_name, region_data in region_table.items():
+                if region_data[0]:
+                    spawn_regions_candidates.append(region_name)
+            self.spawn_region_name = self.random.choice(spawn_regions_candidates)
+        else:  # options.spawn.value != StartingLocation.option_random_loc
+            if options.spawn.value == StartingLocation.option_random_tp:
+                # TODO weights
+                options.spawn.value = self.random.randint(StartingLocation.option_vanilla, StartingLocation.option_shriek)
+            self.spawn_region_name = spawn_dict_reverse[options.spawn.value]
+
         # Selection of a random goal
         if "random" in options.goal:
             possible_goals = sorted(list(options.goal.value))
@@ -216,26 +254,6 @@ class WotWWorld(World):
                 "Gorlek": LogicDifficulty.option_gorlek,
                 "Kii": LogicDifficulty.option_kii,
                 "Unsafe": LogicDifficulty.option_unsafe,
-            }
-            spawn_dict: dict[str, int] = {
-                "MarshSpawn.Main": StartingLocation.option_vanilla,
-                "MidnightBurrows.Teleporter": StartingLocation.option_burrows,
-                "HowlsDen.Teleporter": StartingLocation.option_howlsden,
-                "EastHollow.Teleporter": StartingLocation.option_hollow,
-                "GladesTown.Teleporter": StartingLocation.option_glades,
-                "InnerWellspring.Teleporter": StartingLocation.option_wellspring,
-                "WoodsEntry.Teleporter": StartingLocation.option_westwoods,
-                "WoodsMain.Teleporter": StartingLocation.option_eastwoods,
-                "LowerReach.Teleporter": StartingLocation.option_reach,
-                "UpperDepths.Teleporter": StartingLocation.option_depths,
-                "EastPools.Teleporter": StartingLocation.option_eastpools,
-                "WestPools.Teleporter": StartingLocation.option_westpools,
-                "LowerWastes.WestTP": StartingLocation.option_westwastes,
-                "LowerWastes.EastTP": StartingLocation.option_eastwastes,
-                "UpperWastes.NorthTP": StartingLocation.option_outerruins,
-                "WindtornRuins.RuinsTP": StartingLocation.option_innerruins,
-                "WillowsEnd.InnerTP": StartingLocation.option_willow,
-                "WillowsEnd.ShriekArena": StartingLocation.option_shriek,
             }
             goals: set[str] = set()
             combat: set[str] = set()
@@ -304,8 +322,7 @@ class WotWWorld(World):
         menu_region = Region("Menu", player, mworld)
         mworld.regions.append(menu_region)
 
-        spawn_name = spawn_names[options.spawn]
-        spawn_region = self.get_region(spawn_name)  # Links menu with spawn point
+        spawn_region = self.get_region(self.spawn_region_name)  # Links menu with spawn point
         menu_region.connect(spawn_region, rule=lambda state: True)
 
         menu_region.connect(self.get_region("ExternalStates"), rule=lambda state: True)
@@ -500,13 +517,6 @@ class WotWWorld(World):
                 self.get_location(relic_location).place_locked_item(self.create_item("Relic"))
                 self.relic_placements.append((area_data[area], self.location_name_to_id[relic_location]))
 
-        # Add some items to sphere 1
-        items, ks_amount = early_items(self, options.spawn.value)
-        for item in items:
-            self.multiworld.early_items[self.player][item] = 1
-        if not options.no_ks and ks_amount > 0:
-            self.multiworld.early_items[self.player]["Keystone"] = ks_amount
-
         # Add filler items to have the same number of items and locations
         extras = len(mworld.get_unfilled_locations(player=self.player)) - len(pool)
         pool += [self.create_item(self.get_filler_item_name()) for _ in range(extras)]
@@ -575,7 +585,7 @@ class WotWWorld(World):
                          "LowerWastes.BurrowTree",
                          "WeepingRidge.LaunchTree",
                          ]:
-                add_rule(victory_conn, lambda s, tree=tree: s.can_reach_region(tree, player))
+                add_rule(victory_conn, lambda s, tree_name=tree: s.can_reach_region(tree_name, player))  # TODO check
                 # The entrance checks for regions, so we need to add an indirect condition
                 self.multiworld.register_indirect_condition(self.get_region(tree), victory_conn)
 
