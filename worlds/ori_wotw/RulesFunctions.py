@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from math import ceil, floor
 from .Refills import refills
 from worlds.AutoWorld import LogicMixin
@@ -22,7 +24,7 @@ class WotWLogic(LogicMixin):
     wotw_enemies_stale_collect: dict[int, bool]  # Indicate if combat has to be recomputed from collect
     wotw_enemies_stale_remove: dict[int, bool]  # Indicate if combat has to be recomputed from remove
 
-    def init_mixin(self, mw: "MultiWorld") -> None:
+    def init_mixin(self, mw: MultiWorld) -> None:
         self.wotw_max_resources = {player: (30, 3.0) for player in mw.get_game_players("Ori and the Will of the Wisps")}
         self.wotw_refill_amount = {player: (30, 1.0) for player in mw.get_game_players("Ori and the Will of the Wisps")}
         self.wotw_enemies = {}
@@ -36,7 +38,7 @@ class WotWLogic(LogicMixin):
             player: True for player in mw.get_game_players("Ori and the Will of the Wisps")
         }
 
-    def copy_mixin(self, new_state: "CollectionState") -> "CollectionState":
+    def copy_mixin(self, new_state: CollectionState) -> CollectionState:
         new_state.wotw_max_resources = self.wotw_max_resources.copy()
         new_state.wotw_refill_amount = self.wotw_refill_amount.copy()
         new_state.wotw_enemies = {player: enemies.copy() for player, enemies in self.wotw_enemies.items()}
@@ -45,28 +47,28 @@ class WotWLogic(LogicMixin):
         return new_state
 
 # Rules for some glitches
-def can_wavedash(state: "CollectionState", player: int) -> bool:
+def can_wavedash(state: CollectionState, player: int) -> bool:
     return state.has_all(("Dash", "Regenerate"), player)
 
-def can_hammerjump(state: "CollectionState", player: int) -> bool:
+def can_hammerjump(state: CollectionState, player: int) -> bool:
     return state.has_all(("Double Jump", "Hammer"), player)
 
-def can_swordjump(state: "CollectionState", player: int) -> bool:
+def can_swordjump(state: CollectionState, player: int) -> bool:
     return state.has_all(("Double Jump", "Sword"), player)
 
-def can_glidehammerjump(state: "CollectionState", player: int) -> bool:
+def can_glidehammerjump(state: CollectionState, player: int) -> bool:
     return state.has_all(("Glide", "Hammer"), player)
 
-def can_glidebashchain(state: "CollectionState", player: int) -> bool:
+def can_glidebashchain(state: CollectionState, player: int) -> bool:
     return state.has_all(("Glide", "Bash"), player)
 
-def can_doublejumpbashchain(state: "CollectionState", player: int) -> bool:
+def can_doublejumpbashchain(state: CollectionState, player: int) -> bool:
     return state.has_all(("Glide", "Bash"), player)
 
-def can_launchbashchain(state: "CollectionState", player: int) -> bool:
+def can_launchbashchain(state: CollectionState, player: int) -> bool:
     return state.has_all(("Launch", "Bash"), player)
 
-def can_pausefloat(state: "CollectionState", player: int) -> bool:
+def can_pausefloat(state: CollectionState, player: int) -> bool:
     return True
 
 IMPOSSIBLE_COST = 1000.0  # Extremely high energy cost, used when a requirement is not met
@@ -117,7 +119,7 @@ enemy_data: dict[str, tuple[int, list[str]]] = {  # For each enemy: HP and comba
 }
 
 
-def get_max(state: "CollectionState", player: int) -> tuple[int, float]:
+def get_max(state: CollectionState, player: int) -> tuple[int, float]:
     """Return the current max health and energy."""
     wisps = state.count_from_list(("EastHollow.ForestsVoice", "LowerReach.ForestsMemory", "UpperDepths.ForestsEyes",
                                   "WestPools.ForestsStrength", "WindtornRuins.Seir"), player)
@@ -125,7 +127,7 @@ def get_max(state: "CollectionState", player: int) -> tuple[int, float]:
             3 + state.count("Energy Fragment", player)*0.5 + wisps)
 
 
-def get_refill(state: "CollectionState", player: int) -> tuple[int, int]:
+def get_refill(state: CollectionState, player: int) -> tuple[int, int]:
     """Return the refill values."""
     max_h, max_e = state.wotw_max_resources[player]
     refill_h = min((4 + floor(max_h/50/0.6685)) * 10, max_h)
@@ -133,7 +135,7 @@ def get_refill(state: "CollectionState", player: int) -> tuple[int, int]:
     return refill_h, refill_e
 
 
-def get_enemy_cost(enemy: str, state: "CollectionState", player: int, options: "WotWOptions") -> float:
+def get_enemy_cost(enemy: str, state: CollectionState, player: int, options: WotWOptions) -> float:
     """Return the energy cost to defeat the enemy (or IMPOSSIBLE_COST if the tags are not fulfilled)."""
     data = enemy_data[enemy]
     if not state.has_all(data[1], player):  # Check the tags
@@ -156,7 +158,7 @@ def get_enemy_cost(enemy: str, state: "CollectionState", player: int, options: "
     return cost
 
 
-def has_enough_max_health(state: "CollectionState", player: int, options: "WotWOptions", value: int) -> bool:
+def has_enough_max_health(state: CollectionState, player: int, options: WotWOptions, value: int) -> bool:
     """Check if the player has enough max health to solve the region requirement."""
     if state.wotw_resource_stale[player]:  # Update the resources and refill values if needed
         state.wotw_max_resources[player] = get_max(state, player)
@@ -168,17 +170,17 @@ def has_enough_max_health(state: "CollectionState", player: int, options: "WotWO
     return state.wotw_max_resources[player][0] > value
 
 
-def can_buy_map(state: "CollectionState", player: int) -> bool:
+def can_buy_map(state: CollectionState, player: int) -> bool:
     """Maps are logically required after collecting 1200 SL from 200 SL items."""
     return state.count("200 Spirit Light", player) >= 6
 
 
-def can_buy_shop(state: "CollectionState", player: int) -> bool:
+def can_buy_shop(state: CollectionState, player: int) -> bool:
     """Shops are logically required after collecting 1200 SL from 200 SL items."""
     return state.count("200 Spirit Light", player) >= 6
 
 
-def can_open_door(door_name: str, state: "CollectionState", player: int, spawn: int) -> bool:
+def can_open_door(door_name: str, state: CollectionState, player: int, spawn: int) -> bool:
     """
     Return if the door can be opened. The keystone (KS) costs are arbitrary.
 
@@ -192,7 +194,7 @@ def can_open_door(door_name: str, state: "CollectionState", player: int, spawn: 
     required_ks: int
     # Early game doors: 10 KS (or less if spawning nearby).
     if door_name == "MarshSpawn.KeystoneDoor":
-        required_ks = 2 if spawn == StartingLocation.option_marsh else 10
+        required_ks = 2 if spawn == StartingLocation.option_vanilla else 10
     elif door_name == "HowlsDen.KeystoneDoor":
         required_ks = 2 if spawn == StartingLocation.option_howlsden else 10
     elif door_name == "MarshPastOpher.EyestoneDoor":
@@ -224,9 +226,9 @@ def can_open_door(door_name: str, state: "CollectionState", player: int, spawn: 
 def has_enough_resources(requirements_all: list[tuple[str, Any]],
                          requirements_any: list[tuple[str, Any]],
                          region: str,
-                         state: "CollectionState",
+                         state: CollectionState,
                          player: int,
-                         options: "WotWOptions",
+                         options: WotWOptions,
                          is_moki: bool) -> bool:
     """
     Check if the player has enough energy/health to use the path.
@@ -296,7 +298,7 @@ def has_enough_resources(requirements_all: list[tuple[str, Any]],
 def compute_dboost(damage: int,
                    health: int,
                    max_health:int,
-                   state: "CollectionState",
+                   state: CollectionState,
                    player: int,
                    is_hard: bool) -> tuple[int, float]:
     """Return the new health and the energy cost after the damage boost."""
@@ -314,9 +316,9 @@ def compute_dboost(damage: int,
 
 
 def compute_combat(defeat_enemy: str,
-                   state: "CollectionState",
+                   state: CollectionState,
                    player: int,
-                   options: "WotWOptions") -> float:
+                   options: WotWOptions) -> float:
     """Return the energy cost to defeat the enemy."""
     # Update the energy cost for combat if required
     if state.wotw_enemies_stale_collect[player] or state.wotw_enemies_stale_remove[player]:
@@ -336,9 +338,9 @@ def compute_combat(defeat_enemy: str,
 
 
 def compute_wall(data: tuple[str, int],
-                 state: "CollectionState",
+                 state: CollectionState,
                  player: int,
-                 options: "WotWOptions") -> float:
+                 options: WotWOptions) -> float:
     """Return the energy cost for breaking a wall (or killing a boss)."""
     break_type, damage = data
     if state.has_any(("Sword", "Hammer"), player) and break_type in ("BreakWall", "Boss"):
@@ -363,7 +365,7 @@ def compute_wall(data: tuple[str, int],
 
 
 def compute_energy(data: tuple[str, int],
-                   state: "CollectionState",
+                   state: CollectionState,
                    player: int) -> float:
     """Return the energy cost for using the energy weapons."""
     weapon, times = data
