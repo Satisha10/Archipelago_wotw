@@ -9,6 +9,7 @@
 # UT support for random name + add spawn info to slot data
 # Change KS logic for spawn ?
 
+from __future__ import annotations
 
 from typing import Any, Callable
 from collections import Counter
@@ -153,6 +154,7 @@ class WotWWorld(World):
         return change
 
     def generate_early(self) -> None:
+        # TODO Launch on seir + fragments
         options = self.options  # TODO Use option error instead for some cases
         # Options checking
         if options.open_mode:
@@ -203,6 +205,7 @@ class WotWWorld(World):
             if options.spawn.value == StartingLocation.option_random_tp:
                 weights = [data[1] for data in spawn_dict.values()]
                 total_weight = sum(weights)
+                # TODO weights depending on difficulty ?
                 for i, weight in enumerate(weights):  # TODO data structure here: option value, weight (don't rely on same order)
                     if self.random.random() < weight / total_weight:
                         options.spawn.value = i
@@ -333,6 +336,7 @@ class WotWWorld(World):
         spawn_region = self.get_region(self.spawn_region_name)  # Links menu with spawn point
         menu_region.connect(spawn_region, rule=lambda state: True)
 
+        # ExternalStates is used in the generated file as a base point to handle the logic for a few options.
         menu_region.connect(self.get_region("ExternalStates"), rule=lambda state: True)
 
         # Create regions on locations, and create a location on top of it if needed
@@ -373,6 +377,7 @@ class WotWWorld(World):
         mworld.completion_condition[player] = lambda state: state.has("Victory", player)
 
         # TODO Handle regen + health separately
+        # TODO Use the same amount of spawn items everywhere
         if options.spawn != StartingLocation.option_vanilla:
             for i in range(1, 11):
                 name = f"Spawn item {i}"
@@ -392,7 +397,7 @@ class WotWWorld(World):
         self.multiworld.regions.append(event_region)
         event_region.locations.append(event_location)
 
-    def create_item(self, name: str) -> "WotWItem":
+    def create_item(self, name: str) -> WotWItem:
         return WotWItem(name, item_table[name][1], item_table[name][2], player=self.player)
 
     def create_items(self) -> None:
@@ -531,7 +536,7 @@ class WotWWorld(World):
 
         mworld.itempool += pool
 
-    def create_event_item(self, event: str) -> "WotWItem":
+    def create_event_item(self, event: str) -> WotWItem:
         return WotWItem(event, ItemClassification.progression, None, self.player)
 
     def get_filler_item_name(self) -> str:
