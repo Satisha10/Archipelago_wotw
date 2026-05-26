@@ -1,14 +1,15 @@
 from __future__ import annotations
 
 from math import ceil, floor
-from .Refills import refills
-from worlds.AutoWorld import LogicMixin
-from .Options import LogicDifficulty, StartingLocation
-
 from typing import TYPE_CHECKING, cast, Any
 if TYPE_CHECKING:
     from BaseClasses import CollectionState, MultiWorld
     from .Options import WotWOptions
+
+from worlds.AutoWorld import LogicMixin
+
+from .generated_data.Refills import refills
+from .Options import LogicDifficulty, StartingLocation
 
 
 class WotWLogic(LogicMixin):

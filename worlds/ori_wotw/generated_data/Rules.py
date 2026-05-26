@@ -6,7 +6,7 @@ Generated with `extract_rules.py`.
 """
 
 
-from .RulesFunctions import *
+from ..RulesFunctions import *
 from worlds.generic.Rules import add_rule
 
 from typing import TYPE_CHECKING

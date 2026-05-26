@@ -15,29 +15,36 @@ from typing import Any, Callable
 from collections import Counter
 
 from entrance_rando import randomize_entrances
-from .Rules import (set_moki_rules, set_gorlek_rules, set_gorlek_glitched_rules, set_kii_rules,
-                    set_kii_glitched_rules, set_unsafe_rules, set_unsafe_glitched_rules)
-from .AdditionalRules import combat_rules, unreachable_rules
-from .Items import item_table
-from .Items_Icons import get_item_iconpath
-from .Locations import loc_table
-from .Quests import quest_table
-from .LocationGroups import loc_sets, location_regions
-from .Events import event_table
-from .Regions import region_table
-from .Entrances import entrance_table
-from .Refills import refill_events
-from .Options import WotWOptions, option_groups, LogicDifficulty, Quests, StartingLocation
-from .Presets import options_presets
-from .ItemGroups import item_groups
-from .RulesFunctions import get_max, get_refill, get_enemy_cost, IMPOSSIBLE_COST
-from .DoorData import doors_map, doors_vanilla
-
 from worlds.AutoWorld import World, WebWorld
 from worlds.generic.Rules import add_rule, set_rule
 from BaseClasses import (Region, Location, Item, Tutorial, ItemClassification, LocationProgressType, CollectionState,
                          EntranceType, Entrance)
 
+from .generated_data.Events import event_table
+from .generated_data.Regions import region_table
+from .generated_data.Entrances import entrance_table
+from .generated_data.Refills import refill_events
+from .generated_data.Locations import loc_table
+from .generated_data.Quests import quest_table
+from .generated_data.DoorData import doors_map, doors_vanilla
+from .generated_data.Items import item_table
+from .generated_data.Rules import (
+    set_moki_rules,
+    set_gorlek_rules,
+    set_gorlek_glitched_rules,
+    set_kii_rules,
+    set_kii_glitched_rules,
+    set_unsafe_rules,
+    set_unsafe_glitched_rules
+)
+
+from .Options import WotWOptions, option_groups, LogicDifficulty, Quests, StartingLocation
+from .Presets import options_presets
+from .ItemGroups import item_groups
+from .RulesFunctions import get_max, get_refill, get_enemy_cost, IMPOSSIBLE_COST
+from .AdditionalRules import combat_rules, unreachable_rules
+from .Items_Icons import get_item_iconpath
+from .LocationGroups import loc_sets, location_regions
 
 class WotWWeb(WebWorld):
     theme = "ocean"  # TODO documentation
