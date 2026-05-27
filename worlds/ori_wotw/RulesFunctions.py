@@ -1,3 +1,5 @@
+"""Functions used in the logic rules, and definition of the LogicMixin."""
+
 from __future__ import annotations
 
 from math import ceil, floor
