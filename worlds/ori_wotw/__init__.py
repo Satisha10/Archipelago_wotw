@@ -38,14 +38,15 @@ from .generated_data.Rules import (
 )
 
 from .data.SpawnData import spawn_data
+from .data.ItemsIcons import get_item_iconpath
+from .data.LocationGroups import loc_sets, location_regions
+from .data.ItemGroups import item_groups
 
 from .Options import WotWOptions, option_groups, LogicDifficulty, Quests, StartingLocation
 from .Presets import options_presets
-from .ItemGroups import item_groups
 from .RulesFunctions import get_max, get_refill, get_enemy_cost, IMPOSSIBLE_COST
 from .AdditionalRules import combat_rules, unreachable_rules
-from .ItemsIcons import get_item_iconpath
-from .LocationGroups import loc_sets, location_regions
+
 
 class WotWWeb(WebWorld):
     theme = "ocean"  # TODO documentation

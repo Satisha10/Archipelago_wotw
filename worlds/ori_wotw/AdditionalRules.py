@@ -1,9 +1,12 @@
 """Additional location rules that are not extracted from `areas.wotw`."""
-from worlds.generic.Rules import set_rule
-from typing import TYPE_CHECKING
 
+from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from . import WotWWorld
+
+from worlds.generic.Rules import set_rule
+
+from .Options import LogicDifficulty
 
 def combat_rules(world: "WotWWorld"):
     """Defines rules for combat and light."""
@@ -12,7 +15,7 @@ def combat_rules(world: "WotWWorld"):
     menu = world.get_region("Menu")
     diff = options.difficulty
 
-    if diff == 0:  # Moki
+    if diff == LogicDifficulty.option_moki:
         menu.connect(world.get_region("DepthsLight"),
                      rule=lambda state: state.has_any(("UpperDepths.ForestsEyes", "Flash"), player))
         menu.connect(world.get_region("Combat.Ranged"),
@@ -28,7 +31,7 @@ def combat_rules(world: "WotWWorld"):
         menu.connect(world.get_region("BreakCrystal"),
                      rule=lambda s: s.has_any(("Sword", "Hammer", "Bow"), player))
 
-    elif diff == 1:  # Gorlek
+    elif diff == LogicDifficulty.option_gorlek:  # Gorlek
         menu.connect(world.get_region("DepthsLight"),
                      rule=lambda state: state.has_any(("UpperDepths.ForestsEyes", "Flash", "Bow"), player))
         menu.connect(world.get_region("Combat.Ranged"),
@@ -44,7 +47,7 @@ def combat_rules(world: "WotWWorld"):
         menu.connect(world.get_region("BreakCrystal"),
                      rule=lambda s: s.has_any(("Sword", "Hammer", "Bow", "Shuriken", "Grenade"), player))
 
-    elif diff == 2:  # Kii
+    elif diff == LogicDifficulty.option_kii:  # Kii
         menu.connect(world.get_region("DepthsLight"),
                      rule=lambda state: state.has_any(("UpperDepths.ForestsEyes", "Flash", "Bow"), player))
         menu.connect(world.get_region("Combat.Ranged"),
@@ -59,7 +62,7 @@ def combat_rules(world: "WotWWorld"):
         menu.connect(world.get_region("BreakCrystal"),
                      rule=lambda s: s.has_any(("Sword", "Hammer", "Bow", "Shuriken", "Grenade"), player))
 
-    else:  # Unsafe
+    else:  # diff == LogicDifficulty.option_unsafe
         menu.connect(world.get_region("DepthsLight"),
                      rule=lambda state: state.has_any(("UpperDepths.ForestsEyes", "Flash", "Bow"), player))
         menu.connect(world.get_region("Combat.Ranged"),
@@ -82,7 +85,7 @@ def unreachable_rules(world: "WotWWorld"):
     options = world.options
     diff = options.difficulty
     unreach: list[str]
-    if diff == 0:
+    if diff == LogicDifficulty.option_moki:
         unreach = ["WestHollow.AboveJumppad -> WestHollow.LowerTongueRetracted",
                    "OuterWellspring.EntranceDoor -> OuterWellspring.FallingWheel",
                    "UpperWastes.OutsideRuins -> UpperWastes.WormEscapeEnd",
@@ -99,7 +102,7 @@ def unreachable_rules(world: "WotWWorld"):
                    "LowerDepths.West -> E.LowerDepths.West",
                    "UpperWastes.MissilePuzzleMiddle -> C.UpperWastes.MissilePuzzleMiddle",
                    "WillowsEnd.Upper -> E.WillowsEnd.Upper"]
-    elif diff == 1:
+    elif diff == LogicDifficulty.option_gorlek:
         unreach = ["OuterWellspring.EntranceDoor -> OuterWellspring.FallingWheel",
                    "UpperWastes.OutsideRuins -> UpperWastes.WormEscapeEnd",
                    "MarshSpawn.PoolsBurrowsSignpost -> E.MarshSpawn.PoolsBurrowsSignpost",
@@ -110,7 +113,7 @@ def unreachable_rules(world: "WotWWorld"):
                    "UpperDepths.FirstKSRoom -> C.UpperDepths.FirstKSRoom",
                    "UpperDepths.FirstKSRoom -> E.UpperDepths.FirstKSRoom",
                    "UpperDepths.Central -> E.UpperDepths.Central"]
-    elif diff == 2:
+    elif diff == LogicDifficulty.option_kii:
         unreach = ["OuterWellspring.EntranceDoor -> OuterWellspring.FallingWheel",
                    "UpperWastes.OutsideRuins -> UpperWastes.WormEscapeEnd",
                    "OuterWellspring.EntranceDoor -> E.OuterWellspring.EntranceDoor",
@@ -120,7 +123,7 @@ def unreachable_rules(world: "WotWWorld"):
                    "UpperDepths.FirstKSRoom -> C.UpperDepths.FirstKSRoom",
                    "UpperDepths.FirstKSRoom -> E.UpperDepths.FirstKSRoom",
                    "UpperDepths.Central -> E.UpperDepths.Central"]
-    else:
+    else:  # diff == LogicDifficulty.option_unsafe
         unreach = []
 
     for entr in unreach:  # Connect these events when the seed is completed, to make them reachable.

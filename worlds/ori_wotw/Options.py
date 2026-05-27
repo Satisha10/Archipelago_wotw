@@ -30,7 +30,8 @@ class Glitches(Toggle):
     """
     Whether the logic includes paths with glitches.
 
-    - **Gorlek**: includes grounded sentry jumps, sentry as a fire source, breaking walls with Shuriken, and removing the kill plane in Feeding Grounds.
+    - **Gorlek**: includes grounded sentry jumps, sentry as a fire source, breaking walls with Shuriken, and removing
+      the kill plane in Feeding Grounds.
     - **Kii**: glitches are not included in Kii logic yet.
     - **Unsafe**: everything else.
     """
