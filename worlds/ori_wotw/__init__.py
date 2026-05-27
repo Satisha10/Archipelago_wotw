@@ -2,12 +2,11 @@
 
 
 # TODO list spawn items:
-# Add regen/health region req directly (+ extract the data from areas.wotw)
 # Make the new spawn points
 # Put new spawn locs outside of data files (or add them auto)
 # New spawn options: vanilla, TP, random TP (with weights ?), random anchor
 # UT support for random name + add spawn info to slot data
-# Change KS logic for spawn ?
+# Change KS logic for spawn ? Also add early KS data
 
 from __future__ import annotations
 
@@ -38,12 +37,14 @@ from .generated_data.Rules import (
     set_unsafe_glitched_rules
 )
 
+from .data.SpawnData import spawn_data
+
 from .Options import WotWOptions, option_groups, LogicDifficulty, Quests, StartingLocation
 from .Presets import options_presets
 from .ItemGroups import item_groups
 from .RulesFunctions import get_max, get_refill, get_enemy_cost, IMPOSSIBLE_COST
 from .AdditionalRules import combat_rules, unreachable_rules
-from .Items_Icons import get_item_iconpath
+from .ItemsIcons import get_item_iconpath
 from .LocationGroups import loc_sets, location_regions
 
 class WotWWeb(WebWorld):
@@ -322,7 +323,7 @@ class WotWWorld(World):
                 self.options.fragments_count.value = slot_data["total_frag"]
             self.options.door_rando.value = slot_data["door_rando"]
             self.options.free_teleporters.value = slot_data["free_tp"]
-            self.options.regenerate_requirements.value = slot_data["regen"]
+            self.options.free_regenerate.value = slot_data["regen"]
 
     def create_regions(self) -> None:
         mworld = self.multiworld
@@ -415,9 +416,36 @@ class WotWWorld(World):
         removed_items: list[str] = []  # Remove all instances of the item
         pool: list[WotWItem] = []
 
-        #for item in spawn_items(self, options.spawn.value, options.difficulty.value):  # Staring items
-        #    mworld.push_precollected(self.create_item(item))
-        #    skipped_items.append(item)
+        # Handle some spawn items and early items
+        spawn_area = str.split(self.spawn_region_name, ".")[0]
+        try:
+            items_data = spawn_data[spawn_area]
+        except KeyError:
+            items_data = spawn_data["MarshSpawn"]
+            # TODO debug, turn it into a warning
+            raise RuntimeError(f"Unknown spawn area {spawn_area} for spawn location {self.spawn_region_name}")
+        # Put keystones in sphere 1
+        if not options.no_ks and items_data.early_ks > 0:
+            self.multiworld.early_items[self.player]["Keystone"] = items_data.early_ks
+        # Give health and regenerate to pass the region requirements
+        if options.difficulty == LogicDifficulty.option_moki:
+            spawn_hf = items_data.moki_hf
+            regen_spawn = bool(items_data.require_regen and not options.free_regenerate)
+        elif options.difficulty == LogicDifficulty.option_gorlek:
+            spawn_hf = items_data.gorlek_hf
+            regen_spawn = bool(items_data.require_regen and not options.free_regenerate)
+        elif options.difficulty == LogicDifficulty.option_kii:
+            spawn_hf = items_data.kii_hf
+            regen_spawn = False
+        else:  # options.difficulty == LogicDifficulty.option_unsafe
+            spawn_hf = 0
+            regen_spawn = False
+        for _ in range(spawn_hf):  # Give Health Fragments from the pool
+            mworld.push_precollected(self.create_item("Health Fragment"))
+            skipped_items.append("Health Fragment")
+        if regen_spawn:  # Give Regenerate if needed
+            mworld.push_precollected(self.create_item("Regenerate"))
+            skipped_items.append("Regenerate")
 
         for item, count in options.start_inventory.value.items():
             for _ in range(count):
@@ -744,7 +772,7 @@ class WotWWorld(World):
         else:
             self.connect_to_menu("RemoveTPLocks", rule=lambda s: s.has("Victory", player))
 
-        if options.regenerate_requirements <= options.difficulty:
+        if options.free_regenerate:
             self.precollect_event("RemoveRegionRegen")
         else:
             self.connect_to_menu("RemoveRegionRegen", rule=lambda s: s.has("Victory", player))
@@ -875,7 +903,7 @@ class WotWWorld(World):
             "launch_frag": options.fragments_required.value if options.launch_fragments else 0,
             "total_frag": options.fragments_count.value,  # Only used by UT
             "free_tp": options.free_teleporters.value,
-            "regen": options.regenerate_requirements.value,
+            "regen": options.free_regenerate.value,
             "death_link": int(options.death_link.value),
             "ap_version": 2,
             "location_flags": location_flags,

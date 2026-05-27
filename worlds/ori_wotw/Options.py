@@ -136,17 +136,9 @@ class RandomizeDoors(Toggle):
     display_name = "Randomize Doors"
 
 
-class RegenerateRequirements(Choice):
-    """Set a logic difficulty at and above which Regenerate is ignored in region requirements."""
-    display_name = "Region Requirements"
-    default = 2
-    option_moki = 0
-    option_gorlek = 1
-    option_kii = 2
-    option_unsafe = 3
-    alias_easy = 0
-    alias_medium = 1
-    alias_hard = 2
+class FreeRegenerate(Toggle):
+    """Ignore Regenerate in the region requirements."""
+    display_name = "Free Regenerate"
 
 
 class FreeTeleporters(Toggle):
@@ -334,7 +326,7 @@ option_groups = [
         FragmentsCount,
         HardMode,
         RandomizeDoors,
-        RegenerateRequirements,
+        FreeRegenerate,
         FreeTeleporters,
         QualityOfLife,
         ShrineTrialHints,
@@ -383,7 +375,7 @@ class WotWOptions(PerGameCommonOptions):
     fragments_required: FragmentsRequired
     fragments_count: FragmentsCount
     hard_mode: HardMode
-    regenerate_requirements: RegenerateRequirements
+    free_regenerate: FreeRegenerate
     free_teleporters: FreeTeleporters
     door_rando: RandomizeDoors
     qol: QualityOfLife
