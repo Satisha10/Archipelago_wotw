@@ -802,7 +802,7 @@ class WotWWorld(World):
             location_flags += 0b000100
         if not options.no_trials:
             location_flags += 0b001000
-        if not options.qol:
+        if not options.qol and options.quests != Quests.option_none:
             location_flags += 0b010000
         if not options.zone_hints:
             location_flags += 0b100000
