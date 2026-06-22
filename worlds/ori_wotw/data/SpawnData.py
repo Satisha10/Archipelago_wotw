@@ -33,6 +33,7 @@ spawn_data: dict[str, SpawnItems] = {
     "WestPools": SpawnItems(1, 0, 0, True, 0),
     "LowerWastes": SpawnItems(5, 1, 1, True, 0),
     "UpperWastes": SpawnItems(5, 1, 1, True, 0),
+    "WindtornRuins": SpawnItems(0, 0, 0, False, 0),
     "WeepingRidge": SpawnItems(7, 3, 3, True, 0),
     "WillowsEnd": SpawnItems(7, 3, 3, True, 0),
 }

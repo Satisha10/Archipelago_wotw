@@ -1,5 +1,7 @@
 """Additional location rules that are not extracted from `areas.wotw`."""
 
+from __future__ import annotations
+
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from . import WotWWorld
@@ -8,7 +10,7 @@ from worlds.generic.Rules import set_rule
 
 from .Options import LogicDifficulty
 
-def combat_rules(world: "WotWWorld"):
+def combat_rules(world: WotWWorld):
     """Defines rules for combat and light."""
     player = world.player
     options = world.options
@@ -79,7 +81,7 @@ def combat_rules(world: "WotWWorld"):
                      rule=lambda s: s.has_any(("Sword", "Hammer", "Bow", "Shuriken", "Grenade", "Spear"), player))
 
 
-def unreachable_rules(world: "WotWWorld"):
+def unreachable_rules(world: WotWWorld):
     """Rules to handle unreachable events."""
     player = world.player
     options = world.options

@@ -41,11 +41,13 @@ from .data.SpawnData import spawn_data
 from .data.ItemsIcons import get_item_iconpath
 from .data.LocationGroups import loc_sets, location_regions
 from .data.ItemGroups import item_groups
+from .data.ERData import group_lookup, target_lookup
 
 from .Options import WotWOptions, option_groups, LogicDifficulty, Quests, StartingLocation
 from .Presets import options_presets
 from .RulesFunctions import get_max, get_refill, get_enemy_cost, IMPOSSIBLE_COST
 from .AdditionalRules import combat_rules, unreachable_rules
+from .ERGenerator import generate_er_connections
 
 
 class WotWWeb(WebWorld):
@@ -223,6 +225,7 @@ class WotWWorld(World):
                         total_weight -= weight
                 assert options.spawn.value != StartingLocation.option_random_tp  # TODO debug, remove
             self.spawn_region_name = spawn_dict_reverse[options.spawn.value]
+        print(f"Debug: Spawn point selected: {self.spawn_region_name}")
 
         # Selection of a random goal
         if "random" in options.goal:
@@ -791,29 +794,10 @@ class WotWWorld(World):
                     entry, target = id_to_door_map[entry_index + 1], id_to_door_map[target_index]
                     self.get_region(entry).connect(self.get_region(target))
 
-            else:
-                er_targets: list[Entrance] = []
-                exits: list[Entrance] = []
-                for door in doors_map:
-                    door_region: Region = self.get_region(door)
-                    er_target = door_region.create_er_target(door)
-                    er_target.randomization_type = EntranceType.TWO_WAY
-                    er_targets.append(er_target)
+            else:  # Non-UT: randomize entrances and fetch the output formatted for slot_data
+                self.er_door_ids = generate_er_connections(self)
 
-                    exit_entrance = door_region.create_exit(door)
-                    exit_entrance.randomization_type = EntranceType.TWO_WAY
-                    exits.append(exit_entrance)
-
-                er_results = randomize_entrances(self,
-                                                 coupled=True,
-                                                 target_group_lookup={0: [0]},
-                                                 er_targets=er_targets,
-                                                 exits=exits)
-
-                self.er_door_ids = [0] * 32  # This contains the ER results for slot_data
-                for (source_exit, target_entrance) in er_results.pairings:
-                    self.er_door_ids[doors_map[source_exit] - 1] = doors_map[target_entrance]
-        else:
+        else:  # door_rando not used: vanilla connections
             for entry, target in doors_vanilla:
                 self.get_region(entry).connect(self.get_region(target))
 

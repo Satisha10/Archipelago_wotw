@@ -9,10 +9,10 @@ class LogicDifficulty(Choice):
     """
     Difficulty of the logic.
 
-    - **Moki** (or easy): Recommended for beginners, who only played the game casually.
-    - **Gorlek** (or medium): Harder paths that can use sword and hammer as movement options, and damage boosts.
-    - **Kii** (or hard): Hard and precise paths that use energy weapons as movement.
-    - **Unsafe**: Very hard and unverified paths. Warning: some paths are **extremely hard**.
+    - **moki** (or easy): Recommended for beginners, who only played the game casually.
+    - **gorlek** (or medium): Harder paths that can use sword and hammer as movement options, and damage boosts.
+    - **kii** (or hard): Hard and precise paths that use energy weapons as movement.
+    - **unsafe**: Very hard and unverified paths. Warning: some paths are **extremely hard**.
     """
     display_name = "Logic difficulty"
     rich_text_doc = True
@@ -28,7 +28,7 @@ class LogicDifficulty(Choice):
 
 class Glitches(Toggle):
     """
-    Whether the logic includes paths with glitches.
+    Whether the logic includes paths with glitches. The required tricks depend on the logic difficulty.
 
     - **Gorlek**: includes grounded sentry jumps, sentry as a fire source, breaking walls with Shuriken, and removing
       the kill plane in Feeding Grounds.
@@ -94,7 +94,7 @@ class Goal(OptionSet):
     - **quests**: All quests have to be finished.
     - **relics**: Place relics in some areas, all of them must be collected.
     - **random**: Choose one goal at random among the other selected ones.
-      e.g. [random, trees, wisps] will give trees or wisps.
+      e.g. ['random', 'trees', 'wisps'] will give trees or wisps.
       If only random is selected, it will choose among all goals.
     """
     display_name = "Goal"
@@ -183,7 +183,7 @@ class Unpopular(Toggle):
 
 class DeathLink(NamedRange):
     """Disable/enable death link. Set this to a non-zero integer to specify how many deaths are needed to trigger it."""
-    display_name = "DeathLink amount"
+    display_name = "DeathLink amnesty"
     range_start = 0
     range_end = 99
     special_range_names = {
@@ -259,12 +259,15 @@ class NoWillowHearts(Toggle):
 
 
 class Quests(Choice):
-    """Change which quests are in the location pool.
+    """
+    Change which quests are in the location pool.
 
     - **all**: All quests are present.
-    - **no hand**: Remove the Hand-to-hand questline from the locations.
-    - **none**: Remove all quests that involve talking to NPCs. Main quests (e.g. wisps) or rebuilding Glades are still in the pool."""
-    display_name = "Remove Quests"
+    - **no_hand**: Remove the Hand-to-hand questline from the locations.
+    - **none**: Remove all quests that involve talking to NPCs. Main quests (e.g. wisps) or rebuilding Glades are
+      still in the pool.
+    """
+    display_name = "Quests"
     rich_text_doc = True
     option_all = 0
     option_no_hand = 1
@@ -288,7 +291,8 @@ class GladesDone(Toggle):
 
 
 class ShopKeywordsIcons(Toggle):
-    """Have the non-local items in the shops attempt to use a keyword system to choose icons.
+    """
+    Have the non-local items in the shops attempt to use a keyword system to choose icons.
     For example, item with 'map' in their name will have a map icon.
     If no keyword fit, then the icon fall back to Classification.
     """
