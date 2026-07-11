@@ -13,11 +13,9 @@ from __future__ import annotations
 from typing import Any, Callable
 from collections import Counter
 
-from entrance_rando import randomize_entrances
 from worlds.AutoWorld import World, WebWorld
 from worlds.generic.Rules import add_rule, set_rule
-from BaseClasses import (Region, Location, Item, Tutorial, ItemClassification, LocationProgressType, CollectionState,
-                         EntranceType, Entrance)
+from BaseClasses import Region, Location, Item, Tutorial, ItemClassification, LocationProgressType, CollectionState
 
 from .generated_data.Events import event_table
 from .generated_data.Regions import region_table
@@ -41,7 +39,6 @@ from .data.SpawnData import spawn_data
 from .data.ItemsIcons import get_item_iconpath
 from .data.LocationGroups import loc_sets, location_regions
 from .data.ItemGroups import item_groups
-from .data.ERData import group_lookup, target_lookup
 
 from .Options import WotWOptions, option_groups, LogicDifficulty, Quests, StartingLocation
 from .Presets import options_presets
@@ -431,7 +428,7 @@ class WotWWorld(World):
         # Put keystones in sphere 1
         if not options.no_ks and items_data.early_ks > 0:
             self.multiworld.early_items[self.player]["Keystone"] = items_data.early_ks
-        # Give health and regenerate to pass the region requirements
+        # Give health and regenerate to fulfill the region requirements
         if options.difficulty == LogicDifficulty.option_moki:
             spawn_hf = items_data.moki_hf
             regen_spawn = bool(items_data.require_regen and not options.free_regenerate)
