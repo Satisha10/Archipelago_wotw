@@ -96,6 +96,7 @@ class WotWWorld(World):
         self.er_door_ids: list[int] = []  # Contain the data of door IDs if ER is enabled
         # The list index corresponds to the exit door ID minus one, and the int in the list is the target door ID
         self.spawn_region_name: str = "MarshSpawn.Main"
+        self.spawn_area: str = "MarshSpawn"
 
     def collect(self, state: CollectionState, item: Item) -> bool:
         change = super().collect(state, item)
@@ -222,7 +223,8 @@ class WotWWorld(World):
                         total_weight -= weight
                 assert options.spawn.value != StartingLocation.option_random_tp  # TODO debug, remove
             self.spawn_region_name = spawn_dict_reverse[options.spawn.value]
-        print(f"Debug: Spawn point selected: {self.spawn_region_name}")
+        self.spawn_area = str.split(self.spawn_region_name, ".")[0]
+        print(f"Debug: Spawn point selected: {self.spawn_region_name}")  # TODO Debug
 
         # Selection of a random goal
         if "random" in options.goal:
@@ -418,13 +420,12 @@ class WotWWorld(World):
         pool: list[WotWItem] = []
 
         # Handle some spawn items and early items
-        spawn_area = str.split(self.spawn_region_name, ".")[0]
         try:
-            items_data = spawn_data[spawn_area]
+            items_data = spawn_data[self.spawn_area]
         except KeyError:
             items_data = spawn_data["MarshSpawn"]
             # TODO debug, turn it into a warning
-            raise RuntimeError(f"Unknown spawn area {spawn_area} for spawn location {self.spawn_region_name}")
+            raise RuntimeError(f"Unknown spawn area {self.spawn_area} for spawn location {self.spawn_region_name}")
         # Put keystones in sphere 1
         if not options.no_ks and items_data.early_ks > 0:
             self.multiworld.early_items[self.player]["Keystone"] = items_data.early_ks
@@ -561,6 +562,7 @@ class WotWWorld(World):
                 remaining_areas.remove(area)
 
                 relic_location: str = self.random.choice(location_regions[area])
+                # TODO check if location excluded, put a threshold and skip the area if it fails (careful, this changes logic requirements for goal)
                 while relic_location in self.empty_locations:  # Reroll if the location is excluded
                     relic_location = self.random.choice(location_regions[area])
                 self.get_location(relic_location).place_locked_item(self.create_item("Relic"))

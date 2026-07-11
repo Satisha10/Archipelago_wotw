@@ -4,9 +4,11 @@ from __future__ import annotations
 
 from math import ceil, floor
 from typing import TYPE_CHECKING, cast, Any
+
 if TYPE_CHECKING:
     from BaseClasses import CollectionState, MultiWorld
     from .Options import WotWOptions
+    from . import WotWWorld
 
 from worlds.AutoWorld import LogicMixin
 
@@ -183,7 +185,7 @@ def can_buy_shop(state: CollectionState, player: int) -> bool:
     return state.count("200 Spirit Light", player) >= 6
 
 
-def can_open_door(door_name: str, state: CollectionState, player: int, spawn: int) -> bool:
+def can_open_door(door_name: str, state: CollectionState, player: int, world: WotWWorld) -> bool:
     """
     Return if the door can be opened. The keystone (KS) costs are arbitrary.
 
@@ -195,26 +197,23 @@ def can_open_door(door_name: str, state: CollectionState, player: int, spawn: in
     in the pool (this concern doors that you need to cross to get access to most of the map).
     """
     required_ks: int
+    spawn = world.spawn_area
     # Early game doors: 10 KS (or less if spawning nearby).
     if door_name == "MarshSpawn.KeystoneDoor":
-        required_ks = 2 if spawn == StartingLocation.option_vanilla else 10
+        required_ks = 4 if spawn == "MarshSpawn" else 10
     elif door_name == "HowlsDen.KeystoneDoor":
-        required_ks = 2 if spawn == StartingLocation.option_howlsden else 10
+        required_ks = 4 if spawn == "HowlsDen" else 10
     elif door_name == "MarshPastOpher.EyestoneDoor":
         required_ks = 10
     # Midgame doors that lock access to some areas: 14 KS (or less if spawning nearby)
     elif door_name == "WoodsEntry.KeystoneDoor":
-        required_ks = 2 if spawn == StartingLocation.option_westwoods else 14
+        required_ks = 2 if spawn == "WoodsEntry" else 14
     elif door_name == "WoodsMain.KeystoneDoor":
-        required_ks = 6 if spawn in (StartingLocation.option_westwoods,
-                                     StartingLocation.option_eastwoods,
-                                     StartingLocation.option_westwastes) else 14
+        required_ks = 6 if spawn in ("WoodsEntry", "WoodsMain", "LowerWastes") else 14
     elif door_name == "UpperDepths.EntryKeystoneDoor":
-        required_ks = 2 if spawn == StartingLocation.option_depths else 14
+        required_ks = 2 if spawn == "UpperDepths" else 14
     elif door_name == "UpperWastes.KeystoneDoor":
-        required_ks = 2 if spawn in (StartingLocation.option_outerruins,
-                                     StartingLocation.option_innerruins,
-                                     StartingLocation.option_eastwastes) else 14
+        required_ks = 2 if spawn in ("WindtornRuins", "UpperWastes", "LowerWastes") else 14
     # Midgame doors that are less critical, but usually required for completion: 22 KS
     elif door_name in ("UpperReach.KeystoneDoor", "UpperPools.KeystoneDoor"):
         required_ks = 22

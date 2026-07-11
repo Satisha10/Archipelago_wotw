@@ -9,10 +9,11 @@ class SpawnItems(NamedTuple):
     # items_amount: int  # How many items to spawn with
 
 # TODO KS amount
+# TODO spawn item amount
 
 spawn_data: dict[str, SpawnItems] = {
-    "MarshSpawn": SpawnItems(0, 0, 0, False, 0),
-    "HowlsDen": SpawnItems(0, 0, 0, False, 0),
+    "MarshSpawn": SpawnItems(0, 0, 0, False, 2),
+    "HowlsDen": SpawnItems(0, 0, 0, False, 2),
     "MarshPastOpher": SpawnItems(0, 0, 0, False, 0),
     "MidnightBurrows": SpawnItems(0, 0, 0, False, 0),
     "WestHollow": SpawnItems(0, 0, 0, False, 0),
@@ -21,18 +22,18 @@ spawn_data: dict[str, SpawnItems] = {
     "WestGlades": SpawnItems(1, 0, 0, False, 0),
     "OuterWellspring": SpawnItems(1, 0, 0, False, 0),
     "InnerWellspring": SpawnItems(1, 0, 0, False, 0),
-    "WoodsEntry": SpawnItems(2, 0, 0, True, 0),
-    "WoodsMain": SpawnItems(2, 0, 0, True, 0),
+    "WoodsEntry": SpawnItems(2, 0, 0, True, 2),
+    "WoodsMain": SpawnItems(2, 0, 0, True, 4),
     "LowerReach": SpawnItems(3, 0, 0, True, 0),
     "UpperReach": SpawnItems(3, 0, 0, True, 0),
-    "UpperDepths": SpawnItems(3, 1, 1, True, 0),
+    "UpperDepths": SpawnItems(3, 1, 1, True, 2),
     "LowerDepths": SpawnItems(3, 1, 1, True, 0),
     "PoolsApproach": SpawnItems(1, 0, 0, True, 0),
     "EastPools": SpawnItems(1, 0, 0, True, 0),
     "UpperPools": SpawnItems(1, 0, 0, True, 0),
     "WestPools": SpawnItems(1, 0, 0, True, 0),
-    "LowerWastes": SpawnItems(5, 1, 1, True, 0),
-    "UpperWastes": SpawnItems(5, 1, 1, True, 0),
+    "LowerWastes": SpawnItems(5, 1, 1, True, 4),
+    "UpperWastes": SpawnItems(5, 1, 1, True, 2),
     "WindtornRuins": SpawnItems(0, 0, 0, False, 0),
     "WeepingRidge": SpawnItems(7, 3, 3, True, 0),
     "WillowsEnd": SpawnItems(7, 3, 3, True, 0),
