@@ -202,7 +202,7 @@ def can_open_door(door_name: str, state: CollectionState, player: int, world: Wo
     if door_name == "MarshSpawn.KeystoneDoor":
         required_ks = 4 if spawn == "MarshSpawn" else 10
     elif door_name == "HowlsDen.KeystoneDoor":
-        required_ks = 4 if spawn == "HowlsDen" else 10
+        required_ks = 2 if spawn == "HowlsDen" else 10
     elif door_name == "MarshPastOpher.EyestoneDoor":
         required_ks = 10
     # Midgame doors that lock access to some areas: 14 KS (or less if spawning nearby)

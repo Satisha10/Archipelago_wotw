@@ -861,6 +861,7 @@ class WotWWorld(World):
             "goal_relics": bool("relics" in options.goal),
             "hard": bool(options.hard_mode.value),
             "qol": bool(options.qol.value),
+            "no_cs": bool(options.skip_cutscenes.value),
             "shrine_hints": bool(options.hints.value and "shrines" not in options.no_combat),
             "trial_hints": bool(options.hints.value and not options.no_trials),
             "zone_hints": bool(options.zone_hints.value),

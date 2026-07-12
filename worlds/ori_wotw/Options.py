@@ -167,11 +167,6 @@ class ZoneHints(DefaultOnToggle):
     display_name = "Zone hints"
 
 
-class KnowledgeHints(DefaultOnToggle):
-    """Display useful hints on randomizer knowledge while playing the seed."""
-    display_name = "Knowledge hints"
-
-
 class Unpopular(Toggle):
     """
     Enable unpopular paths for unsafe.
@@ -290,15 +285,6 @@ class GladesDone(Toggle):
     display_name = "Glades Done"
 
 
-class ShopKeywordsIcons(Toggle):
-    """
-    Have the non-local items in the shops attempt to use a keyword system to choose icons.
-    For example, item with 'map' in their name will have a map icon.
-    If no keyword fit, then the icon fall back to Classification.
-    """
-    display_name = "Shop Keywords Icons"
-
-
 class SpawnSword(DefaultOnToggle):
     """Choose to have Sword at the beginning."""
     display_name = "Spawn with Sword"
@@ -319,6 +305,25 @@ class LaunchOnSeir(Toggle):
     display_name = "Launch on Seir"
 
 
+class KnowledgeHints(DefaultOnToggle):
+    """Display useful hints on randomizer knowledge while playing the seed."""
+    display_name = "Knowledge hints"
+
+
+class ShopKeywordsIcons(Toggle):
+    """
+    Have the non-local items in the shops attempt to use a keyword system to choose icons.
+    For example, item with 'map' in their name will have a map icon.
+    If no keyword fit, then the icon fall back to Classification.
+    """
+    display_name = "Shop Keywords Icons"
+
+
+class SkipCutscenes(DefaultOnToggle):
+    """Skip most cutscenes, and makes then skippable in the pause menu."""
+    display_name = "Skip cutscenes"
+
+
 option_groups = [
     OptionGroup("Seed Settings", [
         LogicDifficulty,
@@ -336,7 +341,6 @@ option_groups = [
         QualityOfLife,
         ShrineTrialHints,
         ZoneHints,
-        KnowledgeHints,
         Unpopular,
         DeathLink,
     ]),
@@ -358,14 +362,18 @@ option_groups = [
         NoKeystonesDoors,
         OpenMode,
         GladesDone,
-        ShopKeywordsIcons,
     ]),
     OptionGroup("Item Placements", [
         SpawnSword,
         SpawnRegenerate,
         VanillaShopUpgrades,
         LaunchOnSeir,
-    ])
+    ]),
+    OptionGroup("Miscellaneous", [
+        KnowledgeHints,
+        ShopKeywordsIcons,
+        SkipCutscenes,
+    ]),
 ]
 
 
@@ -387,7 +395,6 @@ class WotWOptions(PerGameCommonOptions):
     hints: ShrineTrialHints
     zone_hints: ZoneHints
     unpopular: Unpopular
-    knowledge_hints: KnowledgeHints
     tp: Teleporters  # Item Pool
     extratp: ExtraTeleporters
     bonus: BonusItems
@@ -403,10 +410,12 @@ class WotWOptions(PerGameCommonOptions):
     no_ks: NoKeystonesDoors
     open_mode: OpenMode
     glades_done: GladesDone
-    shop_keywords: ShopKeywordsIcons
     sword: SpawnSword  # Item Placements
     regenerate: SpawnRegenerate
     vanilla_shop_upgrades: VanillaShopUpgrades
     launch_on_seir: LaunchOnSeir
     start_inventory_from_pool: StartInventoryPool
     death_link: DeathLink
+    knowledge_hints: KnowledgeHints  # Miscellaneous
+    shop_keywords: ShopKeywordsIcons
+    skip_cutscenes: SkipCutscenes
