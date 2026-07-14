@@ -854,7 +854,7 @@ class WotWWorld(World):
             "unpopular": bool(options.unpopular),
             "spawn_x": region_table[self.spawn_region_name][1],
             "spawn_y": region_table[self.spawn_region_name][2],
-            "spawn_anchor": region_table[self.spawn_region_name][0],
+            "spawn_anchor": self.spawn_region_name,
             "goal_trees": bool("trees" in options.goal),
             "goal_quests": bool("quests" in options.goal),
             "goal_wisps": bool("wisps" in options.goal),

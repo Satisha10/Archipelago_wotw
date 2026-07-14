@@ -7,16 +7,6 @@ Generated with `extract_items.py` by running `extract_locs()`.
 
 
 loc_table = {
-    "Spawn item 1": 1,
-    "Spawn item 2": 2,
-    "Spawn item 3": 3,
-    "Spawn item 4": 4,
-    "Spawn item 5": 5,
-    "Spawn item 6": 6,
-    "Spawn item 7": 7,
-    "Spawn item 8": 8,
-    "Spawn item 9": 9,
-    "Spawn item 10": 10,
     "MarshSpawn.RockHC": 3363011383996929,
     "MarshSpawn.FirstPickupEX": 3363011381251329,
     "MarshSpawn.GrappleHC": 3363011375177985,
@@ -406,5 +396,15 @@ loc_table = {
     "OpherShop.RapidSentry": 3363010949438465,
     "LupoShop.HCMapIcon": 3363011188999169,
     "LupoShop.ECMapIcon": 3363011198878465,
-    "LupoShop.ShardMapIcon": 3363011194700289
+    "LupoShop.ShardMapIcon": 3363011194700289,
+    "Spawn item 1": 3363010932375551,
+    "Spawn item 2": 3363010932375550,
+    "Spawn item 3": 3363010932375549,
+    "Spawn item 4": 3363010932375548,
+    "Spawn item 5": 3363010932375547,
+    "Spawn item 6": 3363010932375546,
+    "Spawn item 7": 3363010932375545,
+    "Spawn item 8": 3363010932375544,
+    "Spawn item 9": 3363010932375543,
+    "Spawn item 10": 3363010932375542
     }

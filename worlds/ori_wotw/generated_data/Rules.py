@@ -8,7 +8,7 @@ Generated with `extract_rules.py`.
 
 from __future__ import annotations
 
-from .RulesFunctions import *
+from ..RulesFunctions import *
 from worlds.generic.Rules import add_rule as ar
 
 from typing import TYPE_CHECKING
