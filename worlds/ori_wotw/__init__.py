@@ -10,6 +10,7 @@
 
 from __future__ import annotations
 
+import logging
 from typing import Any, Callable
 from collections import Counter
 
@@ -224,7 +225,8 @@ class WotWWorld(World):
                 assert options.spawn.value != StartingLocation.option_random_tp  # TODO debug, remove
             self.spawn_region_name = spawn_dict_reverse[options.spawn.value]
         self.spawn_area = str.split(self.spawn_region_name, ".")[0]
-        print(f"Debug: Spawn point selected: {self.spawn_region_name}")  # TODO Debug
+        # TODO Debug, remove when generation stable ?
+        logging.info(f"Ori WotW: Spawn {self.spawn_region_name} for player {self.player}")
 
         # Selection of a random goal
         if "random" in options.goal:
@@ -387,17 +389,19 @@ class WotWWorld(World):
 
         mworld.completion_condition[player] = lambda state: state.has("Victory", player)
 
-        # TODO Handle regen + health separately
-        # TODO Use the same amount of spawn items everywhere
         if options.spawn != StartingLocation.option_vanilla:
-            for i in range(1, 11):
+            # Spawn items are local, and exclude Launch from them (except in late game areas)
+            if self.spawn_area in ("WillowsEnd", "WeepingRidge"):
+                item_rule = lambda item: item.player == self.player and item.name != "Launch Fragment"
+            else:
+                item_rule = (lambda item: item.player == self.player
+                             and item.name not in ("Launch Fragment", "Launch"))
+            for i in range(1, spawn_data[self.spawn_area].items_amount + 1):  # Create all spawn item locations
                 name = f"Spawn item {i}"
                 spawn_loc = WotWLocation(player, name, self.location_name_to_id[name], menu_region)
                 menu_region.locations.append(spawn_loc)
-                spawn_loc.progress_type = LocationProgressType.PRIORITY  # TODO only a few priority locs ?
-                # Spawn items need to be local, and exclude launch fragments from there
-                spawn_loc.item_rule = lambda item: item.player == self.player and item.name != "Launch Fragment"
-
+                # spawn_loc.progress_type = LocationProgressType.PRIORITY
+                spawn_loc.item_rule = item_rule
 
     def create_event(self, event: str, show_spoiler=False) -> None:
         """Create an event, place the item and attach it to an event region (all with the same name)."""
@@ -419,13 +423,8 @@ class WotWWorld(World):
         removed_items: list[str] = []  # Remove all instances of the item
         pool: list[WotWItem] = []
 
-        # Handle some spawn items and early items
-        try:
-            items_data = spawn_data[self.spawn_area]
-        except KeyError:
-            items_data = spawn_data["MarshSpawn"]
-            # TODO debug, turn it into a warning
-            raise RuntimeError(f"Unknown spawn area {self.spawn_area} for spawn location {self.spawn_region_name}")
+        # Handle the random spawn items and early items
+        items_data = spawn_data[self.spawn_area]
         # Put keystones in sphere 1
         if not options.no_ks and items_data.early_ks > 0:
             self.multiworld.early_items[self.player]["Keystone"] = items_data.early_ks
@@ -848,6 +847,10 @@ class WotWWorld(World):
         if not options.zone_hints:
             location_flags += 0b100000
 
+        spawn_items_amount = (int(spawn_data[self.spawn_area].items_amount)
+                              if options.spawn != StartingLocation.option_vanilla
+                              else 0)
+
         slot_data: dict[str, Any] = {
             "difficulty": logic_difficulty[options.difficulty.value],
             "glitches": bool(options.glitches.value),
@@ -855,6 +858,7 @@ class WotWWorld(World):
             "spawn_x": region_table[self.spawn_region_name][1],
             "spawn_y": region_table[self.spawn_region_name][2],
             "spawn_anchor": self.spawn_region_name,
+            "spawn_amount": spawn_items_amount,
             "goal_trees": bool("trees" in options.goal),
             "goal_quests": bool("quests" in options.goal),
             "goal_wisps": bool("wisps" in options.goal),
