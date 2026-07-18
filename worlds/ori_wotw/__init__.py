@@ -771,13 +771,14 @@ class WotWWorld(World):
 
         if options.free_teleporters:
             self.precollect_event("RemoveTPLocks")
-        else:
-            self.connect_to_menu("RemoveTPLocks", rule=lambda s: s.has("Victory", player))
+        # The location is connected to menu on victory in any case (for accessibility check, as precollect_event just
+        # grabs the event item and not the location)
+        self.connect_to_menu("RemoveTPLocks", rule=lambda s: s.has("Victory", player))
 
         if options.free_regenerate:
             self.precollect_event("RemoveRegionRegen")
-        else:
-            self.connect_to_menu("RemoveRegionRegen", rule=lambda s: s.has("Victory", player))
+        # Same as above, the location must be reachable
+        self.connect_to_menu("RemoveRegionRegen", rule=lambda s: s.has("Victory", player))
 
 
     def connect_entrances(self) -> None:
@@ -891,8 +892,8 @@ class WotWWorld(World):
             "relic_locs": self.relic_placements,
             "launch_frag": options.fragments_required.value if options.launch_fragments else 0,
             "total_frag": options.fragments_count.value,  # Only used by UT
-            "free_tp": options.free_teleporters.value,
-            "regen": options.free_regenerate.value,
+            "free_tp": bool(options.free_teleporters.value),
+            "regen": bool(options.free_regenerate.value),
             "death_link": int(options.death_link.value),
             "ap_version": 2,
             "location_flags": location_flags,
