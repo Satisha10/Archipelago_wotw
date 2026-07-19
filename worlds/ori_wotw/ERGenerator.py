@@ -241,4 +241,5 @@ def generate_er_connections(world: WotWWorld) -> list[int]:
     er_door_ids = [0] * 32
     for (source_exit, target_entrance) in er_pairings.items():
         er_door_ids[doors_map[source_exit] - 1] = doors_map[target_entrance]
+        er_door_ids[doors_map[target_entrance] - 1] = doors_map[source_exit]
     return er_door_ids
