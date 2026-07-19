@@ -895,7 +895,7 @@ class WotWWorld(World):
             "free_tp": bool(options.free_teleporters.value),
             "regen": bool(options.free_regenerate.value),
             "death_link": int(options.death_link.value),
-            "ap_version": 2,
+            "ap_version": 3,
             "location_flags": location_flags,
         }
 
