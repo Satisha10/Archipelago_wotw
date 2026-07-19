@@ -60,7 +60,7 @@ loc_sets: dict[str, list[str]] = {
         "LowerDepths.SpiritTrial",
         "LowerWastes.SpiritTrial",
     ],
-    "QOL": [  # Not present if QOL == True
+    "QOL": [  # Not present if QOL == True or without quests
         "WoodsEntry.LastTreeBranch",
     ],
     "Maps": [  # Lupo maps, not present if zone_hints == True

@@ -396,5 +396,15 @@ loc_table = {
     "OpherShop.RapidSentry": 3363010949438465,
     "LupoShop.HCMapIcon": 3363011188999169,
     "LupoShop.ECMapIcon": 3363011198878465,
-    "LupoShop.ShardMapIcon": 3363011194700289
+    "LupoShop.ShardMapIcon": 3363011194700289,
+    "Spawn item 1": 3363010932375551,
+    "Spawn item 2": 3363010932375550,
+    "Spawn item 3": 3363010932375549,
+    "Spawn item 4": 3363010932375548,
+    "Spawn item 5": 3363010932375547,
+    "Spawn item 6": 3363010932375546,
+    "Spawn item 7": 3363010932375545,
+    "Spawn item 8": 3363010932375544,
+    "Spawn item 9": 3363010932375543,
+    "Spawn item 10": 3363010932375542
     }
