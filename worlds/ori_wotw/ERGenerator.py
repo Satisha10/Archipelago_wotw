@@ -145,30 +145,49 @@ class ERGeneratorWotW:
     already reachable, make connections between these.
     """
 
-    unlinked_doors: list[str] = []  # Door names that are not linked yet.
-    #linked_doors: list[str] = []  # Door names that are already linked (complementary of unlinked_doors).
-    unaccessible_doors: list[str] = []  # Doors that cannot be reached yet.
-    accessible_doors: list[str] = []  # Doors that can be reached (ignoring the logic rules), and not linked yet.
-    placements: dict[str, str] = {}  # 1 to 1 mapping of door connections.
+    # In coupled mode, the door exits and entrances are similar, since the reverse connection is also made.
+
+    # Door exits that are not linked yet.
+    unlinked_doors: list[str] = []
+
+    # Door entrances that cannot be reached yet.
+    unaccessible_doors: list[str] = []
+
+    # Doors entrances that can be reached (ignoring the logic rules), and not linked yet.
+    accessible_doors: list[str] = []
+
+    # 1 to 1 mapping of door connections.
+    # In coupled mode, it has 16 pairings at the end (key <-> item) ; and 32 pairings for decoupled (key -> item).
+    placements: dict[str, str] = {}
 
     def __init__(self):
+        self.placements = {}
         # Start the randomization from the main group.
-        self.accessible_doors += (groups[Groups.MAIN]
-                                  + groups[Groups.OW_1O_2]
-                                  + groups[Groups.MOKI_HUT]
-                                  + groups[Groups.OW_3])
+        self.accessible_doors = (
+            groups[Groups.MAIN] + groups[Groups.OW_1O_2] + groups[Groups.MOKI_HUT] + groups[Groups.OW_3]
+        )
         self.unlinked_doors = list(group_lookup.keys())
         self.unaccessible_doors = list(group_lookup.keys())
         for door in self.accessible_doors:
-            self.unaccessible_doors.remove(door)
+            try:
+                self.unaccessible_doors.remove(door)
+            except ValueError:
+                print(door)
+                print(
+                    f"Error\n\n"
+                    f"placements: {self.placements}\n\n"
+                    f"unlinked_doors: {self.unlinked_doors}\n\n"
+                    f"unaccessible_doors: {self.unaccessible_doors}\n\n"
+                    f"accessible_doors: {self.accessible_doors}"
+                )
 
-    def create_connection(self, world: WotWWorld) -> bool:
+    def create_connection(self, world: WotWWorld, coupled: bool) -> bool:
         """Attempt to make a door connection. Return False if the connection failed."""
         # Target in priority the doors that cannot be reached yet.
         if self.unaccessible_doors:
             flag_new_group = True  # Flag that tracks if a new group will get reached.
             target_doors = list.copy(self.unaccessible_doors)
-        else:
+        else:  # All doors can already be reached
             flag_new_group = False
             target_doors = list.copy(self.unlinked_doors)
         world.random.shuffle(self.accessible_doors)
@@ -180,10 +199,12 @@ class ERGeneratorWotW:
                 origin_group: Groups = group_lookup[origin]
                 target_group: Groups = group_lookup[target]
                 if target_group not in forbidden_conn_lookup[origin_group] and origin != target:
-                    # Make the connection
+                    # Found a connection: register it
                     self.placements.setdefault(origin, target)
+
                     # Update the ER state
-                    self.unlinked_doors.remove(origin)
+                    if coupled:  # Origin door is linked only in coupled mode
+                        self.unlinked_doors.remove(origin)
                     self.unlinked_doors.remove(target)
                     self.accessible_doors.remove(origin)
 
@@ -191,20 +212,24 @@ class ERGeneratorWotW:
                         # A new group is reached: the other doors from the group become accessible (except dead-ends).
                         if target_group != Groups.DEAD:
                             self.accessible_doors += groups[target_group]
-                            self.accessible_doors.remove(target)
+                            if coupled:
+                                self.accessible_doors.remove(target)
                             for new_door in groups[target_group]:
                                 self.unaccessible_doors.remove(new_door)
                         else:  # Added a dead-end, only remove this one from the unaccessible doors.
                             self.unaccessible_doors.remove(target)
-                    else:  # unaccessible_doors is empty, so no new doors are accessible.
-                        self.accessible_doors.remove(target)
+                            if not coupled:  # In decoupled, the new door is not linked yet
+                                self.accessible_doors.append(target)
+
+                    elif coupled:  # unaccessible_doors is empty, so no new doors are accessible.
+                        self.accessible_doors.remove(target)  # Target door is linked only in coupled mode
 
                     return True  # Connection successful
 
         return False  # Failure: no valid pairing
 
 
-def generate_er_connections(world: WotWWorld) -> list[int]:
+def generate_er_connections(world: WotWWorld, coupled: bool) -> list[int]:
     """Randomize and create the entrances between the doors. Return the pairing data to send through slot_data."""
     max_attempts = 3
     current_attempt = 1
@@ -213,7 +238,7 @@ def generate_er_connections(world: WotWWorld) -> list[int]:
     while current_attempt <= max_attempts:
         er_gen = ERGeneratorWotW()
         while er_gen.unlinked_doors:
-            result = er_gen.create_connection(world)
+            result = er_gen.create_connection(world=world, coupled=coupled)
             if not result:
                 current_attempt += 1
                 break  # Go to the next attempt
@@ -232,14 +257,32 @@ def generate_er_connections(world: WotWWorld) -> list[int]:
 
     er_pairings = er_gen.placements
 
-    # Connect the entrances in both ways
+    # Connect the entrances
     for entry, target in er_pairings.items():
-        world.get_region(entry).connect(world.get_region(target))
-        world.get_region(target).connect(world.get_region(entry))
+        # For the exit door, connect to the base region and not the door one (thus remove ` (Door)` from the name,
+        # hence the [:-7]) This matters in decoupled mode, since you cannot always reenter the door you just exited.
+        world.get_region(entry).connect(world.get_region(target[:-7]))
+        if coupled:
+            world.get_region(target).connect(world.get_region(entry[:-7]))
+
+    expected_connections = 16 if coupled else 32
+    if len(er_pairings) != expected_connections:
+        mode = "coupled" if coupled else "decoupled"
+        raise RuntimeError(
+            f"er_pairings have {len(er_pairings)} connections in {mode} mode, expected {expected_connections}.\n"
+            "Something went really wrong, please report this issue to the dev.\n\n"
+            "Generator state:\n\n"
+            f"placements: {er_gen.placements}\n\n"
+            f"unlinked_doors: {er_gen.unlinked_doors}\n\n"
+            f"unaccessible_doors: {er_gen.unaccessible_doors}\n\n"
+            f"accessible_doors: {er_gen.accessible_doors}"
+        )
 
     # Create the data list of the pairings to give to slot_data.
     er_door_ids = [0] * 32
-    for (source_exit, target_entrance) in er_pairings.items():
+    for source_exit, target_entrance in er_pairings.items():
         er_door_ids[doors_map[source_exit] - 1] = doors_map[target_entrance]
-        er_door_ids[doors_map[target_entrance] - 1] = doors_map[source_exit]
+        if coupled:  # Reverse mapping only made in coupled mode
+            er_door_ids[doors_map[target_entrance] - 1] = doors_map[source_exit]
+
     return er_door_ids

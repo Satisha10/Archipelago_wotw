@@ -794,7 +794,7 @@ class WotWWorld(World):
                     self.get_region(entry).connect(self.get_region(target))
 
             else:  # Non-UT: randomize entrances and fetch the output formatted for slot_data
-                self.er_door_ids = generate_er_connections(self)
+                self.er_door_ids = generate_er_connections(self, coupled=False)  # TODO
 
         else:  # door_rando not used: vanilla connections
             for entry, target in doors_vanilla:
