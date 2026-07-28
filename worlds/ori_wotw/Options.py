@@ -132,9 +132,16 @@ class FragmentsCount(Range):
     default = 5
 
 
-class RandomizeDoors(Toggle):
+class RandomizeDoors(Choice):
     """Enable door randomizer."""
     display_name = "Randomize Doors"
+    option_disabled = 0
+    option_coupled = 1
+    option_decoupled = 2
+
+    alias_enabled = 1
+    alias_true = 1
+    alias_false = 0
 
 
 class FreeRegenerate(Toggle):

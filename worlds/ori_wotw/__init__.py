@@ -41,7 +41,7 @@ from .data.ItemsIcons import get_item_iconpath
 from .data.LocationGroups import loc_sets, location_regions
 from .data.ItemGroups import item_groups
 
-from .Options import WotWOptions, option_groups, LogicDifficulty, Quests, StartingLocation
+from .Options import WotWOptions, option_groups, LogicDifficulty, Quests, StartingLocation, RandomizeDoors
 from .Presets import options_presets
 from .RulesFunctions import get_max, get_refill, get_enemy_cost, IMPOSSIBLE_COST
 from .AdditionalRules import combat_rules, unreachable_rules
@@ -326,7 +326,11 @@ class WotWWorld(World):
             if slot_data["launch_frag"] != 0:
                 self.options.launch_fragments.value = True
                 self.options.fragments_count.value = slot_data["total_frag"]
-            self.options.door_rando.value = slot_data["door_rando"]
+            if slot_data["door_rando"]:  # The `door_rando` key is associated with a bool
+                # Coupled and decoupled behave the same for UT since the pairings are directly used
+                self.options.door_rando.value = RandomizeDoors.option_coupled
+            else:
+                self.options.door_rando.value = RandomizeDoors.option_disabled
             self.options.free_teleporters.value = slot_data["free_tp"]
             self.options.free_regenerate.value = slot_data["regen"]
 
@@ -782,7 +786,7 @@ class WotWWorld(World):
 
 
     def connect_entrances(self) -> None:
-        if self.options.door_rando:
+        if self.options.door_rando != RandomizeDoors.option_disabled:
 
             # Universal Tracker support
             re_gen_passthrough = getattr(self.multiworld, "re_gen_passthrough", {})
@@ -791,10 +795,13 @@ class WotWWorld(World):
                 id_to_door_map = {door_id: door_name for door_name, door_id in doors_map.items()}
                 for entry_index, target_index in enumerate(slot_data["door_connections"]):
                     entry, target = id_to_door_map[entry_index + 1], id_to_door_map[target_index]
-                    self.get_region(entry).connect(self.get_region(target))
+                    # Remove ` (Door)` from the region name using the [:-7], to connect to the base region and not the
+                    # door. This matters in decoupled mode, since you cannot always reenter the door you just exited.
+                    self.get_region(entry).connect(self.get_region(target[:-7]))
 
             else:  # Non-UT: randomize entrances and fetch the output formatted for slot_data
-                self.er_door_ids = generate_er_connections(self, coupled=False)  # TODO
+                coupled = self.options.door_rando == RandomizeDoors.option_coupled
+                self.er_door_ids = generate_er_connections(self, coupled=coupled)
 
         else:  # door_rando not used: vanilla connections
             for entry, target in doors_vanilla:
@@ -887,8 +894,9 @@ class WotWWorld(World):
             "glades_done": bool(options.glades_done),
             "shop_icons": icons_paths,
             "bonus": bool(options.extra_bonus or options.skill_upgrade),
-            "door_rando": bool(options.door_rando),
+            "door_rando": bool(options.door_rando != RandomizeDoors.option_disabled),
             "door_connections": self.er_door_ids,
+            "decoupled": bool(options.door_rando == RandomizeDoors.option_decoupled),
             "relic_locs": self.relic_placements,
             "launch_frag": options.fragments_required.value if options.launch_fragments else 0,
             "total_frag": options.fragments_count.value,  # Only used by UT
