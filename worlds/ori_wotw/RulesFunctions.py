@@ -196,6 +196,8 @@ def can_open_door(door_name: str, state: CollectionState, player: int, world: Wo
     Depending on the spawn, some doors are made accessible very early, to avoid a fill error when teleporters are not
     in the pool (this concern doors that you need to cross to get access to most of the map).
     """
+    if world.options.no_ks:
+        return True
     required_ks: int
     spawn = world.spawn_area
     # Early game doors: 10 KS (or less if spawning nearby).
