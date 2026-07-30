@@ -87,7 +87,8 @@ class StartingLocation(Choice):
 
 
 class Goal(OptionSet):
-    """Set conditions for entering the final boss. Use the rando wheel (with **V**) to check goal progress.
+    """
+    Set conditions for entering the final boss. Use the rando wheel (with **V**) to check goal progress.
 
     - **trees**: All trees must be collected.
     - **wisps**: All wisps must be collected.
@@ -133,7 +134,13 @@ class FragmentsCount(Range):
 
 
 class RandomizeDoors(Choice):
-    """Enable door randomizer."""
+    """
+    Randomize entrances between the doors.
+
+    - **disabled** (or false): no randomization.
+    - **coupled** (or enabled or true): randomize doors 2 by 2 (going back will put you where you entered the door).
+    - **decoupled**: the entrances are fully shuffled for both entering and exiting a door.
+    """
     display_name = "Randomize Doors"
     option_disabled = 0
     option_coupled = 1
@@ -236,7 +243,8 @@ class NoRain(Toggle):
 
 
 class NoCombat(OptionSet):
-    """Skip all combat heavy parts.
+    """
+    Skip all combat heavy parts.
 
     - **everything**: the same as if you include all the following
     - **shrines**: Shrine have their pickup floating above them before the fight
