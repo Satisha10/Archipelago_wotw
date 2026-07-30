@@ -393,6 +393,14 @@ class WotWWorld(World):
 
         mworld.completion_condition[player] = lambda state: state.has("Victory", player)
 
+        # Universal Tracker support: link all the spawn items for free regardless of the spawn.
+        re_gen_passthrough = getattr(self.multiworld, "re_gen_passthrough", {})
+        if re_gen_passthrough and self.game in re_gen_passthrough:
+            for i in range(1, 11):
+                name = f"Spawn item {i}"
+                spawn_loc = WotWLocation(player, name, self.location_name_to_id[name], menu_region)
+                menu_region.locations.append(spawn_loc)
+
         if options.spawn != StartingLocation.option_vanilla:
             # Spawn items are local, and exclude Launch from them (except in late game areas)
             if self.spawn_area in ("WillowsEnd", "WeepingRidge"):
