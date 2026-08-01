@@ -81,6 +81,8 @@ class WotWWorld(World):
     options_dataclass = WotWOptions
     options: WotWOptions
 
+    glitches_item_name = "UTGlitch"
+
     required_client_version = (0, 6, 3)
 
     # Universal tracker support
@@ -333,6 +335,7 @@ class WotWWorld(World):
                 self.options.door_rando.value = RandomizeDoors.option_disabled
             self.options.free_teleporters.value = slot_data["free_tp"]
             self.options.free_regenerate.value = slot_data["regen"]
+            self.options.ut_config.value = slot_data["ut_config"]
 
     def create_regions(self) -> None:
         mworld = self.multiworld
@@ -425,6 +428,8 @@ class WotWWorld(World):
         event_region.locations.append(event_location)
 
     def create_item(self, name: str) -> WotWItem:
+        if name == "UTGlitch":
+            return WotWItem(name, ItemClassification.progression, None, player=self.player)
         return WotWItem(name, item_table[name][1], item_table[name][2], player=self.player)
 
     def create_items(self) -> None:
@@ -844,7 +849,39 @@ class WotWWorld(World):
                     or options.difficulty == LogicDifficulty.option_unsafe and not options.glitches and glitches
             ):
                 set_unsafe_glitched_rules_ut_glitch(self)
-            # TODO define ut_glitched_item unpopular, free region/tp, additional rules...
+
+            if ("free_tp" in options.ut_config and not options.free_teleporters) or max_logic:
+                print("TPLocks")
+                self.connect_to_menu("RemoveTPLocks", lambda s: s.has("UTGlitch", player))
+
+            if "free_region" in options.ut_config or max_logic:
+                print("FreeReg")
+                for event in (
+                        "danger_MidnightBurrows",
+                        "danger_WestHollow",
+                        "danger_EastHollow",
+                        "danger_WestGlades",
+                        "danger_OuterWellspring",
+                        "danger_InnerWellspring",
+                        "danger_WoodsEntry",
+                        "danger_WoodsMain",
+                        "danger_LowerReach",
+                        "danger_UpperReach",
+                        "danger_UpperDepths",
+                        "danger_LowerDepths",
+                        "danger_PoolsApproach",
+                        "danger_EastPools",
+                        "danger_UpperPools",
+                        "danger_WestPools",
+                        "danger_LowerWastes",
+                        "danger_UpperWastes",
+                        "danger_WeepingRidge",
+                        "danger_WillowsEnd",
+                    ):
+                    self.connect_to_menu(event, lambda s: s.has("UTGlitch", player))
+
+            # TODO UT: Free TP not working ? Change Additional rules, and rules functions (add an attribute to world for
+            # UT difficulty, and use it if ut glitch ?) + implement unpopular on max_logic
 
     def connect_entrances(self) -> None:
         if self.options.door_rando != RandomizeDoors.option_disabled:
@@ -966,6 +1003,7 @@ class WotWWorld(World):
             "death_link": int(options.death_link.value),
             "ap_version": 3,
             "location_flags": location_flags,
+            "ut_config": options.ut_config.value,  # Only used by UT
         }
 
         return slot_data
