@@ -597,9 +597,15 @@ class WotWWorld(World):
         return self.random.choice(["50 Spirit Light", "100 Spirit Light"])
 
     def connect_to_menu(self, region: str, rule: Callable[[CollectionState], bool] | None = None) -> None:
-        """Connect the region to menu (if the connection does not already exist)."""
+        """Connect the region to menu. If the connection already exists, add the access rule instead."""
         if not self.multiworld.regions.entrance_cache[self.player].get(f"Menu -> {region}"):
             self.get_region("Menu").connect(self.get_region(region), rule=rule)
+        else:
+            entrance = self.get_entrance(f"Menu -> {region}")
+            if rule is None:
+                entrance.access_rule = lambda s: True
+            else:
+                add_rule(entrance, rule, combine="or")
 
     def precollect_event(self, event: str) -> None:
         self.push_precollected(self.create_event_item(event))
@@ -851,11 +857,9 @@ class WotWWorld(World):
                 set_unsafe_glitched_rules_ut_glitch(self)
 
             if ("free_tp" in options.ut_config and not options.free_teleporters) or max_logic:
-                print("TPLocks")
                 self.connect_to_menu("RemoveTPLocks", lambda s: s.has("UTGlitch", player))
 
             if "free_region" in options.ut_config or max_logic:
-                print("FreeReg")
                 for event in (
                         "danger_MidnightBurrows",
                         "danger_WestHollow",
@@ -880,7 +884,7 @@ class WotWWorld(World):
                     ):
                     self.connect_to_menu(event, lambda s: s.has("UTGlitch", player))
 
-            # TODO UT: Free TP not working ? Change Additional rules, and rules functions (add an attribute to world for
+            # TODO UT: Change Additional rules, and rules functions (add an attribute to world for
             # UT difficulty, and use it if ut glitch ?) + implement unpopular on max_logic
 
     def connect_entrances(self) -> None:
