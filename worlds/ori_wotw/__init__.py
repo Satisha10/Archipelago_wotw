@@ -792,6 +792,59 @@ class WotWWorld(World):
         # Same as above, the location must be reachable
         self.connect_to_menu("RemoveRegionRegen", rule=lambda s: s.has("Victory", player))
 
+        # UT Glitched support
+        re_gen_passthrough = getattr(self.multiworld, "re_gen_passthrough", {})
+        if re_gen_passthrough and self.game in re_gen_passthrough:
+            from .generated_data.RulesUTGlitch import (
+                set_gorlek_rules_ut_glitch,
+                set_gorlek_glitched_rules_ut_glitch,
+                set_kii_rules_ut_glitch,
+                set_kii_glitched_rules_ut_glitch,
+                set_unsafe_rules_ut_glitch,
+                set_unsafe_glitched_rules_ut_glitch
+                )
+            one_level = "one_level" in options.ut_config or "max_logic" in options.ut_config
+            max_logic = "max_logic" in options.ut_config
+            glitches = "glitches" in options.ut_config or "max_logic" in options.ut_config
+
+            # Add the ut_glitched logic that is relevant, and not already included in the base logic.
+            if options.difficulty == LogicDifficulty.option_moki and (one_level or max_logic):
+                set_gorlek_rules_ut_glitch(self)
+
+            if (
+                    options.difficulty == LogicDifficulty.option_moki and (one_level and glitches)
+                    or options.difficulty == LogicDifficulty.option_gorlek and not options.glitches and glitches
+            ):
+                set_gorlek_glitched_rules_ut_glitch(self)
+
+            if (
+                    options.difficulty == LogicDifficulty.option_moki and max_logic
+                    or options.difficulty == LogicDifficulty.option_gorlek and one_level
+
+            ):
+                set_kii_rules_ut_glitch(self)
+
+            if (
+                    options.difficulty == LogicDifficulty.option_moki and max_logic
+                    or options.difficulty == LogicDifficulty.option_gorlek and (one_level and glitches)
+                    or options.difficulty == LogicDifficulty.option_kii and not options.glitches and glitches
+            ):
+                set_kii_glitched_rules_ut_glitch(self)
+
+            if (
+                    options.difficulty.value <= LogicDifficulty.option_gorlek and max_logic
+                    or options.difficulty == LogicDifficulty.option_kii and one_level
+
+            ):
+                set_unsafe_rules_ut_glitch(self)
+
+            if (
+                    options.difficulty.value <= LogicDifficulty.option_gorlek and max_logic
+                    or options.difficulty == LogicDifficulty.option_kii and (one_level and glitches)
+                    or options.difficulty == LogicDifficulty.option_unsafe and not options.glitches and glitches
+            ):
+                set_unsafe_glitched_rules_ut_glitch(self)
+            # TODO define ut_glitched_item unpopular, free region/tp, additional rules...
 
     def connect_entrances(self) -> None:
         if self.options.door_rando != RandomizeDoors.option_disabled:
