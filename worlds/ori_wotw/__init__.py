@@ -43,7 +43,7 @@ from .data.ItemGroups import item_groups
 
 from .Options import WotWOptions, option_groups, LogicDifficulty, Quests, StartingLocation, RandomizeDoors
 from .Presets import options_presets
-from .AdditionalRules import combat_rules, unreachable_rules
+from .AdditionalRules import combat_rules, unreachable_rules, ut_combat_rules
 from .ERGenerator import generate_er_connections
 
 
@@ -891,8 +891,8 @@ class WotWWorld(World):
                     ):
                     self.connect_to_menu(event, lambda s: s.has("UTGlitch", player))
 
-            # TODO UT: Change Additional rules, and rules functions (add an attribute to world for
-            # UT difficulty, and use it if ut glitch ?) + implement unpopular on max_logic
+            ut_combat_rules(self, one_level=one_level, max_logic=max_logic)
+            # TODO UT: implement unpopular on max_logic
 
     def connect_entrances(self) -> None:
         if self.options.door_rando != RandomizeDoors.option_disabled:
