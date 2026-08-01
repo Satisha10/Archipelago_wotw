@@ -43,7 +43,6 @@ from .data.ItemGroups import item_groups
 
 from .Options import WotWOptions, option_groups, LogicDifficulty, Quests, StartingLocation, RandomizeDoors
 from .Presets import options_presets
-from .RulesFunctions import get_max, get_refill, get_enemy_cost, IMPOSSIBLE_COST
 from .AdditionalRules import combat_rules, unreachable_rules
 from .ERGenerator import generate_er_connections
 
@@ -100,6 +99,7 @@ class WotWWorld(World):
         # The list index corresponds to the exit door ID minus one, and the int in the list is the target door ID
         self.spawn_region_name: str = "MarshSpawn.Main"
         self.spawn_area: str = "MarshSpawn"
+        self.possible_weapons: list[str] = []  # Energy weapons that can be used in combat
 
     def collect(self, state: CollectionState, item: Item) -> bool:
         change = super().collect(state, item)
@@ -183,6 +183,13 @@ class WotWWorld(World):
         if (options.spawn.value == StartingLocation.option_willow
                 and (options.launch_on_seir or options.launch_fragments)):
             options.spawn.value = StartingLocation.option_vanilla
+
+        if options.difficulty == LogicDifficulty.option_moki:
+            self.possible_weapons = []  # Only use Sword or Hammer in Moki
+        elif options.difficulty  == LogicDifficulty.option_unsafe:
+            self.possible_weapons = ["Grenade", "Bow", "Shuriken", "Sentry", "Spear", "Blaze", "Flash"]
+        else:
+            self.possible_weapons = ["Grenade", "Bow", "Shuriken", "Sentry", "Spear", "Blaze"]
 
         # Selection of a random spawn location
         spawn_dict: dict[str, tuple[int, int]] = {  # Map from TP region name to associated spawn option and weight
