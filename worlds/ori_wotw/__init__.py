@@ -831,7 +831,7 @@ class WotWWorld(World):
 
             if (
                     options.difficulty == LogicDifficulty.option_moki and (one_level and glitches)
-                    or options.difficulty == LogicDifficulty.option_gorlek and not options.glitches and glitches
+                    or options.difficulty.value >= LogicDifficulty.option_gorlek and not options.glitches and glitches
             ):
                 set_gorlek_glitched_rules_ut_glitch(self)
 
@@ -845,7 +845,7 @@ class WotWWorld(World):
             if (
                     options.difficulty == LogicDifficulty.option_moki and max_logic
                     or options.difficulty == LogicDifficulty.option_gorlek and (one_level and glitches)
-                    or options.difficulty == LogicDifficulty.option_kii and not options.glitches and glitches
+                    or options.difficulty.value >= LogicDifficulty.option_kii and not options.glitches and glitches
             ):
                 set_kii_glitched_rules_ut_glitch(self)
 
@@ -862,6 +862,13 @@ class WotWWorld(World):
                     or options.difficulty == LogicDifficulty.option_unsafe and not options.glitches and glitches
             ):
                 set_unsafe_glitched_rules_ut_glitch(self)
+
+            if max_logic:
+                menu_region = self.get_region("Menu")
+                unpop_loc = WotWLocation(self.player, "Unpopular", None, menu_region)
+                menu_region.locations.append(unpop_loc)
+                unpop_loc.place_locked_item(self.create_event_item("Unpopular"))
+                unpop_loc.access_rule = lambda s: s.has("UTGlitch, player")
 
             if ("free_tp" in options.ut_config and not options.free_teleporters) or max_logic:
                 self.connect_to_menu("RemoveTPLocks", lambda s: s.has("UTGlitch", player))
@@ -892,7 +899,6 @@ class WotWWorld(World):
                     self.connect_to_menu(event, lambda s: s.has("UTGlitch", player))
 
             ut_combat_rules(self, one_level=one_level, max_logic=max_logic)
-            # TODO UT: implement unpopular on max_logic
 
     def connect_entrances(self) -> None:
         if self.options.door_rando != RandomizeDoors.option_disabled:

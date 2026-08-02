@@ -13,7 +13,7 @@ from worlds.generic.Rules import add_rule as ar
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
-    from . import WotWWorld
+    from .. import WotWWorld
 
 
 
