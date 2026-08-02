@@ -88,9 +88,6 @@ weapon_data: dict[str, tuple[int, float]] = {  # The tuple contains the damage p
     "Sentry": (8, 1),  # 8.8 damage, rounded down here
     "Spear": (20, 2),
     "Blaze": (13, 1),  # 13.8 damage, rounded down here
-    "SentryJump": (8, 1),  # Same as Sentry values
-    "SwordSJump": (8, 1),
-    "HammerSJump": (8, 1),
     }
 
 enemy_data: dict[str, tuple[int, list[str]]] = {  # For each enemy: HP and combat tags required
@@ -151,7 +148,7 @@ def get_enemy_cost(enemy: str, state: CollectionState, world: WotWWorld) -> floa
         return 0
 
     cost = IMPOSSIBLE_COST
-    for weapon in world.possible_weapons:
+    for weapon in world.possible_combat_weapons:
         if state.has(weapon, player):
             cost = min(cost, weapon_data[weapon][1] * ceil(data[0] / weapon_data[weapon][0]))
     return cost
@@ -376,6 +373,8 @@ def compute_energy(data: tuple[str, int],
         return IMPOSSIBLE_COST
     elif weapon == "HammerSJump" and not state.has("Hammer", player):
         return IMPOSSIBLE_COST
+    if weapon in ("SentryJump", "SwordSJump", "HammerSJump"):
+        weapon = "Sentry"
     # In any cases, check for the energy cost (and if the energy weapon is there)
     if not state.has(weapon, player):
         return IMPOSSIBLE_COST

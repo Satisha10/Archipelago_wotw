@@ -350,7 +350,7 @@ class UTConfig(OptionSet):
     - **max_logic**: Set the logic to unsafe + unpopular + glitches and remove region/tp requirements.
     """
     display_name = "UT Glitched Configuration"
-    valid_keys = ["one_level", "glitch", "free_region", "free_tp", "max_logic"]
+    valid_keys = ["one_level", "glitches", "free_region", "free_tp", "max_logic"]
     default = frozenset(["one_level"])
 
 

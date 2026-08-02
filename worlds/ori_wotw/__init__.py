@@ -99,7 +99,7 @@ class WotWWorld(World):
         # The list index corresponds to the exit door ID minus one, and the int in the list is the target door ID
         self.spawn_region_name: str = "MarshSpawn.Main"
         self.spawn_area: str = "MarshSpawn"
-        self.possible_weapons: list[str] = []  # Energy weapons that can be used in combat
+        self.possible_combat_weapons: list[str] = []  # Energy weapons that can be used in combat
 
     def collect(self, state: CollectionState, item: Item) -> bool:
         change = super().collect(state, item)
@@ -185,11 +185,11 @@ class WotWWorld(World):
             options.spawn.value = StartingLocation.option_vanilla
 
         if options.difficulty == LogicDifficulty.option_moki:
-            self.possible_weapons = []  # Only use Sword or Hammer in Moki
+            self.possible_combat_weapons = []  # Only use Sword or Hammer in Moki
         elif options.difficulty  == LogicDifficulty.option_unsafe:
-            self.possible_weapons = ["Grenade", "Bow", "Shuriken", "Sentry", "Spear", "Blaze", "Flash"]
+            self.possible_combat_weapons = ["Grenade", "Bow", "Shuriken", "Sentry", "Spear", "Blaze", "Flash"]
         else:
-            self.possible_weapons = ["Grenade", "Bow", "Shuriken", "Sentry", "Spear", "Blaze"]
+            self.possible_combat_weapons = ["Grenade", "Bow", "Shuriken", "Sentry", "Spear", "Blaze"]
 
         # Selection of a random spawn location
         spawn_dict: dict[str, tuple[int, int]] = {  # Map from TP region name to associated spawn option and weight
@@ -868,7 +868,7 @@ class WotWWorld(World):
                 unpop_loc = WotWLocation(self.player, "Unpopular", None, menu_region)
                 menu_region.locations.append(unpop_loc)
                 unpop_loc.place_locked_item(self.create_event_item("Unpopular"))
-                unpop_loc.access_rule = lambda s: s.has("UTGlitch, player")
+                unpop_loc.access_rule = lambda s: s.has("UTGlitch", player)
 
             if ("free_tp" in options.ut_config and not options.free_teleporters) or max_logic:
                 self.connect_to_menu("RemoveTPLocks", lambda s: s.has("UTGlitch", player))
