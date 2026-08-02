@@ -73,7 +73,10 @@ def can_doublejumpbashchain(state: CollectionState, player: int) -> bool:
 def can_launchbashchain(state: CollectionState, player: int) -> bool:
     return state.has_all(("Launch", "Bash"), player)
 
-def can_pausefloat(state: CollectionState, player: int) -> bool:
+def can_pausefloat() -> bool:
+    return True
+
+def can_removekillplane() -> bool:
     return True
 
 IMPOSSIBLE_COST = 1000.0  # Extremely high energy cost, used when a requirement is not met
