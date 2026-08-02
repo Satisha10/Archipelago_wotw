@@ -838,7 +838,6 @@ class WotWWorld(World):
             if (
                     options.difficulty == LogicDifficulty.option_moki and max_logic
                     or options.difficulty == LogicDifficulty.option_gorlek and one_level
-
             ):
                 set_kii_rules_ut_glitch(self)
 
@@ -852,7 +851,6 @@ class WotWWorld(World):
             if (
                     options.difficulty.value <= LogicDifficulty.option_gorlek and max_logic
                     or options.difficulty == LogicDifficulty.option_kii and one_level
-
             ):
                 set_unsafe_rules_ut_glitch(self)
 
