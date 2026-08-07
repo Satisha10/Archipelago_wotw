@@ -199,3 +199,8 @@ _speedups.html
 .LSOverride
 Thumbs.db
 [Dd]esktop.ini
+/fuzz_output
+/hooks
+fuzz.py
+/worlds/alabaster_dawn/data_extractors/output_client
+/worlds/alabaster_dawn/data_extractors/output_apworld
