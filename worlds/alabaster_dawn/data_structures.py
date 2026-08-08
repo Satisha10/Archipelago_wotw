@@ -45,6 +45,7 @@ class QuestData:
 class ItemData:
     classification: ItemClassification
     id: int
-    quantity: int = 1
+    pool_quantity: int = 1  # Base quantity for this item in the multiworld pool
+    item_quantity: int = 1  # Quantity of the item received in-game each time
     game_name: str = ""
     item_type: str = ""

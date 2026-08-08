@@ -33,14 +33,26 @@ def loc_name_id():
     file_path = os.path.join("worlds/alabaster_dawn/data_extractors", base_path)
     with open(file_path, "w") as f:
         f.write(header_py("location_id_map.py", "loc_name_id"))
-        f.write("location_name_to_id = {}\n".format(location_name_to_id))
+        f.write("location_name_to_id = {\n    ")
+        temp = format(location_name_to_id)[1:-1]
+        output = temp.replace(", ", ",\n    ")
+        f.write(output)
+        f.write("\n}\n")
+
     print(f"File {base_path} created.")
 
-def loc_gamename_id():  # TODO Format properly, add the variable name, and add the missing semicolons
-    """Generate the location game name to ID mapping for the client."""
+
+# TODO Map name to [game_name, quantity] for items
+def loc_gamename_id():  # TODO Use Map instead of an object
+    """Generate the location game-name to ID map for the client."""
     base_path = "output_client/location_gamename_id.ts"
     file_path = os.path.join("worlds/alabaster_dawn/data_extractors", base_path)
     with open(file_path, "w") as f:
-        f.write(header_ts("location_gamename_id.ts", "loc_gamename_id"))
-        f.write(json.dumps(location_gamename_to_id))
+        f.write(header_ts("location_id_map.py", "loc_gamename_id"))
+        f.write("export const loc_game_name_id = new Map<string, number>([\n    [")
+        temp = json.dumps(location_gamename_to_id)[1:-1]
+        output = temp.replace(", ", "],\n    [")
+        output = output.replace(":", ",")
+        f.write(output)
+        f.write("]\n]);\n")
     print(f"File {base_path} created.")

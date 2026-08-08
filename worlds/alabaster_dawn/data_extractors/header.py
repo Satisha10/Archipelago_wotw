@@ -28,8 +28,8 @@ def header_ts(file_name: str, function_name: str | None = None) -> str:
     :param function_name: Function that generates the data (optional).
     """
     output = '''// Generated data, DO NOT MODIFY HERE.
-// Check the `data_extractors` folder in the AP World source code
-// () TODO link
+// Check the `data_extractors` folder in the AP World source code at
+// https://github.com/Satisha10/Archipelago_wotw/tree/alabaster-dawn/worlds/alabaster_dawn/data_extractors
 // to see how to generate this file or to make modifications.
 '''
     output += f"// This file got generated in `{file_name}`"
