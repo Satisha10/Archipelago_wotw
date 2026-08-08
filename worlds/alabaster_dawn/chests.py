@@ -9,357 +9,357 @@ from .data_structures import ChestData
 # TODO other locations: quests rewards to show (randomize them ?)
 
 chests: dict[str, ChestData] = {
-    "TODO": ChestData(
+    "TODO1": ChestData(
         game_name="hub.west-01-1",
         area="Aurum Plains",
     ),
-    "TODO": ChestData(
+    "TODO2": ChestData(
         game_name="hub.south-01-1",
         area="Aurum Plains",
     ),
-    "TODO": ChestData(
+    "TODO3": ChestData(
         game_name="hub.south-03-1",
         area="Aurum Plains",
     ),
-    "TODO": ChestData(
+    "TODO4": ChestData(
         game_name="hub.south-03-2",
         area="Aurum Plains",
     ),
-    "TODO": ChestData(
+    "TODO5": ChestData(
         game_name="hub.south-03-3",
         area="Aurum Plains",
     ),
-    "TODO": ChestData(
+    "TODO6": ChestData(
         game_name="hub.south-04-1",
         area="Aurum Plains",
     ),
-    "TODO": ChestData(
+    "TODO7": ChestData(
         game_name="hub.south-04-2",
         area="Aurum Plains",
     ),
-    "TODO": ChestData(
+    "TODO8": ChestData(
         game_name="hub.south-04-3",
         area="Aurum Plains",
     ),
-    "TODO": ChestData(
+    "TODO9": ChestData(
         game_name="hub.north-01-1",
         area="Aurum Plains",
     ),
-    "TODO": ChestData(
+    "TODO10": ChestData(
         game_name="hub.north-01-2",
         area="Aurum Plains",
         rule=Has("Kama"),
     ),
-    "TODO": ChestData(
+    "TODO11": ChestData(
         game_name="hub.north-01-3",
         area="Aurum Plains",
     ),
-    "TODO": ChestData(
+    "TODO12": ChestData(
         game_name="hub.north-02-1",
         area="Aurum Plains",
     ),
-    "TODO": ChestData(
+    "TODO13": ChestData(
         game_name="hub.north-04-1",
         area="Aurum Plains",
     ),
-    "TODO": ChestData(
+    "TODO14": ChestData(
         game_name="hub.north-05-1",
         area="Aurum Plains",
         rule=Has("Kama"),
     ),
-    "TODO": ChestData(
+    "TODO15": ChestData(
         game_name="hub.center-06-1",
         area="Aurum Plains",
         rule=Has("Kama"),
     ),
-    "TODO": ChestData(
+    "TODO16": ChestData(
         game_name="hub.center-06-2",
         area="Aurum Plains",
     ),
-    "TODO": ChestData(
+    "TODO17": ChestData(
         game_name="hub.center-06-3",
         area="Aurum Plains",
     ),
-    "TODO": ChestData(
+    "TODO18": ChestData(
         game_name="hub.town-south-1",
         area="Sundalan",
     ),
-    "TODO": ChestData(
+    "TODO19": ChestData(
         game_name="hub.bridge-01-1",
         area="Aurum Plains",
     ),
-    "TODO": ChestData(
+    "TODO20": ChestData(
         game_name="start.center-01-1",
         area="Koro Valley",
         rule=Has("Aether"),
     ),
-    "TODO": ChestData(
+    "TODO21": ChestData(
         game_name="start.center-01-2",
         area="Koro Valley",
         rule=Has("Aether"),
     ),
-    "TODO": ChestData(
+    "TODO22": ChestData(
         game_name="start.center-01-3",
         area="Koro Valley",
     ),
-    "TODO": ChestData(
+    "TODO23": ChestData(
         game_name="start.center-02-1",
         area="Koro Valley",
     ),
-    "TODO": ChestData(
+    "TODO24": ChestData(
         game_name="start.center-02-2",
         area="Koro Valley",
         rule=Has("Chakram"),
     ),
-    "TODO": ChestData(
+    "TODO25": ChestData(
         game_name="start.center-02-3",
         area="Koro Valley",
     ),
-    "TODO": ChestData(
+    "TODO26": ChestData(
         game_name="start.center-03-2",
         area="Koro Valley",
     ),
-    "TODO": ChestData(
+    "TODO27": ChestData(
         game_name="start.center-04-1",
         area="Koro Valley",
         rule=Has("Hammer"),
     ),
-    "TODO": ChestData(
+    "TODO28": ChestData(
         game_name="start.center-04-2",
         area="Koro Valley",
     ),
-    "TODO": ChestData(
+    "TODO29": ChestData(
         game_name="start.center-04-3",
         area="Koro Valley",
         rule=Has("Chakram"),
     ),
-    "TODO": ChestData(
+    "TODO30": ChestData(
         game_name="start.center-05-1",
         area="Koro Valley",
     ),
-    "TODO": ChestData(
+    "TODO31": ChestData(
         game_name="start.center-05-2",
         area="Koro Valley",
         rule=HasAll("Filia", "Aether"),
     ),
-    "TODO": ChestData(
+    "TODO32": ChestData(
         game_name="start.center-06-1",
         area="Koro Valley",
     ),
-    "TODO": ChestData(
+    "TODO33": ChestData(
         game_name="start.center-06-2",
         area="Koro Valley",
     ),
-    "TODO": ChestData(
+    "TODO34": ChestData(
         game_name="start.center-06-3",
         area="Koro Valley",
     ),
-    "TODO": ChestData(
+    "TODO35": ChestData(
         game_name="start.center-07-1",
         area="Koro Valley",
         rule=Has("Kama"),
     ),
-    "TODO": ChestData(
+    "TODO36": ChestData(
         game_name="start.center-07-2",
         area="Koro Valley",
     ),
-    "TODO": ChestData(  # TODO not sure this one is reachable yet
+    "TODO37": ChestData(  # TODO not sure this one is reachable yet
         game_name="start.center-08-1",
         area="Koro Valley",
-        rule=HasAll("Aether", "Fulcrum Mark"),
+        rule=Has("Aether") & Has("Fulcrum Mark", count=2),
     ),
-    "TODO": ChestData(  # TODO Item name
+    "TODO38": ChestData(
         game_name="start.north-01-2",
         area="Koro Valley",
         rule=Has("Lyhamn level", count=1),
     ),
-    "TODO": ChestData(
+    "TODO39": ChestData(
         game_name="start.north-02-1",
         area="Koro Valley",
     ),
-    "TODO": ChestData(
+    "TODO40": ChestData(
         game_name="start.north-02-2",
         area="Koro Valley",
     ),
-    "TODO": ChestData(
+    "TODO41": ChestData(
         game_name="start.north-03-1",
         area="Koro Valley",
         rule=Has("Kama"),
     ),
-    "TODO": ChestData(
+    "TODO42": ChestData(
         game_name="start.north-03-2",
         area="Koro Valley",
     ),
-    "TODO": ChestData(
+    "TODO43": ChestData(
         game_name="start.north-03-3",
         area="Koro Valley",
     ),
-    "TODO": ChestData(
+    "TODO44": ChestData(
         game_name="start.east-01-1",
         area="Koro Valley",
     ),
-    "TODO": ChestData(
+    "TODO45": ChestData(
         game_name="start.east-02-1",
         area="Koro Valley",
     ),
-    "TODO": ChestData(
+    "TODO46": ChestData(
         game_name="start.east-02-2",
         area="Koro Valley",
         rule=Has("Kama"),
     ),
-    "TODO": ChestData(
+    "TODO47": ChestData(
         game_name="start.south-01-1",
         area="Koro Valley",
         rule=Has("Kama"),
     ),
-    "TODO": ChestData(
+    "TODO48": ChestData(
         game_name="start.south-01-2",
         area="Koro Valley",
     ),
-    "TODO": ChestData(
+    "TODO49": ChestData(
         game_name="start.west-01-1",
         area="Koro Valley",
     ),
-    "TODO": ChestData(
+    "TODO50": ChestData(
         game_name="start.west-01-2",
         area="Koro Valley",
     ),
-    "TODO": ChestData(
+    "TODO51": ChestData(
         game_name="start.peak-01-1",
         area="Koro Valley",
     ),
-    "TODO": ChestData(
+    "TODO52": ChestData(
         game_name="start.peak-02-1",
         area="Koro Valley",
         rule=Has("Chakram"),
     ),
-    "TODO": ChestData(
+    "TODO53": ChestData(
         game_name="start.peak-02-2",
         area="Koro Valley",
         rule=Has("Chakram"),
     ),
-    "TODO": ChestData(
+    "TODO54": ChestData(
         game_name="start.peak-03-1",
         area="Koro Valley",
     ),
-    "TODO": ChestData(
+    "TODO55": ChestData(
         game_name="start.peak-03-2",
         area="Koro Valley",
     ),
-    "TODO": ChestData(
+    "TODO56": ChestData(
         game_name="start.dng-outer-1",
         area="Koro Valley",
     ),
-    "TODO": ChestData(
+    "TODO57": ChestData(
         game_name="start.dng-outer-2",
         area="Koro Valley",
     ),
-    "TODO": ChestData(
+    "TODO58": ChestData(
         game_name="start.dng-outer-3",
         area="Koro Valley",
     ),
-    "TODO": ChestData(
+    "TODO59": ChestData(
         game_name="start.dng-outer-4",
         area="Koro Valley",
     ),
-    "TODO": ChestData(
+    "TODO60": ChestData(
         game_name="start.village-01-1",
         area="Lyhamn",
         rule=Has("Lyhamn level", count=1),
     ),
-    "TODO": ChestData(
+    "TODO61": ChestData(
         game_name="start.village-01-2",
         area="Lyhamn",
     ),
-    "TODO": ChestData(
+    "TODO62": ChestData(
         game_name="start.village-02-2-fix",
         area="Lyhamn",
         rule=Has("Lyhamn level", count=1),
     ),
-    "TODO": ChestData(
+    "TODO63": ChestData(
         game_name="start.village-03-1",
         area="Lyhamn",
         rule=Has("Lyhamn level", count=1),
     ),
-    "TODO": ChestData(
+    "TODO64": ChestData(
         game_name="start.village-03-2",
         area="Lyhamn",
     ),
-    "TODO": ChestData(
+    "TODO65": ChestData(
         game_name="start.village-center01-giftChest1",
         area="Lyhamn",
         rule=Has("Lyhamn level", count=1),
     ),
-    "TODO": ChestData(
+    "TODO66": ChestData(
         game_name="start.village-center02-giftChest3",
         area="Lyhamn",
         rule=Has("Lyhamn level", count=1),
     ),
-    "TODO": ChestData(
+    "TODO67": ChestData(
         game_name="start.village-center03-giftChest2",
         area="Lyhamn",
         rule=Has("Lyhamn level", count=1),
     ),
-    "TODO": ChestData(
+    "TODO68": ChestData(
         game_name="start.village-center06-giftChest4",
         area="Lyhamn",
         rule=Has("Lyhamn level", count=1),
     ),
-    "TODO": ChestData(
+    "TODO69": ChestData(
         game_name="start.village-beach01-giftChest5",
         area="Lyhamn",
         rule=Has("Lyhamn level", count=1),
     ),
-    "TODO": ChestData(
+    "TODO70": ChestData(
         game_name="start.village-beach02-giftChest6",
         area="Lyhamn",
         rule=Has("Lyhamn level", count=1),
     ),
-    "TODO": ChestData(
+    "TODO71": ChestData(
         game_name="start.spring-trial-room-02-1",
-        area="Trial of Aether",
+        area="Eternal Spring",
     ),
-    "TODO": ChestData(
+    "TODO72": ChestData(
         game_name="start.spring-trial-room-03-1",
-        area="Trial of Aether",
+        area="Eternal Spring",
     ),
-    "TODO": ChestData(
+    "TODO73": ChestData(
         game_name="start.spring-trial-room-04-1",
-        area="Trial of Aether",
+        area="Eternal Spring",
     ),
-    "TODO": ChestData(
+    "TODO74": ChestData(
         game_name="start.beach-spring-cave-01-1",
-        area="Trial of Aether",
+        area="Eternal Spring",
     ),
-    "TODO": ChestData(
+    "TODO75": ChestData(
         game_name="start.beach-spring-cave-02-1",
-        area="Trial of Aether",
+        area="Eternal Spring",
     ),
-    "TODO": ChestData(  # TODO Key logic
+    "TODO76": ChestData(  # TODO Key logic
         game_name="start.start-dng.f1-room-01-1",
         area="Trial of Aether",
     ),
-    "TODO": ChestData(
+    "TODO77": ChestData(
         game_name="start.start-dng.f1-room-02-1",
         area="Trial of Aether",
     ),
-    "TODO": ChestData(
+    "TODO78": ChestData(
         game_name="start.start-dng.f2-room-02b-1",
         area="Trial of Aether",
     ),
-    "TODO": ChestData(
+    "TODO79": ChestData(
         game_name="start.start-dng.f1-room-04-1",
         area="Trial of Aether",
     ),
-    "TODO": ChestData(
+    "TODO80": ChestData(
         game_name="start.start-dng.f1-room-04b",
         area="Trial of Aether",
     ),
-    "TODO": ChestData(
+    "TODO81": ChestData(
         game_name="start.start-dng.f1-room-02-key",
         area="Trial of Aether",
     ),
-    "TODO": ChestData(
+    "TODO82": ChestData(
         game_name="start.start-dng.f2-room-03-key",
         area="Trial of Aether",
     ),

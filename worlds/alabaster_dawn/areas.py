@@ -13,12 +13,18 @@ areas: dict[str, AreaData] = {
             "Lyhamn": True_(),
             "Trial of Aether": HasAll("Filia", "Low tide"),
             "Aurum Plains": Has("Boat"),
+            "Eternal Spring": Has("Fulcrum Mark", count=2),
         },
     ),
     "Trial of Aether": AreaData(
         connections={
             "Koro Valley": Has("Low tide"),
             "Aurum Plains": True_(),
+        },
+    ),
+    "Eternal Spring": AreaData(
+        connections={
+            "Koro Valley": Has("Fulcrum Mark", count=2),
         },
     ),
     "Aurum Plains": AreaData(

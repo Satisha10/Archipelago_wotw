@@ -80,18 +80,28 @@ items: dict[str, ItemData] = {
         item_type="Key",
     ),
     "Whisper of the gods x5": ItemData(
-        classification=IC.progression,
+        classification=IC.useful,
         id=101,
         item_quantity=5,
+        pool_quantity=20,  # TODO adjust quantity to match in-game
         game_name="chest-ess-1-whisper",
         item_type="Craft (limited)",
     ),
     "Verse of the Gods x3": ItemData(
-        classification=IC.progression,
+        classification=IC.useful,
         id=102,
         item_quantity=3,
+        pool_quantity=2,
         game_name="chest-ess-2-verse",
         item_type="Craft (limited)",
+    ),
+    "Wasp Essence x3": ItemData(  # TODO game name
+        classification=IC.filler,
+        id=208,
+        item_quantity=3,
+        pool_quantity=0,
+        game_name="wasp-ess",
+        item_type="Craft",
     ),
 
     # TODO loot items (fillers)

@@ -11,6 +11,7 @@ from .areas import areas
 from .items import items
 from .chests import chests
 from .quests import quests
+from .dishes import dishes
 from .locations import location_name_to_id
 
 class ADWeb(WebWorld):
@@ -64,21 +65,32 @@ class ADWorld(World):
             region.locations.append(quest_loc)
             self.set_rule(quest_loc, quest_data.rule)
 
-        for dish, dish_data in quests.items():
+        for dish, dish_data in dishes.items():
             region = self.get_region("Lyhamn")
             dish_loc = ADLocation(self.player, dish, location_name_to_id[dish], region)
             region.locations.append(dish_loc)
             self.set_rule(dish_loc, dish_data.rule)
 
     def create_items(self) -> None:
-        for name in items.keys():
-            self.create_item(name)
+        mworld = self.multiworld
+        pool: list[ADItem] = []
+
+        for name, data in items.items():
+            for _ in range(data.pool_quantity):
+                item = self.create_item(name)
+                pool.append(item)
+
+        # Add filler items to have the same number of items and locations
+        extras = len(mworld.get_unfilled_locations(player=self.player)) - len(pool)
+        pool += [self.create_item(self.get_filler_item_name()) for _ in range(extras)]
+
+        mworld.itempool += pool
 
     def create_item(self, name: str) -> ADItem:
         return ADItem(name, items[name].classification, items[name].id, self.player)
 
-    def get_filler_item_name(self) -> str:  # TODO
-        return "TODO"
+    def get_filler_item_name(self) -> str:  # TODO use a random filler once they are implemented
+        return "Wasp Essence x3"
 
     def fill_slot_data(self) -> dict[str, Any]:
         return self.options.as_dict(
