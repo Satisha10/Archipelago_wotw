@@ -14,6 +14,7 @@ import logging
 from typing import Any, Callable
 from collections import Counter
 
+from Options import OptionError
 from worlds.AutoWorld import World, WebWorld
 from worlds.generic.Rules import add_rule, set_rule
 from BaseClasses import Region, Location, Item, Tutorial, ItemClassification, LocationProgressType, CollectionState
@@ -172,11 +173,24 @@ class WotWWorld(World):
         if options.open_mode:
             options.no_rain.value = True
         # Escaping from Willow require to complete the elevator fight, so a tp is needed to escape.
-        if options.spawn.value == StartingLocation.option_willow and not options.tp:
-            options.spawn.value = StartingLocation.option_vanilla  # No TP in pool: spawn somewhere else.
-        # Without TP in the pool, some random spawn are dead-ends without better random spawn
-        if not options.tp and not options.better_spawn:
-            options.better_spawn.value = True
+        if not options.tp:
+            if (options.spawn.value in (
+                    StartingLocation.option_willow,
+                    StartingLocation.option_shriek,
+                    StartingLocation.option_random_loc,
+                    StartingLocation.option_random_tp,
+                )
+            or (options.difficulty.value == LogicDifficulty.option_moki and options.spawn.value in (
+                    StartingLocation.option_westwoods,
+                    StartingLocation.option_eastwoods,
+                    StartingLocation.option_westwastes,
+                    StartingLocation.option_eastwastes,
+                    StartingLocation.option_outerruins,
+                    StartingLocation.option_innerruins,
+                )
+                    )):
+                raise OptionError("Removing Teleporters from the pool can cause impossible seeds"
+                                  "when spawning in Willow or at a random location, or on the east side in Moki.")
         if options.fragments_count.value < options.fragments_required.value:
             options.fragments_count.value = options.fragments_required.value
         # Spawning on willow usually gives Launch on spawn, which defeats the purpose of the options that affect Launch
