@@ -781,14 +781,14 @@ class WotWWorld(World):
                           "TuleyShop.SpringPlants",
                           "TuleyShop.LastTree"):
                 self.precollect_event(event)
-            # This location is inaccessible without Ore, so it is manually collected in this case
-            self.connect_to_menu("GladesTown.RebuildTheGlades")
-            for event in ("GladesTown.BuildHuts",
+            # These locations and events are inaccessible without Ore
+            for event in ("GladesTown.RebuildTheGlades",
+                          "GladesTown.BuildHuts",
                           "GladesTown.RoofsOverHeads",
                           "GladesTown.OnwardsAndUpwards",
                           "GladesTown.ClearThorns",
                           "GladesTown.CaveEntrance"):
-                self.precollect_event(event)
+                self.connect_to_menu(event)
 
         if options.quests == Quests.option_none:  # Open locations locked behind NPCs
             # Connecting the other quests is not necessary, as their event don't appear in logic for non-quest locations
