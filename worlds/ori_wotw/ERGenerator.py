@@ -73,10 +73,13 @@ forbidden_conn_lookup: dict[Groups, list[Groups]] = {
     Groups.OW_3: [Groups.IW_2],
     # Accessing the Weeping Ridge door requires Seir from the Ruins (without glitches)
     Groups.RIDGE: [Groups.RUINS],
-    ### Other rooms that are not dead ends (groups 4, 5)
-    Groups.WILLOW: [],
+    ### Other rooms that are not dead ends (groups 4, 5): don't connect them to restricted groups of singe doors
+    # Example: WeepingRidge-InnerWellspringEntrance + InnerWellspringWest-WindtornRuins must be prevented
+    Groups.WILLOW: [Groups.MOKI_HUT, Groups.OW_3, Groups.RIDGE, Groups.WOODS_HUT, Groups.IW_2, Groups.RUINS],
     # No connection with the OW_1O_2 doors
-    Groups.IW_1: [Groups.OW_1O_2],
+    Groups.IW_1: [
+        Groups.OW_1O_2, Groups.MOKI_HUT, Groups.OW_3, Groups.RIDGE, Groups.WOODS_HUT, Groups.IW_2, Groups.RUINS
+    ],
     ### Dead ends: don't connect these to themselves to not lock the generator (groups 6 to 8)
     # No connection with the Key Moki hut
     Groups.WOODS_HUT: [Groups.MOKI_HUT, Groups.WOODS_HUT, Groups.IW_2, Groups.RUINS, Groups.DEAD],
@@ -299,4 +302,5 @@ def generate_er_connections(world: WotWWorld, coupled: bool) -> list[int]:
         if coupled:  # Reverse mapping only made in coupled mode
             er_door_ids[doors_map[target_entrance] - 1] = doors_map[source_exit]
 
+    print(er_gen.placements)
     return er_door_ids
