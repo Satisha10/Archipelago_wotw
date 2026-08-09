@@ -529,6 +529,15 @@ class WotWWorld(World):
                 loc = self.get_location(location)
                 loc.place_locked_item(self.create_item(item))
                 removed_items.append(item)
+            if (options.difficulty == LogicDifficulty.option_moki
+                and options.door_rando != RandomizeDoors.option_disabled
+                and not options.tp):
+                # Add another water breath in the pool to prevent an impossible seed if the door rando connects
+                # UpperWastes.OutsideRuins (Door) to InnerWellspring.Teleporter (Door).
+                # In that case Wellspring escape is locked behind the Pools Wisp,
+                # which logically requires Water Breath, which requires the escape on vanilla shop upgrades.
+                removed_items.remove("Water Breath")
+
 
         if options.launch_on_seir:
             self.get_location("WindtornRuins.Seir").place_locked_item(self.create_item("Launch"))
