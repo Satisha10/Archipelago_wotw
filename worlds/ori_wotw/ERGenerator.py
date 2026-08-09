@@ -25,7 +25,7 @@ class Groups(IntEnum):
     DEAD = 8
 
 group_lookup: dict[str, Groups] = {
-    "GladesTown.TwillenHome (Door)": Groups.MAIN,
+    "GladesTown.TwillenHome (Door)": Groups.MOKI_HUT,
     "GladesTown.KeyMokiHutInside (Door)": Groups.DEAD,
     "GladesTown.MotayHutDoor (Door)": Groups.MAIN,
     "GladesTown.MotayHutInside (Door)": Groups.DEAD,
@@ -37,7 +37,7 @@ group_lookup: dict[str, Groups] = {
     "GladesTown.StorageHut (Door)": Groups.DEAD,
     "GladesTown.LupoHouse (Door)": Groups.MAIN,
     "GladesTown.InsideLupoHouse (Door)": Groups.DEAD,
-    "GladesTown.HoleHutEntrance (Door)": Groups.MOKI_HUT,
+    "GladesTown.HoleHutEntrance (Door)": Groups.MAIN,
     "GladesTown.InsideHoleHut (Door)": Groups.DEAD,
     "OuterWellspring.EntranceDoor (Door)": Groups.MAIN,
     "OuterWellspring.WestDoor (Door)": Groups.OW_1O_2,
@@ -83,7 +83,7 @@ forbidden_conn_lookup: dict[Groups, list[Groups]] = {
 
 groups: dict[Groups, list[str]] = {
     Groups.MAIN: [
-        "GladesTown.HoleHutEntrance (Door)"
+        "GladesTown.HoleHutEntrance (Door)",
         "GladesTown.MotayHutDoor (Door)",
         "GladesTown.UpperWest (Door)",
         "GladesTown.AcornMoki (Door)",
@@ -100,7 +100,7 @@ groups: dict[Groups, list[str]] = {
         "OuterWellspring.EastDoor (Door)",
     ],
     Groups.MOKI_HUT: [
-        "GladesTown.TwillenHome (Door)"
+        "GladesTown.TwillenHome (Door)",
     ],
     Groups.OW_3: [
         "OuterWellspring.TopDoor (Door)",
