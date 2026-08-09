@@ -3,77 +3,80 @@ from .data_structures import QuestData
 from rule_builder.rules import Has, HasAll
 
 quests: dict[str, QuestData] = {
-    "TODOq0": QuestData(
+    "Branching Out": QuestData(
         area="Koro Valley",
         game_name="quickwood",
         level_progress="Lyhamn",
         rule=Has("Hammer")
     ),
-    "TODOq1": QuestData(
+    "Rice to the Occasion": QuestData(
         area="Koro Valley",
         game_name="ricefarm",
         level_progress="Lyhamn",
     ),
-    "TODOq2": QuestData(
+    "Blooming Villain": QuestData(
         area="Koro Valley",
         game_name="flowerBoss1",
         level_progress="Lyhamn",
+        rule=Has("Blunt")  # TODO Maybe not required if shortcut from rice field ?
     ),
-    "TODOq3": QuestData(
+    "A Sneak Peak": QuestData(
         area="Koro Valley",
         game_name="silverPeak",
         level_progress="Lyhamn",
-        rule=Has("Chakram")
+        rule=HasAll("Chakram", "Hammer")
     ),
-    "TODOq4": QuestData(
+    "Wheat Field Wack-A-mole": QuestData(
         area="Aurum Plains",
         game_name="oldFarm",
         level_progress="Sundalan",
         rule=Has("Hammer")
     ),
-    "TODOq5": QuestData(
+    "Nuemera Island": QuestData(
         area="Aurum Plains",
         game_name="grandPass",
         level_progress="Sundalan",
-        rule=Has("Kama")
+        rule=HasAll("Kama", "Blunt", "Pierce", "Aether")
     ),
     # Side quests
-    "TODOq6": QuestData(
+    "Quick Quickwood Query": QuestData(
         area="Koro Valley",
         game_name="southBarrier1",
-        level_progress="Lyhamn",
+        level_progress="Lyhamn",  # Combat + range
     ),
-    "TODOq7": QuestData(
+    "Temple Incursion": QuestData(
         area="Koro Valley",
         game_name="subDungeonMesa",
         level_progress=None,
-        rule=HasAll("Hammer", "Fulcrum Mark")
+        rule=HasAll("Blunt", "Filia", "Chakram") & Has("Fulcrum Mark", count=2),
     ),
-    "TODOq8": QuestData(
+    "Iron Deficiency": QuestData(
         area="Lyhamn",
         game_name="riverIron",
         level_progress="Lyhamn",
+        rule=Has("Range"),
     ),
-    "TODOq9": QuestData(
+    "For the Children, right ?": QuestData(
         area="Lyhamn",
         game_name="teacherStash",
         level_progress="Lyhamn",
+        rule=HasAll("Blunt", "Range"),
     ),
-    "TODOq10": QuestData(
+    "Spring's Return": QuestData(
         area="Lyhamn",
         game_name="bathHouse1",
         level_progress="Lyhamn",
-        rule=Has("Hammer")
+        rule=HasAll("Blunt", "Filia", "Chakram"),
     ),
-    "TODOq11": QuestData(
+    "The Fervor of Youth": QuestData(
         area="Lyhamn",
         game_name="hotHeadLad1",
         level_progress=None,
     ),
-    "TODOq12": QuestData(
+    "Free the Fish": QuestData(
         area="Lyhamn",
         game_name="lakeFish1",
         level_progress="Lyhamn",
-        rule=Has("Hammer"),
+        rule=HasAll("Range", "Aether"),
     ),
 }

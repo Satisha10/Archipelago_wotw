@@ -79,19 +79,18 @@ items: dict[str, ItemData] = {
         game_name="the-key-dng",
         item_type="Key",
     ),
-    "Whisper of the gods x5": ItemData(
+    "Whisper of the gods x5": ItemData(  # I found 120 essences in 0.1.0 (not counting Somu)
         classification=IC.useful,
         id=101,
         item_quantity=5,
-        pool_quantity=20,  # TODO adjust quantity to match in-game
+        pool_quantity=24,
         game_name="chest-ess-1-whisper",
         item_type="Craft (limited)",
     ),
-    "Verse of the Gods x3": ItemData(
+    "Verse of the Gods": ItemData(  # 3 in 0.1.0 (not counting Somu)
         classification=IC.useful,
         id=102,
         item_quantity=3,
-        pool_quantity=2,
         game_name="chest-ess-2-verse",
         item_type="Craft (limited)",
     ),

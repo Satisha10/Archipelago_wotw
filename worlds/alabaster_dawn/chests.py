@@ -2,365 +2,395 @@ from rule_builder.rules import Has, HasAll
 
 from .data_structures import ChestData
 
-
-# TODO see if these chests are reachable in 0.1, and write logic rules
-# TODO Names
-
-# TODO other locations: quests rewards to show (randomize them ?)
-
 chests: dict[str, ChestData] = {
-    "TODO1": ChestData(
+    "Plains.Somu": ChestData(
         game_name="hub.west-01-1",
         area="Aurum Plains",
+        rule=Has("Kama"),
     ),
-    "TODO2": ChestData(
+    "Plains.Watchtower": ChestData(
         game_name="hub.south-01-1",
         area="Aurum Plains",
+        rule=Has("Kama"),
     ),
-    "TODO3": ChestData(
+    "Plains.HiddenSteep.West": ChestData(
         game_name="hub.south-03-1",
         area="Aurum Plains",
+        rule=Has("Kama"),
     ),
-    "TODO4": ChestData(
+    "Plains.HiddenSteep.SouthEast": ChestData(
         game_name="hub.south-03-2",
         area="Aurum Plains",
+        rule=HasAll("Aether", "Chakram", "Filia"),
     ),
-    "TODO5": ChestData(
+    "Plains.HiddenSteep.Hidden": ChestData(
         game_name="hub.south-03-3",
         area="Aurum Plains",
+        rule=Has("Kama"),
     ),
-    "TODO6": ChestData(
+    "Plains.RiverRoad.Statue": ChestData(
         game_name="hub.south-04-1",
         area="Aurum Plains",
     ),
-    "TODO7": ChestData(
+    "Plains.RiverRoad.NorthEast": ChestData(
         game_name="hub.south-04-2",
         area="Aurum Plains",
+        rule=HasAll("Filia", "Range"),
     ),
-    "TODO8": ChestData(
+    "Plains.RiverRoad.North": ChestData(
         game_name="hub.south-04-3",
         area="Aurum Plains",
     ),
-    "TODO9": ChestData(
+    "Plains.OldFarm.East": ChestData(
         game_name="hub.north-01-1",
         area="Aurum Plains",
+        rule=Has("Range")
     ),
-    "TODO10": ChestData(
+    "Plains.OldFarm.SouthWest": ChestData(
         game_name="hub.north-01-2",
         area="Aurum Plains",
-        rule=Has("Kama"),
     ),
-    "TODO11": ChestData(
+    "Plains.OldFarm.Quest": ChestData(
         game_name="hub.north-01-3",
         area="Aurum Plains",
     ),
-    "TODO12": ChestData(
+    "Plains.NorthBend.North": ChestData(
         game_name="hub.north-02-1",
         area="Aurum Plains",
+        rule=HasAll("Blunt", "Combat"),
     ),
-    "TODO13": ChestData(
-        game_name="hub.north-04-1",
-        area="Aurum Plains",
-    ),
-    "TODO14": ChestData(
+    #"Plains.ImpactCrater": ChestData(  # Nyx nest, not reachable ? (need to go on sundalan's walls)
+    #    game_name="hub.north-04-1",
+    #    area="Aurum Plains",
+    #),
+    "Plains.RuinedRanch.West": ChestData(
         game_name="hub.north-05-1",
         area="Aurum Plains",
-        rule=Has("Kama"),
+        rule=HasAll("Kama", "Filia"), # Aether + slash for combat ?
     ),
-    "TODO15": ChestData(
+    "Plains.SouthBend.West": ChestData(
         game_name="hub.center-06-1",
         area="Aurum Plains",
-        rule=Has("Kama"),
+        rule=HasAll("Kama", "Filia", "Aether", "Chakram"),  # Need to solve the big puzzle before
     ),
-    "TODO16": ChestData(
+    "Plains.SouthBend.East": ChestData(
         game_name="hub.center-06-2",
         area="Aurum Plains",
     ),
-    "TODO17": ChestData(
+    "Plains.SouthBend.North": ChestData(
         game_name="hub.center-06-3",
         area="Aurum Plains",
+        rule=Has("Range"),
     ),
-    "TODO18": ChestData(
+    "Sundalan.Meridi": ChestData(
         game_name="hub.town-south-1",
         area="Sundalan",
     ),
-    "TODO19": ChestData(
+    "Plains.SolGate": ChestData(
         game_name="hub.bridge-01-1",
         area="Aurum Plains",
     ),
-    "TODO20": ChestData(
+    "Plains.SolGate.Puzzle": ChestData(
+        game_name="hub.bridge-01-puzzle-01",
+        area="Aurum Plains",
+        rule=HasAll("Chakram", "Aether", "Filia") & Has("Fulcrum Mark", count=2) & Has("Element", count=2),
+    ),
+    "Valley.ForkedRoad.East": ChestData(
         game_name="start.center-01-1",
         area="Koro Valley",
-        rule=Has("Aether"),
+        rule=HasAll("Aether", "Range"),
     ),
-    "TODO21": ChestData(
+    "Valley.ForkedRoad.West": ChestData(
         game_name="start.center-01-2",
         area="Koro Valley",
-        rule=Has("Aether"),
+        rule=HasAll("Aether", "Range"),
     ),
-    "TODO22": ChestData(
+    "Valley.ForkedRoad.South": ChestData(
         game_name="start.center-01-3",
         area="Koro Valley",
     ),
-    "TODO23": ChestData(
+    "Valley.ReaversEnd.North": ChestData(
         game_name="start.center-02-1",
         area="Koro Valley",
     ),
-    "TODO24": ChestData(
+    "Valley.ReaversEnd.East": ChestData(
         game_name="start.center-02-2",
         area="Koro Valley",
         rule=Has("Chakram"),
     ),
-    "TODO25": ChestData(
+    "Valley.ReaversEnd.Boss": ChestData(  # TODO Requires hammer to go from upwards ? and bridge from down
         game_name="start.center-02-3",
         area="Koro Valley",
     ),
-    "TODO26": ChestData(
+    "Valley.EyeRemis": ChestData(
         game_name="start.center-03-2",
         area="Koro Valley",
     ),
-    "TODO27": ChestData(
+    "Valley.Kamu.West": ChestData(
         game_name="start.center-04-1",
         area="Koro Valley",
-        rule=Has("Hammer"),
+        rule=Has("Blunt"),
     ),
-    "TODO28": ChestData(
+    "Valley.Kamu.NorthEast": ChestData(
         game_name="start.center-04-2",
         area="Koro Valley",
     ),
-    "TODO29": ChestData(
+    "Valley.Kamu.South": ChestData(
         game_name="start.center-04-3",
         area="Koro Valley",
         rule=Has("Chakram"),
     ),
-    "TODO30": ChestData(
+    "Valley.Fossil.South": ChestData(
         game_name="start.center-05-1",
         area="Koro Valley",
     ),
-    "TODO31": ChestData(
+    "Valley.Fossil.East": ChestData(
         game_name="start.center-05-2",
         area="Koro Valley",
-        rule=HasAll("Filia", "Aether"),
+        rule=HasAll("Filia", "Aether", "Range"),
     ),
-    "TODO32": ChestData(
+    "Valley.Lumber.EternalSpringChest": ChestData(
         game_name="start.center-06-1",
         area="Koro Valley",
     ),
-    "TODO33": ChestData(
+    "Valley.Lumber.West": ChestData(
         game_name="start.center-06-2",
         area="Koro Valley",
     ),
-    "TODO34": ChestData(
+    "Valley.Lumber.East": ChestData(
         game_name="start.center-06-3",
         area="Koro Valley",
+        rule=Has("Range"),
     ),
-    "TODO35": ChestData(
+    "Valley.LyhamnShelter.East": ChestData(
         game_name="start.center-07-1",
         area="Koro Valley",
-        rule=Has("Kama"),
+        rule=HasAll("Kama", "Pierce"),
     ),
-    "TODO36": ChestData(
+    "Valley.LyhamnShelter.Combat": ChestData(
         game_name="start.center-07-2",
         area="Koro Valley",
     ),
-    "TODO37": ChestData(  # TODO not sure this one is reachable yet
+    "EternalSpring.Outside": ChestData(
         game_name="start.center-08-1",
-        area="Koro Valley",
-        rule=Has("Aether") & Has("Fulcrum Mark", count=2),
+        area="Eternal Spring",
+        rule=Has("Element", count=2),  # TODO check that it is only reachable once dng complete
     ),
-    "TODO38": ChestData(
+    "Valley.Crescent.SouthWest": ChestData(
         game_name="start.north-01-2",
         area="Koro Valley",
         rule=Has("Lyhamn level", count=1),
     ),
-    "TODO39": ChestData(
+    "Valley.ValleyEntrance.Bridge": ChestData(
         game_name="start.north-02-1",
         area="Koro Valley",
     ),
-    "TODO40": ChestData(
+    "Valley.ValleyEntrance.East": ChestData(
         game_name="start.north-02-2",
         area="Koro Valley",
+        rule=Has("Range"),
     ),
-    "TODO41": ChestData(
+    "Valley.DuskApproach.East": ChestData(
         game_name="start.north-03-1",
         area="Koro Valley",
         rule=Has("Kama"),
     ),
-    "TODO42": ChestData(
+    "Valley.DuskApproach.South": ChestData(  # Missable in 0.1.0, but might be ok if tide is an item
         game_name="start.north-03-2",
         area="Koro Valley",
     ),
-    "TODO43": ChestData(
+    "Valley.DuskApproach.West": ChestData(  # TODO Hammer because of scripted fight ? Also tide + maybe bridge
         game_name="start.north-03-3",
         area="Koro Valley",
     ),
-    "TODO44": ChestData(
+    "Valley.CliffSide": ChestData(
         game_name="start.east-01-1",
         area="Koro Valley",
     ),
-    "TODO45": ChestData(
+    "Valley.MedianDivide.Middle": ChestData(
         game_name="start.east-02-1",
         area="Koro Valley",
     ),
-    "TODO46": ChestData(
+    "Valley.MedianDivide.West": ChestData(
         game_name="start.east-02-2",
         area="Koro Valley",
-        rule=Has("Kama"),
+        rule=HasAll("Kama", "Blunt"),
     ),
-    "TODO47": ChestData(
+    "Valley.RedForest.West": ChestData(
         game_name="start.south-01-1",
         area="Koro Valley",
         rule=Has("Kama"),
     ),
-    "TODO48": ChestData(
+    "Valley.RedForest.South": ChestData(
         game_name="start.south-01-2",
-        area="Koro Valley",
+        area="Koro Valley",  # Might require CL2 or blunt
     ),
-    "TODO49": ChestData(
+    "Valley.Lake.West": ChestData(
         game_name="start.west-01-1",
         area="Koro Valley",
+        rule=HasAll("Range", "Aether"),  # Also need the quest: CL1 ?
     ),
-    "TODO50": ChestData(
+    "Valley.Lake.North": ChestData(
         game_name="start.west-01-2",
         area="Koro Valley",
+        rule=HasAll("Range", "Aether", "Blunt"),
     ),
-    "TODO51": ChestData(
+    # TODO do an area for peak because of hammer barrier ?
+    "Valley.SilverFileds.North": ChestData(
         game_name="start.peak-01-1",
         area="Koro Valley",
+        rule=HasAll("Hammer", "Range"),
     ),
-    "TODO52": ChestData(
+    "Valley.HollowIncline.West": ChestData(
         game_name="start.peak-02-1",
         area="Koro Valley",
-        rule=Has("Chakram"),
+        rule=HasAll("Chakram", "Hammer"),
     ),
-    "TODO53": ChestData(
+    "Valley.HollowIncline.Middle": ChestData(
         game_name="start.peak-02-2",
         area="Koro Valley",
-        rule=Has("Chakram"),
+        rule=HasAll("Chakram, Hammer"),
     ),
-    "TODO54": ChestData(
+    "Valley.Peak.East": ChestData(
         game_name="start.peak-03-1",
         area="Koro Valley",
+        rule=HasAll("Chakram, Hammer"),
     ),
-    "TODO55": ChestData(
+    "Valley.Peak.West": ChestData(
         game_name="start.peak-03-2",
         area="Koro Valley",
+        rule=HasAll("Chakram, Hammer"),
     ),
-    "TODO56": ChestData(
+    "Valley.RemisRock.West": ChestData(
         game_name="start.dng-outer-1",
         area="Koro Valley",
+        rule=Has("Range")  # TODO Probably more than this due to arriving here
     ),
-    "TODO57": ChestData(
+    "Valley.RemisRock.North": ChestData(
         game_name="start.dng-outer-2",
         area="Koro Valley",
+        rule=Has("Aether")  # Aether for the fight ? this might be accessible from plains ?
     ),
-    "TODO58": ChestData(
+    "Valley.RemisRock.East": ChestData(
         game_name="start.dng-outer-3",
         area="Koro Valley",
+        rule=HasAll("Range", "Blunt", "Aether"),
     ),
-    "TODO59": ChestData(
+    "Valley.RemisRock.NorthEast": ChestData(
         game_name="start.dng-outer-4",
         area="Koro Valley",
+        rule=HasAll("Range", "Blunt", "Aether"),
     ),
-    "TODO60": ChestData(
+    "Lyhamn.Center.West": ChestData(
         game_name="start.village-01-1",
         area="Lyhamn",
         rule=Has("Lyhamn level", count=1),
     ),
-    "TODO61": ChestData(
+    "Lyhamn.Center.North": ChestData(
         game_name="start.village-01-2",
         area="Lyhamn",
     ),
-    "TODO62": ChestData(
+    "Lyhamn.Reef": ChestData(
         game_name="start.village-02-2-fix",
         area="Lyhamn",
         rule=Has("Lyhamn level", count=1),
     ),
-    "TODO63": ChestData(
+    "Lyhamn.Garden.East": ChestData(
         game_name="start.village-03-1",
         area="Lyhamn",
         rule=Has("Lyhamn level", count=1),
     ),
-    "TODO64": ChestData(
+    "Lyhamn.Garden.West": ChestData(
         game_name="start.village-03-2",
         area="Lyhamn",
     ),
-    "TODO65": ChestData(
+    "Lyhamn.PentersonOffering": ChestData(
         game_name="start.village-center01-giftChest1",
         area="Lyhamn",
         rule=Has("Lyhamn level", count=1),
     ),
-    "TODO66": ChestData(
+    "Lyhamn.PetrosOffering": ChestData(
         game_name="start.village-center02-giftChest3",
         area="Lyhamn",
         rule=Has("Lyhamn level", count=1),
     ),
-    "TODO67": ChestData(
-        game_name="start.village-center03-giftChest2",
-        area="Lyhamn",
-        rule=Has("Lyhamn level", count=1),
-    ),
-    "TODO68": ChestData(
+    #"Lyhamn.Offering": ChestData(  # Not reachable ?
+    #    game_name="start.village-center03-giftChest2",
+    #    area="Lyhamn",
+    #    rule=Has("Lyhamn level", count=1),
+    #),
+    "Lyhamn.MarmsOffering": ChestData(
         game_name="start.village-center06-giftChest4",
         area="Lyhamn",
         rule=Has("Lyhamn level", count=1),
     ),
-    "TODO69": ChestData(
+    "Lyhamn.AlezandaOffering": ChestData(
         game_name="start.village-beach01-giftChest5",
         area="Lyhamn",
         rule=Has("Lyhamn level", count=1),
     ),
-    "TODO70": ChestData(
+    "Lyhamn.OrlandaOffering": ChestData(
         game_name="start.village-beach02-giftChest6",
         area="Lyhamn",
         rule=Has("Lyhamn level", count=1),
     ),
-    "TODO71": ChestData(
+    "EternalSpring.A3": ChestData(
         game_name="start.spring-trial-room-02-1",
-        area="Eternal Spring",
+        area="Eternal Spring",  # The rules are already considered in the area logic
     ),
-    "TODO72": ChestData(
+    "EternalSpring.A5": ChestData(
         game_name="start.spring-trial-room-03-1",
         area="Eternal Spring",
+        rule=Has("Element", count=2),  # TODO Also need a range pierce, make range TYPE a thing
     ),
-    "TODO73": ChestData(
+    "EternalSpring.A6": ChestData(
         game_name="start.spring-trial-room-04-1",
         area="Eternal Spring",
+        rule=Has("Element", count=2),
     ),
-    "TODO74": ChestData(
+    "Lyhamn.ReefCave": ChestData(  # TODO Hotspring Cave area
         game_name="start.beach-spring-cave-01-1",
-        area="Eternal Spring",
+        area="Lyhamn",
     ),
-    "TODO75": ChestData(
+    "Lyhamn.FoggyLair": ChestData(
         game_name="start.beach-spring-cave-02-1",
-        area="Eternal Spring",
+        area="Lyhamn",
+        rule=Has("Chakram"),
     ),
-    "TODO76": ChestData(  # TODO Key logic
+    "Aether.A1": ChestData(  # TODO Key logic
         game_name="start.start-dng.f1-room-01-1",
         area="Trial of Aether",
+        rule=Has("Range")
     ),
-    "TODO77": ChestData(
+    "Aether.A2.West": ChestData(
         game_name="start.start-dng.f1-room-02-1",
         area="Trial of Aether",
+        rule=HasAll("Pierce", "Filia", "Key", "Range")
     ),
-    "TODO78": ChestData(
+    "Aether.B4": ChestData(
         game_name="start.start-dng.f2-room-02b-1",
         area="Trial of Aether",
+        rule=HasAll("Filia", "Chakram", "Blunt", "Pierce", "Aether"),
     ),
-    "TODO79": ChestData(
+    "Aether.A2.NorthEast": ChestData(
         game_name="start.start-dng.f1-room-04-1",
         area="Trial of Aether",
+        rule=HasAll("Blunt", "Filia", "Key", "Range")
     ),
-    "TODO80": ChestData(
+    "Aether.B7": ChestData(
         game_name="start.start-dng.f1-room-04b",
         area="Trial of Aether",
-    ),
-    "TODO81": ChestData(
+        rule=HasAll("Filia", "Chakram", "Blunt", "Pierce", "Aether")
+    ),# TODO key for a2 to a5 + loc for aether element
+    "Aether.A2.East": ChestData(
         game_name="start.start-dng.f1-room-02-key",
         area="Trial of Aether",
+        rule=HasAll("Range", "Melee", "Filia")  # TODO Melee or 2+ elements
     ),
-    "TODO82": ChestData(
+    "Aether.B5": ChestData(
         game_name="start.start-dng.f2-room-03-key",
         area="Trial of Aether",
+        rule=HasAll("Filia", "Chakram", "Blunt", "Pierce", "Aether")
     ),
+    # TODO Nyx Spire, which also requires 2nd element
 }
