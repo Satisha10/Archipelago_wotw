@@ -83,7 +83,7 @@ forbidden_conn_lookup: dict[Groups, list[Groups]] = {
 
 groups: dict[Groups, list[str]] = {
     Groups.MAIN: [
-        "GladesTown.TwillenHome (Door)",
+        "GladesTown.HoleHutEntrance (Door)"
         "GladesTown.MotayHutDoor (Door)",
         "GladesTown.UpperWest (Door)",
         "GladesTown.AcornMoki (Door)",
@@ -100,7 +100,7 @@ groups: dict[Groups, list[str]] = {
         "OuterWellspring.EastDoor (Door)",
     ],
     Groups.MOKI_HUT: [
-        "GladesTown.HoleHutEntrance (Door)"
+        "GladesTown.TwillenHome (Door)"
     ],
     Groups.OW_3: [
         "OuterWellspring.TopDoor (Door)",
