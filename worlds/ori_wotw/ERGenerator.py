@@ -68,11 +68,11 @@ forbidden_conn_lookup: dict[Groups, list[Groups]] = {
     # Don't connect the doors opened by the lever in Inner Wellspring 1 to this room
     Groups.OW_1O_2: [Groups.IW_1],
     # Don't connect the Key Moki Hut to the Doll location in the woods hut (as it is required to enter)
-    Groups.MOKI_HUT: [Groups.WOODS_HUT],
+    Groups.MOKI_HUT: [Groups.WOODS_HUT, Groups.WILLOW, Groups.IW_1],
     # Entering the 3rd room in Wellspring requires removing the corruption from Inner Wellspring 2
-    Groups.OW_3: [Groups.IW_2],
+    Groups.OW_3: [Groups.IW_2, Groups.WILLOW, Groups.IW_1],
     # Accessing the Weeping Ridge door requires Seir from the Ruins (without glitches)
-    Groups.RIDGE: [Groups.RUINS],
+    Groups.RIDGE: [Groups.RUINS, Groups.WILLOW, Groups.IW_1],
     ### Other rooms that are not dead ends (groups 4, 5): don't connect them to restricted groups of singe doors
     # Example: WeepingRidge-InnerWellspringEntrance + InnerWellspringWest-WindtornRuins must be prevented
     Groups.WILLOW: [Groups.MOKI_HUT, Groups.OW_3, Groups.RIDGE, Groups.WOODS_HUT, Groups.IW_2, Groups.RUINS],
@@ -82,11 +82,13 @@ forbidden_conn_lookup: dict[Groups, list[Groups]] = {
     ],
     ### Dead ends: don't connect these to themselves to not lock the generator (groups 6 to 8)
     # No connection with the Key Moki hut
-    Groups.WOODS_HUT: [Groups.MOKI_HUT, Groups.WOODS_HUT, Groups.IW_2, Groups.RUINS, Groups.DEAD],
+    Groups.WOODS_HUT: [
+        Groups.MOKI_HUT, Groups.WOODS_HUT, Groups.IW_2, Groups.RUINS, Groups.DEAD, Groups.WILLOW, Groups.IW_1
+    ],
     # No connection with the top door of Outer Wellspring
-    Groups.IW_2: [Groups.OW_3, Groups.WOODS_HUT, Groups.IW_2, Groups.RUINS, Groups.DEAD],
+    Groups.IW_2: [Groups.OW_3, Groups.WOODS_HUT, Groups.IW_2, Groups.RUINS, Groups.DEAD, Groups.WILLOW, Groups.IW_1],
     # No connection with Weeping Ridge
-    Groups.RUINS: [Groups.RIDGE, Groups.WOODS_HUT, Groups.IW_2, Groups.RUINS, Groups.DEAD],
+    Groups.RUINS: [Groups.RIDGE, Groups.WOODS_HUT, Groups.IW_2, Groups.RUINS, Groups.DEAD, Groups.WILLOW, Groups.IW_1],
     Groups.DEAD: [Groups.WOODS_HUT, Groups.IW_2, Groups.RUINS, Groups.DEAD],
 }
 
