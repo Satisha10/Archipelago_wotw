@@ -259,7 +259,7 @@ class ERGeneratorWotW:
 
 def generate_er_connections(world: WotWWorld, coupled: bool) -> list[int]:
     """Randomize and create the entrances between the doors. Return the pairing data to send through slot_data."""
-    max_attempts = 3
+    max_attempts = 5
     current_attempt = 1
     result = True  # Track success of the entrance connection
 
@@ -313,5 +313,4 @@ def generate_er_connections(world: WotWWorld, coupled: bool) -> list[int]:
         if coupled:  # Reverse mapping only made in coupled mode
             er_door_ids[doors_map[target_entrance] - 1] = doors_map[source_exit]
 
-    print(er_gen.placements)
     return er_door_ids
