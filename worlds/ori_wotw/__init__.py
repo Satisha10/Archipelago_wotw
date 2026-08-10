@@ -172,7 +172,10 @@ class WotWWorld(World):
         # Options checking
         if options.open_mode:
             options.no_rain.value = True
-        # Escaping from Willow require to complete the elevator fight, so a tp is needed to escape.
+
+        # Prevent combinations that don't generate well on random spawn
+        if not options.better_spawn and options.spawn == StartingLocation.option_outerruins:
+            raise OptionError("Outer Ruins spawn (UpperWastes.NorthTP) behaves poorly without Better random spawn.")
         if not options.tp:
             if (options.spawn.value in (
                     StartingLocation.option_willow,
@@ -190,7 +193,18 @@ class WotWWorld(World):
                 )
                     )):
                 raise OptionError("Removing Teleporters from the pool can cause impossible seeds"
-                                  "when spawning in Willow or at a random location, or on the east side in Moki.")
+                                  "when spawning in Willow, Depths or at a random location, "
+                                  "or on the east side in Moki.")
+            if not options.better_spawn and options.spawn.value in (
+                StartingLocation.option_burrows,
+                StartingLocation.option_howlsden,
+                StartingLocation.option_eastpools,
+                StartingLocation.option_westpools,  # outerruins already prevented just without better spawn
+                StartingLocation.option_innerruins,  # random loc/tp and willow are already impossible just without tp
+            ):
+                raise OptionError("Removing Teleporters and not having Better random spawn can cause impossible seeds"
+                                  "in most places (apart from glades, wellspring, woods, depths, reach, early wastes).")
+
         if options.fragments_count.value < options.fragments_required.value:
             options.fragments_count.value = options.fragments_required.value
         # Spawning on willow usually gives Launch on spawn, which defeats the purpose of the options that affect Launch
@@ -485,6 +499,14 @@ class WotWWorld(World):
         if regen_spawn:  # Give Regenerate if needed
             mworld.push_precollected(self.create_item("Regenerate"))
             skipped_items.append("Regenerate")
+
+        # The generator can have difficulties to find the exit to these areas, so guide it towards the key item
+        if self.spawn_area in ("UpperWastes", "LowerWastes"):
+            self.multiworld.early_items[self.player]["Burrow"] = 1
+        elif self.spawn_area in ("UpperDepths", "LowerDepths"):
+            self.multiworld.early_items[self.player]["Glide"] = 1
+        elif self.spawn_area in ("EastPools", "WestPools", "UpperPools", "PoolsApproach"):
+            self.multiworld.early_items[self.player]["Clean Water"] = 1
 
         for item, count in options.start_inventory.value.items():
             for _ in range(count):
