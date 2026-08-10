@@ -168,7 +168,7 @@ class WotWWorld(World):
 
     def generate_early(self) -> None:
         # TODO Launch on seir + fragments
-        options = self.options  # TODO Use option error instead for some cases
+        options = self.options
         # Options checking
         if options.open_mode:
             options.no_rain.value = True
@@ -182,6 +182,7 @@ class WotWWorld(World):
                     StartingLocation.option_shriek,
                     StartingLocation.option_random_loc,
                     StartingLocation.option_random_tp,
+                    StartingLocation.option_depths,
                 )
             or (options.difficulty.value == LogicDifficulty.option_moki and options.spawn.value in (
                     StartingLocation.option_westwoods,
@@ -203,7 +204,7 @@ class WotWWorld(World):
                 StartingLocation.option_innerruins,  # random loc/tp and willow are already impossible just without tp
             ):
                 raise OptionError("Removing Teleporters and not having Better random spawn can cause impossible seeds"
-                                  "in most places (apart from glades, wellspring, woods, depths, reach, early wastes).")
+                                  "in most places (apart from glades, wellspring, woods, reach, early wastes).")
 
         if options.fragments_count.value < options.fragments_required.value:
             options.fragments_count.value = options.fragments_required.value
@@ -446,7 +447,10 @@ class WotWWorld(World):
             else:
                 item_rule = (lambda item: item.player == self.player
                              and item.name not in ("Launch Fragment", "Launch"))
-            for i in range(1, spawn_data[self.spawn_area].items_amount + 1):  # Create all spawn item locations
+
+            # Create all spawn item locations
+            extra_items = 3 if len(mworld.player_name) <= 1 else 1  # The range starts at 1
+            for i in range(1, spawn_data[self.spawn_area].items_amount + extra_items):
                 name = f"Spawn item {i}"
                 spawn_loc = WotWLocation(player, name, self.location_name_to_id[name], menu_region)
                 menu_region.locations.append(spawn_loc)
