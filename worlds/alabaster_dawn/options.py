@@ -8,9 +8,9 @@ class Quests(DefaultOnToggle):
     display_name = "Quests"
 
 
-class DivineSkillLogic(Toggle):
-    """Divine skills are logical ways to have blunt, pierce or slash access."""
-    display_name = "Divine Skill Logic"
+class DivineArtLogic(Toggle):
+    """Divine arts are logical ways to have blunt, pierce or slash access."""
+    display_name = "Divine Art Logic"
 
 
 class Cooksanity(Toggle):
@@ -26,7 +26,7 @@ class Craftsanity(Toggle):
 @dataclass
 class ADOptions(PerGameCommonOptions):
     quests: Quests
-    skill_logic: DivineSkillLogic
+    divine_logic: DivineArtLogic
     craftsanity: Craftsanity
     cooksanity: Cooksanity
 
@@ -35,7 +35,7 @@ option_groups = [
     OptionGroup(
         "Logic changes",
         [
-            DivineSkillLogic,
+            DivineArtLogic,
         ],
     ),
     OptionGroup(

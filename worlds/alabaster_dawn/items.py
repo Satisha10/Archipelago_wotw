@@ -94,7 +94,7 @@ items: dict[str, ItemData] = {
         game_name="chest-ess-2-verse",
         item_type="Craft (limited)",
     ),
-    "TODO": ItemData(
+    "Sphera Essence x5": ItemData(
         classification=IC.filler,
         id=200,
         item_quantity=5,
@@ -102,7 +102,7 @@ items: dict[str, ItemData] = {
         game_name="ball-ess",
         item_type="Craft",
     ),
-    "TODO": ItemData(
+    "Arma Sphera Essence x5": ItemData(
         classification=IC.filler,
         id=201,
         item_quantity=5,
@@ -110,7 +110,7 @@ items: dict[str, ItemData] = {
         game_name="ess-armor-ball",
         item_type="Craft",
     ),
-    "TODO": ItemData(
+    "Pilo Sphera Essence x5": ItemData(
         classification=IC.filler,
         id=202,
         item_quantity=5,
@@ -118,7 +118,7 @@ items: dict[str, ItemData] = {
         game_name="ess-hair-ball",
         item_type="Craft",
     ),
-    "Wasp Essence x3": ItemData(  # TODO game name
+    "Vespa Essence x5": ItemData(  # TODO game name
         classification=IC.filler,
         id=203,
         item_quantity=5,
@@ -126,7 +126,7 @@ items: dict[str, ItemData] = {
         game_name="wasp-ess",
         item_type="Craft",
     ),
-    "TODO": ItemData(
+    "Turri Essence x5": ItemData(
         classification=IC.filler,
         id=204,
         item_quantity=5,
@@ -134,7 +134,7 @@ items: dict[str, ItemData] = {
         game_name="flower-ess",
         item_type="Craft",
     ),
-    "TODO": ItemData(
+    "Custo Turri Essence x5": ItemData(
         classification=IC.filler,
         id=205,
         item_quantity=5,
@@ -142,23 +142,23 @@ items: dict[str, ItemData] = {
         game_name="guard-flower-ess",
         item_type="Craft",
     ),
-    "TODO": ItemData(
+    "Ericius Essence x3": ItemData(
         classification=IC.filler,
         id=206,
-        item_quantity=5,
+        item_quantity=3,
         pool_quantity=0,
         game_name="ess-hedgebird",
         item_type="Craft",
     ),
-    "TODO": ItemData(
+    "Testudo Essence x3": ItemData(
         classification=IC.filler,
         id=207,
-        item_quantity=5,
+        item_quantity=3,
         pool_quantity=0,
         game_name="ess-turtle",
         item_type="Craft",
     ),
-    "TODO": ItemData(
+    "Rana Essence x5": ItemData(
         classification=IC.filler,
         id=208,
         item_quantity=5,
@@ -166,15 +166,15 @@ items: dict[str, ItemData] = {
         game_name="ess-frog",
         item_type="Craft",
     ),
-    "TODO": ItemData(
+    "Pendicis Essence x3": ItemData(
         classification=IC.filler,
         id=209,
-        item_quantity=5,
+        item_quantity=3,
         pool_quantity=0,
         game_name="ess-flyfish",
         item_type="Craft",
     ),
-    "TODO": ItemData(
+    "Aranea Mu Essence": ItemData(
         classification=IC.useful,  # Only 2 of those in 0.1.0
         id=210,
         item_quantity=1,
@@ -182,7 +182,7 @@ items: dict[str, ItemData] = {
         game_name="ess-common-spider",
         item_type="Craft (limited)",
     ),
-    "TODO": ItemData(
+    "Algae Dolus Essence x5": ItemData(
         classification=IC.filler,
         id=211,
         item_quantity=5,
@@ -190,26 +190,26 @@ items: dict[str, ItemData] = {
         game_name="ess-algae",
         item_type="Craft",
     ),
-    "TODO": ItemData(
+    "Molis Essence x3": ItemData(
         classification=IC.filler,
         id=212,
-        item_quantity=5,
+        item_quantity=3,
         pool_quantity=0,
         game_name="ess-molerat",
         item_type="Craft",
     ),
-    "TODO": ItemData(
+    "Papilium Essence x3": ItemData(
         classification=IC.filler,
         id=213,
-        item_quantity=5,
+        item_quantity=3,
         pool_quantity=0,
         game_name="ess-butterflybird",
         item_type="Craft",
     ),
-    "TODO": ItemData(
+    "Bovarks Essence x3": ItemData(
         classification=IC.filler,
         id=214,
-        item_quantity=5,
+        item_quantity=3,
         pool_quantity=0,
         game_name="ess-bowcow",
         item_type="Craft",
@@ -518,18 +518,18 @@ items: dict[str, ItemData] = {
         game_name="phy-rgd-dps1",
         item_type="Divine Art",
     ),
-    "Ring of Rocks": ItemData(  # Blunt ?
+    "Ring of Rocks": ItemData(  # Blunt
         classification=IC.useful,
         id=804,
         game_name="phy-grd-shield1",
         item_type="Divine Art",
     ),
-    "Granite Counterslap": ItemData(
-        classification=IC.useful,
-        id=805,
-        game_name="phy-grd-counter1",
-        item_type="Divine Art",
-    ),
+    #"Granite Counterslap": ItemData(
+    #    classification=IC.useful,
+    #    id=805,
+    #    game_name="phy-grd-counter1",
+    #    item_type="Divine Art",
+    #),
     "Boom Snare": ItemData(  # Blunt
         classification=IC.useful,
         id=806,
@@ -561,6 +561,7 @@ items: dict[str, ItemData] = {
         item_type="Divine Art",
     ),
     # TODO blueprints
+    # TODO Minor gems ?
     # TODO dish recipies
     # TODO Artefacts
 }

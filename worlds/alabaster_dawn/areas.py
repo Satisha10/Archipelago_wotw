@@ -32,13 +32,13 @@ areas: dict[str, AreaData] = {
     ),
     "Trial of Aether A": AreaData(
         connections={
-            "Koro Valley": Has("Low tide"),
-            "Trial of Aether Outside": HasAll("Filia", "Aether")  # TODO
+            "Koro Valley": Has("Low tide"),  # TODO maybe not true if you arrived from top
+            "Trial of Aether Outside": HasAll("Filia", "Aether") & Has("Trial Mark", count=2)  # TODO
         },
     ),
     "Trial of Aether Outside": AreaData(  # Between A and B, up until the divine bridge
         connections={
-            "Trial of Aether A": True_(),  # TODO verify
+            "Trial of Aether A": True_(),  # TODO verify, probably wrong or impossible
             # Trial of Aether B is tied to Aurum Plains
             "Aurum Plains": HasAll("Aether", "Filia", "Chakram"),
         }
@@ -57,7 +57,7 @@ areas: dict[str, AreaData] = {
     "Aurum Plains": AreaData(
         connections={
             "Lyhamn": Has("Boat"),
-            "Trial of Aether B": True_(),  # TODO fight before the entrance, maybe need that too
+            "Trial of Aether B": HasAll("Combat", "Aether"),
             "Sundalan": True_(),
         },
     ),

@@ -69,7 +69,7 @@ chests: dict[str, ChestData] = {
     "Plains.RuinedRanch.West": ChestData(
         game_name="hub.north-05-1",
         area="Aurum Plains",
-        rule=HasAll("Kama", "Filia"), # Aether + slash for combat ?
+        rule=HasAll("Kama", "Filia", "Aether"),  # Aether for combat ?
     ),
     "Plains.SouthBend.West": ChestData(
         game_name="hub.center-06-1",
@@ -121,9 +121,10 @@ chests: dict[str, ChestData] = {
         area="Koro Valley",
         rule=Has("Chakram"),
     ),
-    "Valley.ReaversEnd.Boss": ChestData(  # TODO Requires hammer to go from upwards ? and bridge from down
+    "Valley.ReaversEnd.Boss": ChestData(
         game_name="start.center-02-3",
         area="Koro Valley",
+        rule=HasAll("Blunt", "Combat")  # TODO Maybe blunt not required using secret path
     ),
     "Valley.EyeRemis": ChestData(
         game_name="start.center-03-2",
@@ -177,8 +178,8 @@ chests: dict[str, ChestData] = {
     "EternalSpring.Outside": ChestData(
         game_name="start.center-08-1",
         area="Eternal Spring",
-        rule=has_any_elements(2),  # TODO check that it is only reachable once dng complete
-    ),
+        rule=has_any_elements(2) & Has("Pierce Range"),  # TODO check that it is only reachable once dng complete
+    ),  # The rules are for completing the dungeon, most of them are in the area rule
     "Valley.Crescent.SouthWest": ChestData(
         game_name="start.north-01-2",
         area="Koro Valley",
@@ -201,8 +202,9 @@ chests: dict[str, ChestData] = {
     "Valley.DuskApproach.South": ChestData(  # Missable in 0.1.0, but might be ok if tide is an item
         game_name="start.north-03-2",
         area="Koro Valley",
+        rule=Has("Low tide")
     ),
-    "Valley.DuskApproach.West": ChestData(  # TODO Hammer because of scripted fight ? Also tide + maybe bridge
+    "Valley.DuskApproach.West": ChestData(
         game_name="start.north-03-3",
         area="Koro Valley",
         rule=HasAll("Blunt", "Combat", "Low tide")
@@ -239,7 +241,6 @@ chests: dict[str, ChestData] = {
         area="Koro Valley",
         rule=HasAll("Range", "Aether", "Blunt"),
     ),
-    # TODO do an area for peak because of hammer barrier ?
     "Valley.SilverFileds.North": ChestData(
         game_name="start.peak-01-1",
         area="Silver Peak",
@@ -345,12 +346,12 @@ chests: dict[str, ChestData] = {
     "EternalSpring.A5": ChestData(
         game_name="start.spring-trial-room-03-1",
         area="Eternal Spring",
-        rule=has_any_elements(2),  # TODO Also need a range pierce, make range TYPE a thing
+        rule=has_any_elements(2) & Has("Pierce Range"),
     ),
     "EternalSpring.A6": ChestData(
         game_name="start.spring-trial-room-04-1",
         area="Eternal Spring",
-        rule=has_any_elements(2),
+        rule=has_any_elements(2) & Has("Pierce Range"),
     ),
     "Lyhamn.ReefCave": ChestData(
         game_name="start.beach-spring-cave-01-1",
@@ -379,13 +380,13 @@ chests: dict[str, ChestData] = {
     "Aether.A2.NorthEast": ChestData(
         game_name="start.start-dng.f1-room-04-1",
         area="Trial of Aether A",
-        rule=HasAll("Blunt", "Filia", "Key", "Range")
+        rule=HasAll("Blunt", "Filia", "Range") & Has("Trial Mark", count=2),
     ),
     "Aether.B7": ChestData(
         game_name="start.start-dng.f1-room-04b",
         area="Trial of Aether B",
         rule=HasAll("Filia", "Chakram", "Blunt", "Pierce", "Aether")
-    ),# TODO key for a2 to a5 + loc for aether element
+    ),# TODO check that key logic is OK
     "Aether.A2.East": ChestData(
         game_name="start.start-dng.f1-room-02-key",
         area="Trial of Aether A",

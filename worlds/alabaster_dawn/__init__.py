@@ -14,6 +14,8 @@ from .quests import quests
 from .dishes import dishes
 from .locations import location_name_to_id
 
+# TODO item groups, and reorganize the item file and make an items.py output
+
 class ADWeb(WebWorld):
     theme = "ocean"  # TODO documentation
     tutorials = [Tutorial(
@@ -72,6 +74,7 @@ class ADWorld(World):
             self.set_rule(dish_loc, dish_data.rule)
 
     def create_items(self) -> None:
+        # TODO change item classification depending on settings
         mworld = self.multiworld
         pool: list[ADItem] = []
 

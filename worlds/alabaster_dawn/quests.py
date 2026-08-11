@@ -7,24 +7,26 @@ quests: dict[str, QuestData] = {
         area="Koro Valley",
         game_name="quickwood",
         level_progress="Lyhamn",
-        rule=Has("Hammer")
+        rule=HasAll("Blunt", "Combat"),
     ),
     "Rice to the Occasion": QuestData(
         area="Koro Valley",
         game_name="ricefarm",
         level_progress="Lyhamn",
+        rule=Has("Range"),
     ),
     "Blooming Villain": QuestData(
         area="Koro Valley",
         game_name="flowerBoss1",
         level_progress="Lyhamn",
-        rule=Has("Blunt")  # TODO Maybe not required if shortcut from rice field ?
+        rule=HasAll("Blunt", "Combat"),  # TODO Maybe not required if shortcut from rice field ?
+        # Also maybe range required because of previous scripted fight
     ),
     "A Sneak Peak": QuestData(
         area="Koro Valley",
         game_name="silverPeak",
         level_progress="Lyhamn",
-        rule=HasAll("Chakram", "Hammer")
+        rule=HasAll("Chakram", "Blunt"),
     ),
     "Wheat Field Wack-A-mole": QuestData(
         area="Aurum Plains",
@@ -42,7 +44,8 @@ quests: dict[str, QuestData] = {
     "Quick Quickwood Query": QuestData(
         area="Koro Valley",
         game_name="southBarrier1",
-        level_progress="Lyhamn",  # Combat + range
+        level_progress="Lyhamn",
+        rule=Has("Range"),
     ),
     "Temple Incursion": QuestData(
         area="Koro Valley",
@@ -72,6 +75,7 @@ quests: dict[str, QuestData] = {
         area="Lyhamn",
         game_name="hotHeadLad1",
         level_progress=None,
+        rule=Has("Combat")
     ),
     "Free the Fish": QuestData(
         area="Lyhamn",
