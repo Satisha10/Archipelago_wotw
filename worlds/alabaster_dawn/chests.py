@@ -3,7 +3,7 @@ from rule_builder.rules import Has, HasAll, AtLeast
 from .data_structures import ChestData
 from .rule_helpers import has_any_elements
 
-# TODO for any_elements, check is aether or physis are explicitly required
+# TODO for any_elements, check if aether or physis are explicitly required
 
 chests: dict[str, ChestData] = {
     "Plains.Somu": ChestData(
@@ -205,6 +205,7 @@ chests: dict[str, ChestData] = {
     "Valley.DuskApproach.West": ChestData(  # TODO Hammer because of scripted fight ? Also tide + maybe bridge
         game_name="start.north-03-3",
         area="Koro Valley",
+        rule=HasAll("Blunt", "Combat", "Low tide")
     ),
     "Valley.CliffSide": ChestData(
         game_name="start.east-01-1",
