@@ -1,6 +1,9 @@
-from rule_builder.rules import Has, HasAll
+from rule_builder.rules import Has, HasAll, AtLeast
 
 from .data_structures import ChestData
+from .rule_helpers import has_any_elements
+
+# TODO for any_elements, check is aether or physis are explicitly required
 
 chests: dict[str, ChestData] = {
     "Plains.Somu": ChestData(
@@ -93,7 +96,7 @@ chests: dict[str, ChestData] = {
     "Plains.SolGate.Puzzle": ChestData(
         game_name="hub.bridge-01-puzzle-01",
         area="Aurum Plains",
-        rule=HasAll("Chakram", "Aether", "Filia") & Has("Fulcrum Mark", count=2) & Has("Element", count=2),
+        rule=HasAll("Chakram", "Aether", "Filia") & Has("Fulcrum Mark", count=2) & has_any_elements(2),
     ),
     "Valley.ForkedRoad.East": ChestData(
         game_name="start.center-01-1",
@@ -174,7 +177,7 @@ chests: dict[str, ChestData] = {
     "EternalSpring.Outside": ChestData(
         game_name="start.center-08-1",
         area="Eternal Spring",
-        rule=Has("Element", count=2),  # TODO check that it is only reachable once dng complete
+        rule=has_any_elements(2),  # TODO check that it is only reachable once dng complete
     ),
     "Valley.Crescent.SouthWest": ChestData(
         game_name="start.north-01-2",
@@ -238,47 +241,47 @@ chests: dict[str, ChestData] = {
     # TODO do an area for peak because of hammer barrier ?
     "Valley.SilverFileds.North": ChestData(
         game_name="start.peak-01-1",
-        area="Koro Valley",
-        rule=HasAll("Hammer", "Range"),
+        area="Silver Peak",
+        rule=HasAll("Range"),
     ),
     "Valley.HollowIncline.West": ChestData(
         game_name="start.peak-02-1",
-        area="Koro Valley",
-        rule=HasAll("Chakram", "Hammer"),
+        area="Silver Peak",
+        rule=Has("Chakram"),
     ),
     "Valley.HollowIncline.Middle": ChestData(
         game_name="start.peak-02-2",
-        area="Koro Valley",
-        rule=HasAll("Chakram, Hammer"),
+        area="Silver Peak",
+        rule=Has("Chakram"),
     ),
     "Valley.Peak.East": ChestData(
         game_name="start.peak-03-1",
-        area="Koro Valley",
-        rule=HasAll("Chakram, Hammer"),
+        area="Silver Peak",
+        rule=Has("Chakram"),
     ),
     "Valley.Peak.West": ChestData(
         game_name="start.peak-03-2",
-        area="Koro Valley",
-        rule=HasAll("Chakram, Hammer"),
+        area="Silver Peak",
+        rule=Has("Chakram"),
     ),
     "Valley.RemisRock.West": ChestData(
         game_name="start.dng-outer-1",
-        area="Koro Valley",
-        rule=Has("Range")  # TODO Probably more than this due to arriving here
+        area="Trial of Aether Outside",
+        rule=Has("Range")
     ),
     "Valley.RemisRock.North": ChestData(
         game_name="start.dng-outer-2",
-        area="Koro Valley",
-        rule=Has("Aether")  # Aether for the fight ? this might be accessible from plains ?
+        area="Aurum Plains",
+        rule=HasAll("Aether", "Combat")
     ),
     "Valley.RemisRock.East": ChestData(
         game_name="start.dng-outer-3",
-        area="Koro Valley",
+        area="Trial of Aether Outside",
         rule=HasAll("Range", "Blunt", "Aether"),
     ),
     "Valley.RemisRock.NorthEast": ChestData(
         game_name="start.dng-outer-4",
-        area="Koro Valley",
+        area="Trial of Aether Outside",
         rule=HasAll("Range", "Blunt", "Aether"),
     ),
     "Lyhamn.Center.West": ChestData(
@@ -319,7 +322,7 @@ chests: dict[str, ChestData] = {
     #    area="Lyhamn",
     #    rule=Has("Lyhamn level", count=1),
     #),
-    "Lyhamn.MarmsOffering": ChestData(
+    "Lyhamn.MarmisOffering": ChestData(
         game_name="start.village-center06-giftChest4",
         area="Lyhamn",
         rule=Has("Lyhamn level", count=1),
@@ -341,51 +344,52 @@ chests: dict[str, ChestData] = {
     "EternalSpring.A5": ChestData(
         game_name="start.spring-trial-room-03-1",
         area="Eternal Spring",
-        rule=Has("Element", count=2),  # TODO Also need a range pierce, make range TYPE a thing
+        rule=has_any_elements(2),  # TODO Also need a range pierce, make range TYPE a thing
     ),
     "EternalSpring.A6": ChestData(
         game_name="start.spring-trial-room-04-1",
         area="Eternal Spring",
-        rule=Has("Element", count=2),
+        rule=has_any_elements(2),
     ),
-    "Lyhamn.ReefCave": ChestData(  # TODO Hotspring Cave area
+    "Lyhamn.ReefCave": ChestData(
         game_name="start.beach-spring-cave-01-1",
-        area="Lyhamn",
+        area="Hotspring Cave",
     ),
     "Lyhamn.FoggyLair": ChestData(
         game_name="start.beach-spring-cave-02-1",
-        area="Lyhamn",
+        area="Hotspring Cave",
         rule=Has("Chakram"),
     ),
-    "Aether.A1": ChestData(  # TODO Key logic
+    "Aether.A1": ChestData(
         game_name="start.start-dng.f1-room-01-1",
-        area="Trial of Aether",
+        area="Trial of Aether A",
         rule=Has("Range")
     ),
     "Aether.A2.West": ChestData(
         game_name="start.start-dng.f1-room-02-1",
-        area="Trial of Aether",
+        area="Trial of Aether A",
         rule=HasAll("Pierce", "Filia", "Key", "Range")
     ),
     "Aether.B4": ChestData(
         game_name="start.start-dng.f2-room-02b-1",
-        area="Trial of Aether",
+        area="Trial of Aether B",
         rule=HasAll("Filia", "Chakram", "Blunt", "Pierce", "Aether"),
     ),
     "Aether.A2.NorthEast": ChestData(
         game_name="start.start-dng.f1-room-04-1",
-        area="Trial of Aether",
+        area="Trial of Aether A",
         rule=HasAll("Blunt", "Filia", "Key", "Range")
     ),
     "Aether.B7": ChestData(
         game_name="start.start-dng.f1-room-04b",
-        area="Trial of Aether",
+        area="Trial of Aether B",
         rule=HasAll("Filia", "Chakram", "Blunt", "Pierce", "Aether")
     ),# TODO key for a2 to a5 + loc for aether element
     "Aether.A2.East": ChestData(
         game_name="start.start-dng.f1-room-02-key",
-        area="Trial of Aether",
-        rule=HasAll("Range", "Melee", "Filia")  # TODO Melee or 2+ elements
+        area="Trial of Aether A",
+        # The grounded switch can be activated from melee, or from range with another element
+        rule=HasAll("Range", "Melee", "Filia") & (Has("Melee") | has_any_elements(2))
     ),
     "Aether.B5": ChestData(
         game_name="start.start-dng.f2-room-03-key",

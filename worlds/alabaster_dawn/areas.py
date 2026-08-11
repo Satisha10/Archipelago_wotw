@@ -3,11 +3,11 @@ from rule_builder.rules import True_, Has, HasAll
 from .data_structures import AreaData
 
 
-# TODO peak requires hammer ?
 areas: dict[str, AreaData] = {
     "Lyhamn": AreaData(
         connections={
             "Koro Valley": True_(),
+            "Hotspring Cave": True_(),  # TODO
         },
     ),
     "Koro Valley": AreaData(
@@ -15,15 +15,39 @@ areas: dict[str, AreaData] = {
             "Lyhamn": True_(),
             "Trial of Aether": HasAll("Filia", "Low tide"),
             "Aurum Plains": Has("Boat"),
-            "Eternal Spring": Has("Fulcrum Mark", count=2) & HasAll("Filia", "Aether", "Blunt", "Pierce", "Chakram"),
             # Eternal spring can be entered with just the key, but you need the rest to be able to do anything useful.
+            "Eternal Spring": Has("Fulcrum Mark", count=2) & HasAll("Filia", "Aether", "Blunt", "Pierce", "Chakram"),
+            "Silver Peak": Has("Blunt"),
         },
     ),
-    "Trial of Aether": AreaData(
+    "Silver Peak": AreaData(
+        connections={
+            "Koro Valley": Has("Blunt"),
+        }
+    ),
+    "Hotspring Cave": AreaData(  # Cave for Spring's Return quest
+        connections={
+            "Lyhamn": True_(),
+        }
+    ),
+    "Trial of Aether A": AreaData(
         connections={
             "Koro Valley": Has("Low tide"),
-            "Aurum Plains": True_(),
+            "Trial of Aether Outside": HasAll("Filia", "Aether")  # TODO
         },
+    ),
+    "Trial of Aether Outside": AreaData(  # Between A and B, up until the divine bridge
+        connections={
+            "Trial of Aether A": True_(),  # TODO verify
+            # Trial of Aether B is tied to Aurum Plains
+            "Aurum Plains": HasAll("Aether", "Filia", "Chakram"),
+        }
+    ),
+    "Trial of Aether B": AreaData(
+        connections={
+            # No connection to Outside, since it is before the divine bridge, that is activated when coming from Trial A
+            "Aurum Plains": True_(),
+        }
     ),
     "Eternal Spring": AreaData(
         connections={
@@ -33,13 +57,13 @@ areas: dict[str, AreaData] = {
     "Aurum Plains": AreaData(
         connections={
             "Lyhamn": Has("Boat"),
-            "Trial of Aether": Has("Filia"),
+            "Trial of Aether B": True_(),  # TODO fight before the entrance, maybe need that too
             "Sundalan": True_(),
         },
     ),
     "Sundalan": AreaData(
         connections={
-            "Lyhamn": True_(),
+            "Aurum Plains": True_(),
         },
     ),
 }

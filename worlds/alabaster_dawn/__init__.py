@@ -3,8 +3,8 @@ from __future__ import annotations
 from typing import Any
 
 from worlds.AutoWorld import World, WebWorld
-
-from BaseClasses import Item, Location, Region, Tutorial
+from BaseClasses import Item, Location, Region, Tutorial, ItemClassification
+from rule_builder.rules import Rule, True_
 
 from .options import ADOptions, option_groups
 from .areas import areas
@@ -37,14 +37,14 @@ class ADWorld(World):
     location_name_to_id = location_name_to_id
     item_name_to_id = {name: item.id for name, item in items.items()}
 
-    origin_region_name = "Lyhamn"
-
     def create_regions(self) -> None:
         mworld = self.multiworld
         player = self.player
         for name in areas:  # Create the regions
             region = Region(name, player, mworld)
             mworld.regions.append(region)
+
+        self.get_region("Menu").connect(self.get_region("Lyhamn"))  # TODO random spawn
 
         for base_name, area_data in areas.items():  # Connect the regions between them
             base_region = self.get_region(base_name)
@@ -91,6 +91,31 @@ class ADWorld(World):
 
     def get_filler_item_name(self) -> str:  # TODO use a random filler once they are implemented
         return "Wasp Essence x3"
+
+    def create_event_item(self, event: str) -> ADItem:
+        return ADItem(event, ItemClassification.progression, None, self.player)
+
+    def create_event(self, event: str, rule: Rule = True_(), region: None | str = None, show_spoiler=False) -> None:
+        """
+        Create an event location/item pair, and attach the location to a region.
+
+        :param event: Event name.
+        :param rule: Location rule for the event.
+        :param region: If None, create a new region with the same name as the event to attach it. Else, attach the event
+        to the given region.
+        :param show_spoiler: Show the event in the spoiler.
+        """
+        if region is None:
+            event_region = Region(event, self.player, self.multiworld)
+            self.multiworld.regions.append(event_region)
+        else:
+            event_region = self.get_region(region)
+        event_location = ADLocation(self.player, event, None, event_region)
+        event_location.show_in_spoiler = show_spoiler
+        event_location.place_locked_item(self.create_event_item(event))
+
+        event_region.locations.append(event_location)
+        self.set_rule(event_location, rule)
 
     def fill_slot_data(self) -> dict[str, Any]:
         return self.options.as_dict(
