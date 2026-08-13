@@ -15,6 +15,7 @@ items: dict[str, ItemData] = {
         classification=IC.progression | IC.useful,
         id=1,
         item_type="Element",
+        pool_quantity=0,
         game_name="ELEMENT_NATURE",
     ),
     "Aether": ItemData(
@@ -27,6 +28,7 @@ items: dict[str, ItemData] = {
         classification=IC.progression | IC.useful,
         id=11,
         item_type="Melee weapon",
+        pool_quantity=0,
         game_name="WEAPON:sword",
     ),
     "Hammer": ItemData(
@@ -39,6 +41,7 @@ items: dict[str, ItemData] = {
         classification=IC.progression | IC.useful,
         id=21,
         item_type="Range weapon",
+        pool_quantity=0,
         game_name="WEAPON:crossbow",
     ),
     "Chakram": ItemData(
@@ -53,35 +56,35 @@ items: dict[str, ItemData] = {
         item_type="Range weapon",
         game_name="WEAPON:kama",
     ),
-    "Filia": ItemData(
-        classification=IC.progression | IC.useful,
-        id=30,
-        item_type="Party member",
-        game_name="PARTY:filia",
-    ),
+    #"Filia": ItemData(
+    #    classification=IC.progression | IC.useful,
+    #    id=30,
+    #    item_type="Party member",
+    #    game_name="PARTY:filia",
+    #),
     "Lyhamn level": ItemData(
         classification=IC.progression | IC.useful,
         id=40,
         item_type="Community level",
-        game_name="todo",
+        game_name="CHANGE:lyhamn",
     ),
     "Valley bridges repaired": ItemData(
         classification=IC.progression,
         id=60,
         item_type="Area access",
-        game_name="todo2",
+        game_name="CHANGE:bridge",
     ),
     "Low tide": ItemData(
         classification=IC.progression,
         id=61,
         item_type="Area access",
-        game_name="todo3",
+        game_name="CHANGE:tide",
     ),
     "Boat travel": ItemData(
         classification=IC.progression,
         id=62,
         item_type="Area access",
-        game_name="todo4",
+        game_name="CHANGE:boat",
     ),
     "Fulcrum Mark": ItemData(
         classification=IC.progression,

@@ -30,7 +30,6 @@ class ADOptions(PerGameCommonOptions):
     craftsanity: Craftsanity
     cooksanity: Cooksanity
 
-# If we want to group our options by similar type, we can do so as well. This looks nice on the website.
 option_groups = [
     OptionGroup(
         "Logic changes",

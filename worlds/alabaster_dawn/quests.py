@@ -19,7 +19,7 @@ quests: dict[str, QuestData] = {
         area="Koro Valley",
         game_name="flowerBoss1",
         level_progress="Lyhamn",
-        rule=HasAll("Blunt", "Combat"),  # TODO Maybe not required if shortcut from rice field ?
+        rule=HasAll("Blunt", "Range"),
         # Also maybe range required because of previous scripted fight
     ),
     "A Sneak Peak": QuestData(

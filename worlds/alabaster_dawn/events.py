@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from . import ADWorld
 
-from rule_builder.rules import Has, HasAll, HasAny, OptionFilter
+from rule_builder.rules import Has, HasAll, HasAny, OptionFilter, True_
 from .options import DivineArtLogic
 
 da_filter = [OptionFilter(DivineArtLogic, True)]
@@ -48,3 +48,9 @@ def create_events(world: ADWorld):
     world.create_event("Range", has_range, "Menu")
     world.create_event("Melee", has_melee, "Menu")
     world.create_event("Combat", has_combat, "Menu")
+
+    # TODO spawn with random weapon/element
+    world.create_event("Sword", True_(), "Menu")
+    world.create_event("Crossbow", True_(), "Menu")
+    world.create_event("Physis", True_(), "Menu")
+    world.create_event("Filia", HasAll("Blunt", "Range"), "Menu")

@@ -124,7 +124,7 @@ chests: dict[str, ChestData] = {
     "Valley.ReaversEnd.Boss": ChestData(
         game_name="start.center-02-3",
         area="Koro Valley",
-        rule=HasAll("Blunt", "Combat")  # TODO Maybe blunt not required using secret path
+        rule=HasAll("Blunt", "Combat")
     ),
     "Valley.EyeRemis": ChestData(
         game_name="start.center-03-2",
