@@ -370,7 +370,7 @@ chests: dict[str, ChestData] = {
     "Aether.A2.West": ChestData(
         game_name="start.start-dng.f1-room-02-1",
         area="Trial of Aether A",
-        rule=HasAll("Pierce", "Filia", "Key", "Range")
+        rule=HasAll("Pierce", "Filia", "Range") & Has("Trial Mark", count=2)
     ),
     "Aether.B4": ChestData(
         game_name="start.start-dng.f2-room-02b-1",
@@ -395,7 +395,7 @@ chests: dict[str, ChestData] = {
     ),
     "Aether.B5": ChestData(
         game_name="start.start-dng.f2-room-03-key",
-        area="Trial of Aether",
+        area="Trial of Aether B",
         rule=HasAll("Filia", "Chakram", "Blunt", "Pierce", "Aether")
     ),
     # TODO Nyx Spire, which also requires 2nd element

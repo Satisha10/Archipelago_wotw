@@ -5,65 +5,83 @@ from .data_structures import ItemData
 # TODO Community levels: use the first level for regrowth / cleanse nest ?
 
 items: dict[str, ItemData] = {
+    "Test": ItemData(
+        classification=IC.filler,
+        id=56132,
+        item_type="Element",
+        game_name="test",
+    ),
     "Physis": ItemData(
         classification=IC.progression | IC.useful,
         id=1,
         item_type="Element",
+        game_name="ELEMENT_NATURE",
     ),
     "Aether": ItemData(
         classification=IC.progression | IC.useful,
         id=2,
         item_type="Element",
+        game_name="ELEMENT_AETHER",
     ),
     "Sword": ItemData(
         classification=IC.progression | IC.useful,
         id=11,
         item_type="Melee weapon",
+        game_name="WEAPON:sword",
     ),
     "Hammer": ItemData(
         classification=IC.progression | IC.useful,
         id=12,
         item_type="Melee weapon",
+        game_name="WEAPON:hammer",
     ),
     "Crossbow": ItemData(
         classification=IC.progression | IC.useful,
         id=21,
         item_type="Range weapon",
+        game_name="WEAPON:crossbow",
     ),
     "Chakram": ItemData(
         classification=IC.progression | IC.useful,
         id=22,
         item_type="Range weapon",
+        game_name="WEAPON:chakram",
     ),
     "Kama": ItemData(
         classification=IC.progression | IC.useful,
         id=23,
         item_type="Range weapon",
+        game_name="WEAPON:kama",
     ),
     "Filia": ItemData(
         classification=IC.progression | IC.useful,
         id=30,
         item_type="Party member",
+        game_name="PARTY:filia",
     ),
     "Lyhamn level": ItemData(
         classification=IC.progression | IC.useful,
         id=40,
         item_type="Community level",
+        game_name="todo",
     ),
     "Valley bridges repaired": ItemData(
         classification=IC.progression,
         id=60,
         item_type="Area access",
+        game_name="todo2",
     ),
     "Low tide": ItemData(
         classification=IC.progression,
         id=61,
         item_type="Area access",
+        game_name="todo3",
     ),
     "Boat travel": ItemData(
         classification=IC.progression,
         id=62,
         item_type="Area access",
+        game_name="todo4",
     ),
     "Fulcrum Mark": ItemData(
         classification=IC.progression,

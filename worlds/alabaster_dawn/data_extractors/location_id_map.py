@@ -10,7 +10,7 @@ from ..dishes import dishes
 location_name_to_id: dict[str, int] = {}
 location_gamename_to_id: dict[str, int] = {}
 
-i = 0
+i = 1
 
 for chest, chest_data in chests.items():
     location_name_to_id.setdefault(chest, i)
@@ -34,16 +34,16 @@ def loc_name_id():
     with open(file_path, "w") as f:
         f.write(header_py("location_id_map.py", "loc_name_id"))
         f.write("location_name_to_id = {\n    ")
-        temp = format(location_name_to_id)[1:-1]
-        output = temp.replace(", ", ",\n    ")
-        f.write(output)
-        f.write("\n}\n")
+        for name, id in location_name_to_id.items():
+            f.write(f'"{name}": {id},\n')
+        f.write("}\n")
 
     print(f"File {base_path} created.")
 
 
+# TODO use a loop instead of json
 # TODO Map name to [game_name, quantity] for items
-def loc_gamename_id():  # TODO Use Map instead of an object
+def loc_gamename_id():
     """Generate the location game-name to ID map for the client."""
     base_path = "output_client/location_gamename_id.ts"
     file_path = os.path.join("worlds/alabaster_dawn/data_extractors", base_path)

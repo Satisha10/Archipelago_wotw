@@ -5,6 +5,7 @@ from typing import Any
 from worlds.AutoWorld import World, WebWorld
 from BaseClasses import Item, Location, Region, Tutorial, ItemClassification
 from rule_builder.rules import Rule, True_
+from .events import create_events
 
 from .options import ADOptions, option_groups
 from .areas import areas
@@ -42,6 +43,8 @@ class ADWorld(World):
     def create_regions(self) -> None:
         mworld = self.multiworld
         player = self.player
+        menu_region = Region("Menu", player, mworld)
+        mworld.regions.append(menu_region)
         for name in areas:  # Create the regions
             region = Region(name, player, mworld)
             mworld.regions.append(region)
@@ -93,7 +96,7 @@ class ADWorld(World):
         return ADItem(name, items[name].classification, items[name].id, self.player)
 
     def get_filler_item_name(self) -> str:  # TODO use a random filler once they are implemented
-        return "Wasp Essence x3"
+        return "Vespa Essence x5"
 
     def create_event_item(self, event: str) -> ADItem:
         return ADItem(event, ItemClassification.progression, None, self.player)
@@ -119,6 +122,9 @@ class ADWorld(World):
 
         event_region.locations.append(event_location)
         self.set_rule(event_location, rule)
+
+    def set_rules(self) -> None:
+        create_events(self)
 
     def fill_slot_data(self) -> dict[str, Any]:
         return self.options.as_dict(

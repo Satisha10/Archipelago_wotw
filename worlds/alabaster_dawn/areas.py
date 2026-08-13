@@ -13,7 +13,7 @@ areas: dict[str, AreaData] = {
     "Koro Valley": AreaData(
         connections={
             "Lyhamn": True_(),
-            "Trial of Aether": HasAll("Filia", "Low tide"),
+            "Trial of Aether A": HasAll("Filia", "Low tide"),
             "Aurum Plains": Has("Boat"),
             # Eternal spring can be entered with just the key, but you need the rest to be able to do anything useful.
             "Eternal Spring": Has("Fulcrum Mark", count=2) & HasAll("Filia", "Aether", "Blunt", "Pierce", "Chakram"),
