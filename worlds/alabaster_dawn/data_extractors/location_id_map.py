@@ -33,9 +33,9 @@ def loc_name_id():
     file_path = os.path.join("worlds/alabaster_dawn/data_extractors", base_path)
     with open(file_path, "w") as f:
         f.write(header_py("location_id_map.py", "loc_name_id"))
-        f.write("location_name_to_id = {\n    ")
+        f.write("location_name_to_id = {\n")
         for name, id in location_name_to_id.items():
-            f.write(f'"{name}": {id},\n')
+            f.write(f'    "{name}": {id},\n')
         f.write("}\n")
 
     print(f"File {base_path} created.")

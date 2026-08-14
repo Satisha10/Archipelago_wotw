@@ -16,13 +16,13 @@ items: dict[str, ItemData] = {
         id=1,
         item_type="Element",
         pool_quantity=0,
-        game_name="ELEMENT_NATURE",
+        game_name="ELEMENT:14",
     ),
     "Aether": ItemData(
         classification=IC.progression | IC.useful,
         id=2,
         item_type="Element",
-        game_name="ELEMENT_AETHER",
+        game_name="ELEMENT:15",
     ),
     "Sword": ItemData(
         classification=IC.progression | IC.useful,
@@ -72,19 +72,19 @@ items: dict[str, ItemData] = {
         classification=IC.progression,
         id=60,
         item_type="Area access",
-        game_name="CHANGE:bridge",
+        game_name="PLOT:quickwood.bridgeBuilt",
     ),
     "Low tide": ItemData(
         classification=IC.progression,
         id=61,
         item_type="Area access",
-        game_name="CHANGE:tide",
+        game_name="PLOT:ap_tide.received",
     ),
     "Boat travel": ItemData(
         classification=IC.progression,
         id=62,
         item_type="Area access",
-        game_name="CHANGE:boat",
+        game_name="PLOT:ch2b.junoWokeUp",
     ),
     "Fulcrum Mark": ItemData(
         classification=IC.progression,
@@ -99,6 +99,13 @@ items: dict[str, ItemData] = {
         pool_quantity=2,
         game_name="the-key-dng",
         item_type="Key",
+    ),
+    "Divine Connection": ItemData(
+        classification=IC.useful,
+        id=81,
+        pool_quantity=1,
+        game_name="Divine Connection",
+        item_type="Upgrades",
     ),
     "Whisper of the gods x5": ItemData(  # I found 120 essences in 0.1.0 (not counting Somu)
         classification=IC.useful,
