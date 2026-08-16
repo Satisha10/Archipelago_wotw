@@ -2,8 +2,8 @@ from .data_structures import DishData
 
 dishes: dict[str, DishData] = {
     "Basic Ration": DishData(
-            game_name="ration-basic",
-        ),
+        game_name="ration-basic",
+    ),
     "Ring Ration": DishData(
         game_name="ration-ring",
     ),

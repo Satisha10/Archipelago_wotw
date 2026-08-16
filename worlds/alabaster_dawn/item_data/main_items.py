@@ -3,10 +3,11 @@ from BaseClasses import ItemClassification as IC
 from ..data_structures import ItemData
 
 items: dict[str, ItemData] = {
-    "Test": ItemData(
+    "Test": ItemData(  # TODO Remove
         classification=IC.filler,
         item_type="Element",
         game_name="test",
+        pool_quantity=0,
     ),
     "Physis": ItemData(
         classification=IC.progression | IC.useful,
