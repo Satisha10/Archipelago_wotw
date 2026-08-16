@@ -15,6 +15,13 @@ class ChestData:
         self.rule = rule
 
 
+class StoryLocData:
+    def __init__(self, area: str, game_name: str, rule: Rule = True_()):
+        self.area = area
+        self.game_name = game_name
+        self.rule = rule
+
+
 class DishData:
     def __init__(self, game_name: str, rule: Rule = True_()):
         self.game_name = game_name
@@ -44,7 +51,6 @@ class QuestData:
 @dataclass
 class ItemData:
     classification: ItemClassification
-    id: int
     pool_quantity: int = 1  # Base quantity for this item in the multiworld pool
     item_quantity: int = 1  # Quantity of the item received in-game each time
     game_name: str = ""
