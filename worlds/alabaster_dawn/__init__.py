@@ -15,7 +15,7 @@ from .quests import quests
 from .dishes import dishes
 from .locations import location_name_to_id
 
-# TODO item groups, and reorganize the item file and make an items.py output
+# TODO item groups
 
 class ADWeb(WebWorld):
     theme = "ocean"  # TODO documentation

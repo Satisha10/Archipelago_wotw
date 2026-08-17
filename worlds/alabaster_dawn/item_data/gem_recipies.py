@@ -2,7 +2,7 @@ from BaseClasses import ItemClassification as IC
 
 from ..data_structures import ItemData
 
-blueprints: dict[str, ItemData] = {
+gem_recipies: dict[str, ItemData] = {
     "Blood Eye Construct": ItemData(
         classification=IC.useful,
         game_name="bp-mel-min-aff",

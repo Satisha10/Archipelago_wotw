@@ -55,3 +55,10 @@ class ItemData:
     item_quantity: int = 1  # Quantity of the item received in-game each time
     game_name: str = ""
     item_type: str = ""
+    id: int = 1  # Automatically set by the code generator
+
+@dataclass
+class APItem:
+    id: int
+    quantity: int
+    classification: ItemClassification

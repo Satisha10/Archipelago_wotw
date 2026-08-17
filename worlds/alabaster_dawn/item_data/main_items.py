@@ -2,9 +2,9 @@ from BaseClasses import ItemClassification as IC
 
 from ..data_structures import ItemData
 
-items: dict[str, ItemData] = {
+main_items: dict[str, ItemData] = {
     "Test": ItemData(  # TODO Remove
-        classification=IC.filler,
+        classification=IC.useful,
         item_type="Element",
         game_name="test",
         pool_quantity=0,

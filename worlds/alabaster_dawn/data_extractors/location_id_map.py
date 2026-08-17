@@ -22,6 +22,8 @@ class LocationData:
         :param loc_dict: dict of str to a class with a `game_name` attribute, which has the data.
         """
         for name, data in loc_dict.items():
+            if name in self.location_name_to_id:
+                raise ValueError(f"Duplicate location name `{name}`")
             self.location_name_to_id.setdefault(name, self.i)
             self.location_gamename_to_id.setdefault(data.game_name, self.i)
             self.i += 1
@@ -39,7 +41,7 @@ def loc_name_id():
     file_path = os.path.join("worlds/alabaster_dawn/data_extractors", base_path)
     with open(file_path, "w") as f:
         f.write(header_py("location_id_map.py", "loc_name_id"))
-        f.write("location_name_to_id = {\n")
+        f.write("location_name_to_id: dict[str, int] = {\n")
         for name, id in loc_data.location_name_to_id.items():
             f.write(f'    "{name}": {id},\n')
         f.write("}\n")

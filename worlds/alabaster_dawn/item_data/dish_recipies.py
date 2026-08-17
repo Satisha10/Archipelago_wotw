@@ -2,7 +2,7 @@ from BaseClasses import ItemClassification as IC
 
 from ..data_structures import ItemData
 
-dish: dict[str, ItemData] = {
+dishes: dict[str, ItemData] = {
     "Basic Ration": ItemData(
         classification=IC.useful,
         game_name="ration-basic",
