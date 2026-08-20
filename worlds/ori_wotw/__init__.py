@@ -636,13 +636,9 @@ class WotWWorld(World):
             #Launch Fragments + Launch on Seir Interaction
             #if launch_on_seir is on, Launch already exists at Seir so Launch Fragments don't need to be progression.
             #Also deprioritizing fragments that are excess of the required logic to help generation problems
-            for i in range(options.fragments_count.value):
+            for _ in range(options.fragments_count.value):
                 fragment = self.create_item("Launch Fragment")
                 if options.launch_on_seir:
-                    fragment.classification = ItemClassification.useful
-                elif i < options.fragments_required.value:
-                    fragment.classification = (ItemClassification.progression_deprioritized)
-                else:
                     fragment.classification = ItemClassification.useful
 
                 pool.append(fragment)
