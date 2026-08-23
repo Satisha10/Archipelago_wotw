@@ -829,7 +829,7 @@ class WotWWorld(World):
                      lambda s: s.has("Victory", player))
             set_rule(self.get_entrance("ExternalStates -> SkipMora2"),
                      lambda s: s.has("Victory", player))
-        if "everything" in options.no_combat or "Shrines" in options.no_combat:
+        if "everything" in options.no_combat or "shrines" in options.no_combat:
             for entrance in (
                         "DenShrine -> HowlsDen.CombatShrineCompleted",
                         "MarshShrine -> MarshPastOpher.CombatShrineCompleted",
@@ -837,6 +837,18 @@ class WotWWorld(World):
                         "WoodsShrine -> WoodsMain.CombatShrineCompleted",
                         "DepthsShrine -> LowerDepths.CombatShrineCompleted"):
                 set_rule(self.get_entrance(entrance), lambda s: True)
+        if "everything" in options.no_combat or "arenas" in options.no_combat:
+            self.precollect_event("MarshSpawn.CaveFight")
+            self.precollect_event("LowerReach.ArenaBeaten")
+            self.precollect_event("MarshSpawn.BurrowArena")
+            self.precollect_event("HowlsDen.DoubleJumpTreeCombat")
+            self.precollect_event("WeepingRidge.ElevatorFightCompleted")
+            self.precollect_event("InnerWellspring.SpinArena")
+            self.precollect_event("EastPools.FightArenas")
+        if "everything" in options.no_combat or "demi bosses" in options.no_combat:
+            self.precollect_event("MarshSpawn.HowlBurnt")
+            self.precollect_event("EastHollow.BeetleDefeated")
+            self.precollect_event("WillowsEnd.MinibossHeart")
 
         if options.better_wellspring:
             self.precollect_event("InnerWellspring.TopDoorOpen")
