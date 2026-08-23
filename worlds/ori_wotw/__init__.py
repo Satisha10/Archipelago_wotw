@@ -616,6 +616,7 @@ class WotWWorld(World):
                 loc = self.get_location(location)
                 loc.place_locked_item(self.create_item(item))
                 removed_items.append(item)
+            # TODO probably not needed anymore
             if (options.difficulty == LogicDifficulty.option_moki
                 and options.door_rando != RandomizeDoors.option_disabled
                 and not options.tp):
@@ -1084,9 +1085,12 @@ class WotWWorld(World):
         if not options.zone_hints:
             location_flags += 0b100000
 
-        spawn_items_amount = (int(spawn_data[self.spawn_area].items_amount)
-                              if options.spawn != StartingLocation.option_vanilla
-                              else 0)
+        if options.spawn != StartingLocation.option_vanilla:
+            spawn_items_amount = 0
+        else:
+            spawn_items_amount = int(spawn_data[self.spawn_area].items_amount)
+            if len(self.multiworld.player_name) <= 1:
+                spawn_items_amount += 2
 
         slot_data: dict[str, Any] = {
             "difficulty": logic_difficulty[options.difficulty.value],
