@@ -1097,7 +1097,7 @@ class WotWWorld(World):
         if not options.zone_hints:
             location_flags += 0b100000
 
-        if options.spawn != StartingLocation.option_vanilla:
+        if options.spawn == StartingLocation.option_vanilla:
             spawn_items_amount = 0
         else:
             spawn_items_amount = int(spawn_data[self.spawn_area].items_amount)
