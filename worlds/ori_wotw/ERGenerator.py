@@ -259,14 +259,10 @@ class ERGeneratorWotW:
         return False  # Failure: no valid pairing
 
 
-def all_regions_reachable(world: WotWWorld) -> bool:
-    """Check that every region stays reachable from spawn once every item is collected."""
+def check_unreachable_regions(world: WotWWorld) -> list[str]:
+    """Check that every region stays reachable from spawn once every item is collected. Return the ones that aren't."""
     state = world.multiworld.get_all_state(allow_partial_entrances=True)
-    return all(
-        state.can_reach_region(region_name, world.player)
-        for region_name, region_data in region_table.items()
-        if region_data[0]
-    )
+    return [region_name for region_name in region_table if not state.can_reach_region(region_name, world.player)]
 
 
 def generate_er_connections(world: WotWWorld, coupled: bool) -> list[int]:
@@ -292,7 +288,8 @@ def generate_er_connections(world: WotWWorld, coupled: bool) -> list[int]:
 
         if current_attempt > max_attempts:
             raise RuntimeError(
-                f"Entrance Randomization failed {max_attempts} times: no valid connection is possible.\nCurrent state:\n\n"
+                f"Entrance Randomization failed {max_attempts} times: no valid connection is possible.\n"
+                f"Generator state:\n\n"
                 f"placements: {er_gen.placements}\n\n"
                 f"unlinked_doors: {er_gen.unlinked_doors}\n\n"
                 f"unaccessible_doors: {er_gen.unaccessible_doors}\n\n"
@@ -324,13 +321,16 @@ def generate_er_connections(world: WotWWorld, coupled: bool) -> list[int]:
             if coupled:
                 created_exits.append(world.get_region(target).connect(world.get_region(entry[:-7])))
 
-        if all_regions_reachable(world):
+        unreachable_regions = check_unreachable_regions(world)
+        if not unreachable_regions:
             break
 
         if reachability_attempt >= max_reachability_attempts:
             raise RuntimeError(
                 "Door randomization could not find a door configuration that keeps every region reachable "
-                f"after {max_reachability_attempts} attempts."
+                f"after {max_reachability_attempts} attempts.\n\n"
+                f"Placements: {er_gen.placements}\n\n"
+                f"Unreachable regions: {unreachable_regions}\n\n"
             )
         reachability_attempt += 1
         for exit in created_exits:
