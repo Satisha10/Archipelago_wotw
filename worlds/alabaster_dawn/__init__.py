@@ -82,7 +82,7 @@ class ADWorld(World):
         pool: list[ADItem] = []
 
         for name, data in items.items():
-            for _ in range(data.pool_quantity):
+            for _ in range(data.quantity):
                 item = self.create_item(name)
                 pool.append(item)
 
