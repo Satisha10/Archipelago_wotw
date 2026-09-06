@@ -8,12 +8,11 @@ story_loc: dict[str, StoryLocData] = {
     "Aether.Element": StoryLocData(
         game_name="Aether",
         area="Trial of Aether A",
-        rule=HasAll("Filia", "Chakram", "Blunt", "Pierce") & Has("Trial Mark", count=2)  # TODO check
+        rule=HasAll("Filia", "Blunt", "Range") & Has("Trial Mark", count=2)
     ),
     "Valley.Hammer": StoryLocData(
         game_name="hammer",
         area="Koro Valley",
-        rule=Has("Blunt")
     ),
     "Valley.Chakram": StoryLocData(
         game_name="chakram",
@@ -23,7 +22,7 @@ story_loc: dict[str, StoryLocData] = {
     "Plains.Kama": StoryLocData(
         game_name="kama",
         area="Aurum Plains",
-        rule=Has("Blunt")  # TODO
+        rule=HasAll("Blunt", "Slash", "Aether", "Combat")  # TODO
     ),
 }
 

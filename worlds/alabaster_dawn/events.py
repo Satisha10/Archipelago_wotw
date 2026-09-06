@@ -53,4 +53,4 @@ def create_events(world: ADWorld):
     world.create_event("Sword", True_(), "Menu")
     world.create_event("Crossbow", True_(), "Menu")
     world.create_event("Physis", True_(), "Menu")
-    world.create_event("Filia", HasAll("Blunt", "Range"), "Menu")
+    world.create_event("Filia", Has("Valley bridges"), "Menu")

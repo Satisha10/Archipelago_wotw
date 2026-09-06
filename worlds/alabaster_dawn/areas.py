@@ -38,8 +38,7 @@ areas: dict[str, AreaData] = {
     ),
     "Trial of Aether A": AreaData(
         connections={
-            "Koro Valley North": Has("Low tide"),  # TODO maybe not true if you arrived from top
-            "Trial of Aether Outside": HasAll("Filia", "Aether") & Has("Trial Mark", count=2)  # TODO
+            "Trial of Aether Outside": HasAll("Filia", "Aether", "Blunt") & Has("Trial Mark", count=2)
         },
     ),
     "Trial of Aether Outside": AreaData(  # Between A and B, up until the divine bridge

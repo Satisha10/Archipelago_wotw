@@ -29,7 +29,6 @@ chests: dict[str, ChestData] = {
     "Plains.HiddenSteep.Hidden": ChestData(
         game_name="hub.south-03-3",
         area="Aurum Plains",
-        rule=Has("Kama"),
     ),
     "Plains.RiverRoad.Statue": ChestData(
         game_name="hub.south-04-1",
@@ -53,7 +52,7 @@ chests: dict[str, ChestData] = {
         game_name="hub.north-01-2",
         area="Aurum Plains",
     ),
-    "Plains.OldFarm.Quest": ChestData(
+    "Plains.OldFarm.West": ChestData(
         game_name="hub.north-01-3",
         area="Aurum Plains",
     ),
@@ -106,7 +105,7 @@ chests: dict[str, ChestData] = {
     "Valley.ForkedRoad.West": ChestData(
         game_name="start.center-01-2",
         area="Koro Valley",
-        rule=HasAll("Aether", "Range"),
+        rule=HasAll("Aether", "Range", "Blunt"),
     ),
     "Valley.ForkedRoad.South": ChestData(
         game_name="start.center-01-3",
@@ -115,16 +114,17 @@ chests: dict[str, ChestData] = {
     "Valley.ReaversEnd.North": ChestData(
         game_name="start.center-02-1",
         area="Koro Valley",
+        rule=HasAll("Blunt", "Range"),  # Requires the combat
     ),
     "Valley.ReaversEnd.East": ChestData(
         game_name="start.center-02-2",
         area="Koro Valley",
-        rule=Has("Chakram"),
+        rule=HasAll("Chakram", "Blunt"),
     ),
     "Valley.ReaversEnd.Boss": ChestData(
         game_name="start.center-02-3",
         area="Koro Valley",
-        rule=HasAll("Blunt", "Combat")
+        rule=HasAll("Blunt", "Range"),
     ),
     "Valley.EyeRemis": ChestData(
         game_name="start.center-03-2",
@@ -133,11 +133,12 @@ chests: dict[str, ChestData] = {
     "Valley.Kamu.West": ChestData(
         game_name="start.center-04-1",
         area="Koro Valley",
-        rule=Has("Blunt"),
+        rule=HasAll("Blunt", "Combat"),
     ),
     "Valley.Kamu.NorthEast": ChestData(
         game_name="start.center-04-2",
         area="Koro Valley",
+        rule=Has("Blunt"),
     ),
     "Valley.Kamu.South": ChestData(
         game_name="start.center-04-3",
@@ -155,7 +156,7 @@ chests: dict[str, ChestData] = {
     ),
     "Valley.Lumber.EternalSpringChest": ChestData(
         game_name="start.center-06-1",
-        area="Koro Valley",
+        area="Koro Valley",  # TODO requires to hit a switch in melee
     ),
     "Valley.Lumber.West": ChestData(
         game_name="start.center-06-2",
@@ -183,31 +184,31 @@ chests: dict[str, ChestData] = {
     "Valley.Crescent.SouthWest": ChestData(
         game_name="start.north-01-2",
         area="Koro Valley",
-        rule=Has("Lyhamn level", count=1),
+        rule=Has("Valley bridges"),
     ),
     "Valley.ValleyEntrance.Bridge": ChestData(
         game_name="start.north-02-1",
-        area="Koro Valley",
+        area="Koro Valley North",
     ),
     "Valley.ValleyEntrance.East": ChestData(
         game_name="start.north-02-2",
-        area="Koro Valley",
+        area="Koro Valley North",
         rule=Has("Range"),
     ),
     "Valley.DuskApproach.East": ChestData(
         game_name="start.north-03-1",
-        area="Koro Valley",
+        area="Koro Valley North",
         rule=Has("Kama"),
     ),
     "Valley.DuskApproach.South": ChestData(  # Missable in 0.1.0, but might be ok if tide is an item
         game_name="start.north-03-2",
-        area="Koro Valley",
+        area="Koro Valley North",
         rule=Has("Low tide")
     ),
     "Valley.DuskApproach.West": ChestData(
         game_name="start.north-03-3",
-        area="Koro Valley",
-        rule=HasAll("Blunt", "Combat", "Low tide")
+        area="Koro Valley North",
+        rule=HasAll("Low tide")
     ),
     "Valley.CliffSide": ChestData(
         game_name="start.east-01-1",
@@ -234,12 +235,14 @@ chests: dict[str, ChestData] = {
     "Valley.Lake.West": ChestData(
         game_name="start.west-01-1",
         area="Koro Valley",
-        rule=HasAll("Range", "Aether"),  # Also need the quest: CL1 ?
+        # Requires starting Free the Fish quest
+        rule=HasAll("Range", "Aether", "Blunt") & Has("Lyhamn level", count=1),
     ),
     "Valley.Lake.North": ChestData(
         game_name="start.west-01-2",
         area="Koro Valley",
-        rule=HasAll("Range", "Aether", "Blunt"),
+        # Requires starting Free the Fish quest
+        rule=HasAll("Range", "Aether", "Blunt") & Has("Lyhamn level", count=1),
     ),
     "Valley.SilverFileds.North": ChestData(
         game_name="start.peak-01-1",
@@ -291,6 +294,7 @@ chests: dict[str, ChestData] = {
         area="Lyhamn",
         rule=Has("Lyhamn level", count=1),
     ),
+    # TODO probably remove this one, it is reachable with parkour but intended is likely CL2
     "Lyhamn.Center.North": ChestData(
         game_name="start.village-01-2",
         area="Lyhamn",
@@ -360,7 +364,7 @@ chests: dict[str, ChestData] = {
     "Lyhamn.FoggyLair": ChestData(
         game_name="start.beach-spring-cave-02-1",
         area="Hotspring Cave",
-        rule=Has("Chakram"),
+        rule=HasAll("Chakram", "Aether"),
     ),
     "Aether.A1": ChestData(
         game_name="start.start-dng.f1-room-01-1",
@@ -370,14 +374,15 @@ chests: dict[str, ChestData] = {
     "Aether.A2.West": ChestData(
         game_name="start.start-dng.f1-room-02-1",
         area="Trial of Aether A",
-        rule=HasAll("Pierce", "Filia", "Range") & Has("Trial Mark", count=2)
+        # Pierce not strictly required with parkour
+        rule=HasAll("Pierce Range", "Filia", "Range") & Has("Trial Mark", count=2)
     ),
     "Aether.B4": ChestData(
         game_name="start.start-dng.f2-room-02b-1",
         area="Trial of Aether B",
-        rule=HasAll("Filia", "Chakram", "Blunt", "Pierce", "Aether"),
+        rule=HasAll("Filia", "Chakram", "Blunt", "Pierce Range", "Aether") & Has("Trial Mark", count=2),
     ),
-    "Aether.A2.NorthEast": ChestData(
+    "Aether.A4": ChestData(
         game_name="start.start-dng.f1-room-04-1",
         area="Trial of Aether A",
         rule=HasAll("Blunt", "Filia", "Range") & Has("Trial Mark", count=2),
@@ -385,18 +390,18 @@ chests: dict[str, ChestData] = {
     "Aether.B7": ChestData(
         game_name="start.start-dng.f1-room-04b",
         area="Trial of Aether B",
-        rule=HasAll("Filia", "Chakram", "Blunt", "Pierce", "Aether")
-    ),# TODO check that key logic is OK
+        rule=HasAll("Filia", "Chakram", "Blunt", "Pierce Range", "Aether")
+    ),
     "Aether.A2.East": ChestData(
         game_name="start.start-dng.f1-room-02-key",
         area="Trial of Aether A",
         # The grounded switch can be activated from melee, or from range with another element
-        rule=HasAll("Range", "Melee", "Filia") & (Has("Melee") | has_any_elements(2))
+        rule=HasAll("Range", "Filia") & (Has("Melee") | has_any_elements(2))
     ),
     "Aether.B5": ChestData(
         game_name="start.start-dng.f2-room-03-key",
         area="Trial of Aether B",
-        rule=HasAll("Filia", "Chakram", "Blunt", "Pierce", "Aether")
+        rule=HasAll("Filia", "Chakram", "Blunt", "Pierce Range", "Aether")
     ),
     # TODO Nyx Spire, which also requires 2nd element
 }
