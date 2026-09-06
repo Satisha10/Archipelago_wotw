@@ -39,6 +39,8 @@ has_range = HasAny("Crossbow", "Chakram", "Kama")
 has_melee = HasAny("Sword", "Hammer")
 has_combat = has_range | has_melee
 
+
+# TODO maybe not needed to make events for these, just use a combined rule. More efficient, doesn't create spheres
 def create_events(world: ADWorld):
     world.create_event("Blunt", has_blunt, "Menu")
     world.create_event("Pierce", has_pierce, "Menu")
@@ -48,6 +50,8 @@ def create_events(world: ADWorld):
     world.create_event("Range", has_range, "Menu")
     world.create_event("Melee", has_melee, "Menu")
     world.create_event("Combat", has_combat, "Menu")
+
+    world.create_event("Red Forest Bridges", HasAll("Blunt", "Range", "Valley bridges") & Has("Lyhamn level", count=1), "Menu")
 
     # TODO spawn with random weapon/element
     world.create_event("Sword", True_(), "Menu")

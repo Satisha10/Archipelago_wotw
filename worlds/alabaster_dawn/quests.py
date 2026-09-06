@@ -31,13 +31,13 @@ quests: dict[str, QuestData] = {
         area="Aurum Plains",
         game_name="oldFarm",
         level_progress="Sundalan",
-        rule=HasAll("Hammer", "Chakram")
+        rule=HasAll("Hammer", "Chakram"),
     ),
     "Nuemera Island": QuestData(
         area="Aurum Plains",
         game_name="grandPass",
         level_progress="Sundalan",
-        rule=HasAll("Kama", "Blunt", "Pierce", "Aether", "Slash")
+        rule=HasAll("Kama", "Blunt", "Pierce", "Aether", "Slash"),
     ),
     # Side quests
     "Quick Quickwood Query": QuestData(
@@ -45,7 +45,7 @@ quests: dict[str, QuestData] = {
         game_name="southBarrier1",
         level_progress="Lyhamn",
         # Blunt required because Branching Out (quickwood) must be done beforehand
-        rule=HasAll("Range", "Valley bridges", "Blunt"),
+        rule=HasAll("Blunt", "Range", "Valley bridges") & Has("Lyhamn level", count=1),
     ),
     "Temple Incursion": QuestData(
         area="Koro Valley",
@@ -77,7 +77,7 @@ quests: dict[str, QuestData] = {
         game_name="hotHeadLad1",
         level_progress=None,
         # Blunt required because Branching Out (quickwood) must be done beforehand
-        rule=HasAll("Blunt", "Range") & Has("Lyhamn level", count=1)
+        rule=HasAll("Blunt", "Range", "Valley bridges") & Has("Lyhamn level", count=1),
     ),
     "Free the Fish": QuestData(
         area="Lyhamn",

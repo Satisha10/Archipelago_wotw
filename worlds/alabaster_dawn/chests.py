@@ -223,14 +223,16 @@ chests: dict[str, ChestData] = {
         area="Koro Valley",
         rule=HasAll("Kama", "Blunt"),
     ),
+    # TODO Maybe use an event for quickwood quest / repair these bridges (or area)
     "Valley.RedForest.West": ChestData(
         game_name="start.south-01-1",
         area="Koro Valley",
-        rule=Has("Kama"),
+        rule=HasAll("Blunt", "Kama", "Valley bridges") & Has("Lyhamn level", count=1)
     ),
     "Valley.RedForest.South": ChestData(
         game_name="start.south-01-2",
-        area="Koro Valley",  # Might require CL2 or blunt
+        area="Koro Valley",
+        rule=HasAll("Blunt", "Range", "Valley bridges") & Has("Lyhamn level", count=1)
     ),
     "Valley.Lake.West": ChestData(
         game_name="start.west-01-1",
