@@ -4,7 +4,7 @@ from typing import Any
 
 from worlds.AutoWorld import World, WebWorld
 from BaseClasses import Item, Location, Region, Tutorial, ItemClassification
-from rule_builder.rules import Rule, True_
+from rule_builder.rules import Rule, True_, CanReachLocation
 from .events import create_events
 
 from .options import ADOptions, option_groups
@@ -13,7 +13,9 @@ from .items import items
 from .chests import chests
 from .quests import quests
 from .dishes import dishes
+from .story_locations import story_loc
 from .locations import location_name_to_id
+from .item_groups import item_groups
 
 # TODO item groups
 
@@ -40,6 +42,25 @@ class ADWorld(World):
     location_name_to_id = location_name_to_id
     item_name_to_id = {name: item.id for name, item in items.items()}
 
+    item_name_groups = item_groups
+
+    # Universal tracker support
+    @staticmethod
+    def interpret_slot_data(slot_data: dict[str, Any]) -> dict[str, Any]:
+        return slot_data
+    ut_can_gen_without_yaml = True
+
+    def generate_early(self) -> None:
+        # Universal Tracker support
+        re_gen_passthrough = getattr(self.multiworld, "re_gen_passthrough", {})
+        if re_gen_passthrough and self.game in re_gen_passthrough:
+            slot_data: dict[str, Any] = re_gen_passthrough[self.game]
+
+            self.options.quests.value = slot_data["quests"]
+            self.options.divine_logic.value = slot_data["divine_logic"]
+            self.options.craftsanity.value = slot_data["craftsanity"]
+            self.options.cooksanity.value = slot_data["cooksanity"]
+
     def create_regions(self) -> None:
         mworld = self.multiworld
         player = self.player
@@ -63,6 +84,12 @@ class ADWorld(World):
             region.locations.append(chest_loc)
             self.set_rule(chest_loc, chest_data.rule)
 
+        for story, data in story_loc.items():
+            region = self.get_region(data.area)
+            story_location = ADLocation(self.player, story, location_name_to_id[story], region)
+            region.locations.append(story_location)
+            self.set_rule(story_location, data.rule)
+
         # TODO options, separate main quests ?
         for quest, quest_data in quests.items():
             region = self.get_region(quest_data.area)
@@ -70,11 +97,12 @@ class ADWorld(World):
             region.locations.append(quest_loc)
             self.set_rule(quest_loc, quest_data.rule)
 
-        for dish, dish_data in dishes.items():
-            region = self.get_region("Lyhamn")
-            dish_loc = ADLocation(self.player, dish, location_name_to_id[dish], region)
-            region.locations.append(dish_loc)
-            self.set_rule(dish_loc, dish_data.rule)
+        if self.options.cooksanity:
+            for dish, dish_data in dishes.items():
+                region = self.get_region("Lyhamn")
+                dish_loc = ADLocation(self.player, dish, location_name_to_id[dish], region)
+                region.locations.append(dish_loc)
+                self.set_rule(dish_loc, dish_data.rule)
 
     def create_items(self) -> None:
         # TODO change item classification depending on settings
@@ -96,7 +124,7 @@ class ADWorld(World):
         return ADItem(name, items[name].classification, items[name].id, self.player)
 
     def get_filler_item_name(self) -> str:  # TODO use a random filler once they are implemented
-        return "Vespa Essence x5"
+        return self.random.choice(item_groups["Filler"])
 
     def create_event_item(self, event: str) -> ADItem:
         return ADItem(event, ItemClassification.progression, None, self.player)
@@ -126,9 +154,12 @@ class ADWorld(World):
     def set_rules(self) -> None:
         create_events(self)
 
+        self.set_completion_rule(CanReachLocation("EternalSpring.Outside"))
+
     def fill_slot_data(self) -> dict[str, Any]:
         return self.options.as_dict(
             "quests",
+            "divine_logic",
             "craftsanity",
             "cooksanity",
         )

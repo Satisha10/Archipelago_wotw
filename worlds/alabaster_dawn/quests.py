@@ -45,7 +45,7 @@ quests: dict[str, QuestData] = {
         area="Koro Valley",
         game_name="southBarrier1",
         level_progress="Lyhamn",
-        rule=Has("Range"),
+        rule=HasAll("Range", "Valley bridges"),
     ),
     "Temple Incursion": QuestData(
         area="Koro Valley",

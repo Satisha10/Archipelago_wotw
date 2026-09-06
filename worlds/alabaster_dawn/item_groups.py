@@ -42,7 +42,7 @@ item_groups: dict[str, list[str]] = {
         "Lyhamn level",
     ],
     "Area access": [
-        "Valley bridges repaired",
+        "Valley bridges",
         "Low tide",
         "Boat travel",
     ],

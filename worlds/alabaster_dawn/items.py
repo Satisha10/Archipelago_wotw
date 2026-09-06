@@ -16,7 +16,7 @@ items: dict[str, APItem] = {
     "Chakram": APItem(id=7, quantity=1, classification=IC(3)),
     "Kama": APItem(id=8, quantity=1, classification=IC(3)),
     "Lyhamn level": APItem(id=9, quantity=1, classification=IC(3)),
-    "Valley bridges repaired": APItem(id=10, quantity=1, classification=IC(1)),
+    "Valley bridges": APItem(id=10, quantity=1, classification=IC(1)),
     "Low tide": APItem(id=11, quantity=1, classification=IC(1)),
     "Boat travel": APItem(id=12, quantity=1, classification=IC(1)),
     "Fulcrum Mark": APItem(id=13, quantity=2, classification=IC(1)),

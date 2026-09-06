@@ -58,7 +58,7 @@ main_items: dict[str, ItemData] = {
         item_type="Community level",
         game_name="CL:lyhamn",
     ),
-    "Valley bridges repaired": ItemData(
+    "Valley bridges": ItemData(
         classification=IC.progression,
         item_type="Area access",
         game_name="PLOT:ap_bridges.received",

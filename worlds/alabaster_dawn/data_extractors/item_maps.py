@@ -63,18 +63,18 @@ type_def = """type ItemData = {
 }
 """
 
-def item_gamename_map():
-    """Generate a map between item name and the game-name + quantity for the client."""
-    base_path = "output_client/item_name_gamedata.ts"
+def item_id_gamename_map():
+    """Generate a map between item id and the game-name + quantity for the client."""
+    base_path = "output_client/item_id_gamedata.ts"
     file_path = os.path.join("worlds/alabaster_dawn/data_extractors", base_path)
     with open(file_path, "w") as f:
-        f.write(header_ts("item_maps.py", "item_gamename_map"))
+        f.write(header_ts("item_maps.py", "item_id_gamename_map"))
         f.write(type_def)
-        f.write("\nexport const item_name_data = new Map<string, ItemData>([\n")
+        f.write("\nexport const item_name_data = new Map<number, ItemData>([\n")
 
-        for name, data in item_map.data.items():
+        for data in item_map.data.values():
             data_txt = "{" + f'name: "{data.game_name}", qty: {data.item_quantity}' + "}"
-            f.write(f'    ["{name}", {data_txt}],\n')
+            f.write(f'    [{data.id}, {data_txt}],\n')
 
         f.write("]);\n")
     print(f"File {base_path} created.")
