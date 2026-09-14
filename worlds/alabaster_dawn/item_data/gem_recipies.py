@@ -97,6 +97,7 @@ gem_recipies: dict[str, ItemData] = {
         classification=IC.useful,
         game_name="bp-cor-min-balance",
         item_type="Construct",
+        pool_quantity=0,
     ),
     "Chipped Edge Blueprint": ItemData(
         classification=IC.useful,

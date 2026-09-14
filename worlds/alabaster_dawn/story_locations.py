@@ -1,5 +1,5 @@
 """Locations for main unlocks in the game (elements, weaving nests and spires)."""
-from rule_builder.rules import Has, HasAll, True_
+from rule_builder.rules import Has, HasAll, True_, HasAny
 
 from .rule_helpers import has_any_elements
 from .data_structures import StoryLocData
@@ -22,7 +22,7 @@ story_loc: dict[str, StoryLocData] = {
     "Plains.Kama": StoryLocData(
         game_name="kama",
         area="Aurum Plains",
-        rule=HasAll("Blunt", "Slash", "Aether", "Combat")  # TODO
+        rule=HasAll("Blunt", "Aether", "Combat") & HasAny("Slash", "Kama")
     ),
 }
 

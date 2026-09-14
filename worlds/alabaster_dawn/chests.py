@@ -297,10 +297,10 @@ chests: dict[str, ChestData] = {
         rule=Has("Lyhamn level", count=1),
     ),
     # TODO probably remove this one, it is reachable with parkour but intended is likely CL2
-    "Lyhamn.Center.North": ChestData(
-        game_name="start.village-01-2",
-        area="Lyhamn",
-    ),
+    #"Lyhamn.Center.North": ChestData(
+    #    game_name="start.village-01-2",
+    #    area="Lyhamn",
+    #),
     "Lyhamn.Reef": ChestData(
         game_name="start.village-02-2-fix",
         area="Lyhamn",

@@ -91,19 +91,21 @@ class ADWorld(World):
             self.set_rule(story_location, data.rule)
 
         # TODO options, separate main quests ?
-        for quest, quest_data in quests.items():
-            region = self.get_region(quest_data.area)
-            quest_loc = ADLocation(self.player, quest, location_name_to_id[quest], region)
-            region.locations.append(quest_loc)
-            self.set_rule(quest_loc, quest_data.rule)
+        if self.options.quests:
+            for quest, quest_data in quests.items():
+                region = self.get_region(quest_data.area)
+                quest_loc = ADLocation(self.player, quest, location_name_to_id[quest], region)
+                region.locations.append(quest_loc)
+                self.set_rule(quest_loc, quest_data.rule)
 
+        """
         if self.options.cooksanity:
             for dish, dish_data in dishes.items():
                 region = self.get_region("Lyhamn")
                 dish_loc = ADLocation(self.player, dish, location_name_to_id[dish], region)
                 region.locations.append(dish_loc)
                 self.set_rule(dish_loc, dish_data.rule)
-
+        """
     def create_items(self) -> None:
         # TODO change item classification depending on settings
         mworld = self.multiworld
@@ -112,6 +114,8 @@ class ADWorld(World):
         for name, data in items.items():
             for _ in range(data.quantity):
                 item = self.create_item(name)
+                if self.options.divine_logic and item in item_groups["Divine Art"]:
+                    item.classification = ItemClassification.progression
                 pool.append(item)
 
         # Add filler items to have the same number of items and locations

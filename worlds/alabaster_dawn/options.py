@@ -9,17 +9,17 @@ class Quests(DefaultOnToggle):
 
 
 class DivineArtLogic(Toggle):
-    """Divine arts are logical ways to have blunt, pierce or slash access."""
+    """Divine arts are logical ways to have blunt, pierce or slash access (outside of combat)."""
     display_name = "Divine Art Logic"
 
 
 class Cooksanity(Toggle):
-    """Add locations for cooking dishes and using spice."""
+    """NOT IMPLEMENTED ! Add locations for cooking dishes and using spice."""
     display_name = "Cooksanity"
 
 
 class Craftsanity(Toggle):
-    """Add locations for crafting gems."""
+    """NOT IMPLEMENTED ! Add locations for crafting gems."""
     display_name = "Craftsanity"
 
 

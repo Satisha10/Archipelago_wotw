@@ -4,6 +4,7 @@ This file got generated in `item_maps.py` with `item_groups_ap`."""
 
 item_groups: dict[str, list[str]] = {
     "Filler": [
+        "Shard of Order x5",
         "Sphera Essence x5",
         "Arma Sphera Essence x5",
         "Pilo Sphera Essence x5",
@@ -165,11 +166,12 @@ item_groups: dict[str, list[str]] = {
         "Frumato Rice",
     ],
     "Craft (limited)": [
-        "Whisper of the gods x5",
+        "Whisper of the gods x10",
         "Verse of the Gods",
         "Aranea Mu Essence",
     ],
     "Craft": [
+        "Shard of Order x5",
         "Sphera Essence x5",
         "Arma Sphera Essence x5",
         "Pilo Sphera Essence x5",

@@ -3,10 +3,10 @@ from BaseClasses import ItemClassification as IC
 from ..data_structures import ItemData
 
 essences: dict[str, ItemData] = {  # TODO Aether essences
-    "Whisper of the gods x5": ItemData(  # I found 120 essences in 0.1.0 (not counting Somu)
+    "Whisper of the gods x10": ItemData(  # I found 120 essences in 0.1.0 (not counting Somu)
         classification=IC.useful,
-        item_quantity=5,
-        pool_quantity=24,
+        item_quantity=10,
+        pool_quantity=10,
         game_name="chest-ess-1-whisper",
         item_type="Craft (limited)",
     ),
@@ -15,6 +15,13 @@ essences: dict[str, ItemData] = {  # TODO Aether essences
         item_quantity=3,
         game_name="chest-ess-2-verse",
         item_type="Craft (limited)",
+    ),
+    "Shard of Order x5": ItemData(
+        classification=IC.filler,
+        item_quantity=5,
+        pool_quantity=0,
+        game_name="dng-ess-aether",
+        item_type="Craft",
     ),
     "Sphera Essence x5": ItemData(
         classification=IC.filler,
@@ -37,7 +44,7 @@ essences: dict[str, ItemData] = {  # TODO Aether essences
         game_name="ess-hair-ball",
         item_type="Craft",
     ),
-    "Vespa Essence x5": ItemData(  # TODO game name
+    "Vespa Essence x5": ItemData(
         classification=IC.filler,
         item_quantity=5,
         pool_quantity=0,

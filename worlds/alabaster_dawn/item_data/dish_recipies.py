@@ -7,6 +7,7 @@ dishes: dict[str, ItemData] = {
         classification=IC.useful,
         game_name="ration-basic",
         item_type="Dish Recipie",
+        pool_quantity=0,
     ),
     "Ring Ration": ItemData(
         classification=IC.useful,
@@ -22,6 +23,7 @@ dishes: dict[str, ItemData] = {
         classification=IC.useful,
         game_name="wild-rice-fried",
         item_type="Dish Recipie",
+        pool_quantity=0,
     ),
     "Ring Rolls": ItemData(
         classification=IC.useful,
@@ -42,6 +44,7 @@ dishes: dict[str, ItemData] = {
         classification=IC.useful,
         game_name="prapple-salad",
         item_type="Dish Recipie",
+        pool_quantity=0,
     ),
     "Pickled Garrot": ItemData(
         classification=IC.useful,
@@ -57,6 +60,7 @@ dishes: dict[str, ItemData] = {
         classification=IC.useful,
         game_name="smoked-fish",
         item_type="Dish Recipie",
+        pool_quantity=0,
     ),
     "Fieldfruit Bake": ItemData(
         classification=IC.useful,
