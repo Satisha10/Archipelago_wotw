@@ -121,7 +121,7 @@ items: dict[str, APItem] = {
     "Up & Below": APItem(id=112, quantity=1, classification=IC(2)),
     "Clerry Roll": APItem(id=113, quantity=1, classification=IC(2)),
     "Frumato Rice": APItem(id=114, quantity=1, classification=IC(2)),
-    "Whisper of the gods x10": APItem(id=115, quantity=12, classification=IC(2)),
+    "Whisper of the gods x10": APItem(id=115, quantity=10, classification=IC(2)),
     "Verse of the Gods": APItem(id=116, quantity=1, classification=IC(2)),
     "Shard of Order x5": APItem(id=117, quantity=0, classification=IC(0)),
     "Sphera Essence x5": APItem(id=118, quantity=0, classification=IC(0)),

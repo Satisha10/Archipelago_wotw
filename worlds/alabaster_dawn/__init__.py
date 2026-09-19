@@ -158,7 +158,12 @@ class ADWorld(World):
     def set_rules(self) -> None:
         create_events(self)
 
-        self.set_completion_rule(CanReachLocation("EternalSpring.Outside"))
+        self.set_completion_rule(
+            CanReachLocation("Valley.WeaveNest")
+            & CanReachLocation("Plains.WeaveNest")
+            & CanReachLocation("EternalSpring.WeaveNest")
+            & CanReachLocation("Aether.WeaveSpire")
+        )
 
     def fill_slot_data(self) -> dict[str, Any]:
         return self.options.as_dict(
