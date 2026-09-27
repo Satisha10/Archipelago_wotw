@@ -1,3 +1,5 @@
+"""Enemy, fauna and divine essences. Item ID band: 1200-1499"""
+
 from BaseClasses import ItemClassification as IC
 
 from ..data_structures import ItemData
@@ -9,12 +11,14 @@ essences: dict[str, ItemData] = {  # TODO Aether essences
         pool_quantity=10,
         game_name="chest-ess-1-whisper",
         item_type="Craft (limited)",
+        item_id=1200,
     ),
     "Verse of the Gods": ItemData(  # 3 in 0.1.0 (not counting Somu)
         classification=IC.useful,
         item_quantity=3,
         game_name="chest-ess-2-verse",
         item_type="Craft (limited)",
+        item_id=1201,
     ),
     "Shard of Order x5": ItemData(
         classification=IC.filler,
@@ -22,6 +26,7 @@ essences: dict[str, ItemData] = {  # TODO Aether essences
         pool_quantity=0,
         game_name="dng-ess-aether",
         item_type="Craft",
+        item_id=1210,
     ),
     "Sphera Essence x5": ItemData(
         classification=IC.filler,
@@ -29,6 +34,7 @@ essences: dict[str, ItemData] = {  # TODO Aether essences
         pool_quantity=0,
         game_name="ball-ess",
         item_type="Craft",
+        item_id=1220,
     ),
     "Arma Sphera Essence x5": ItemData(
         classification=IC.filler,
@@ -36,6 +42,7 @@ essences: dict[str, ItemData] = {  # TODO Aether essences
         pool_quantity=0,
         game_name="ess-armor-ball",
         item_type="Craft",
+        item_id=1221,
     ),
     "Pilo Sphera Essence x5": ItemData(
         classification=IC.filler,
@@ -43,6 +50,7 @@ essences: dict[str, ItemData] = {  # TODO Aether essences
         pool_quantity=0,
         game_name="ess-hair-ball",
         item_type="Craft",
+        item_id=1222,
     ),
     "Vespa Essence x5": ItemData(
         classification=IC.filler,
@@ -50,6 +58,7 @@ essences: dict[str, ItemData] = {  # TODO Aether essences
         pool_quantity=0,
         game_name="wasp-ess",
         item_type="Craft",
+        item_id=1223,
     ),
     "Turri Essence x5": ItemData(
         classification=IC.filler,
@@ -57,6 +66,7 @@ essences: dict[str, ItemData] = {  # TODO Aether essences
         pool_quantity=0,
         game_name="flower-ess",
         item_type="Craft",
+        item_id=1224,
     ),
     "Custo Turri Essence x5": ItemData(
         classification=IC.filler,
@@ -64,6 +74,7 @@ essences: dict[str, ItemData] = {  # TODO Aether essences
         pool_quantity=0,
         game_name="guard-flower-ess",
         item_type="Craft",
+        item_id=1225,
     ),
     "Ericius Essence x3": ItemData(
         classification=IC.filler,
@@ -71,6 +82,7 @@ essences: dict[str, ItemData] = {  # TODO Aether essences
         pool_quantity=0,
         game_name="ess-hedgebird",
         item_type="Craft",
+        item_id=1226,
     ),
     "Testudo Essence x3": ItemData(
         classification=IC.filler,
@@ -78,6 +90,7 @@ essences: dict[str, ItemData] = {  # TODO Aether essences
         pool_quantity=0,
         game_name="ess-turtle",
         item_type="Craft",
+        item_id=1227,
     ),
     "Rana Essence x5": ItemData(
         classification=IC.filler,
@@ -85,6 +98,7 @@ essences: dict[str, ItemData] = {  # TODO Aether essences
         pool_quantity=0,
         game_name="ess-frog",
         item_type="Craft",
+        item_id=1228,
     ),
     "Pendicis Essence x3": ItemData(
         classification=IC.filler,
@@ -92,13 +106,15 @@ essences: dict[str, ItemData] = {  # TODO Aether essences
         pool_quantity=0,
         game_name="ess-flyfish",
         item_type="Craft",
+        item_id=1229,
     ),
     "Aranea Mu Essence": ItemData(
-        classification=IC.useful,  # Only 2 of those in 0.1.0
+        classification=IC.filler,
         item_quantity=1,
-        pool_quantity=2,
+        pool_quantity=1,
         game_name="ess-common-spider",
-        item_type="Craft (limited)",
+        item_type="Craft",
+        item_id=1230,
     ),
     "Algae Dolus Essence x5": ItemData(
         classification=IC.filler,
@@ -106,6 +122,7 @@ essences: dict[str, ItemData] = {  # TODO Aether essences
         pool_quantity=0,
         game_name="ess-algae",
         item_type="Craft",
+        item_id=1231,
     ),
     "Molis Essence x3": ItemData(
         classification=IC.filler,
@@ -113,6 +130,7 @@ essences: dict[str, ItemData] = {  # TODO Aether essences
         pool_quantity=0,
         game_name="ess-molerat",
         item_type="Craft",
+        item_id=1232,
     ),
     "Papilium Essence x3": ItemData(
         classification=IC.filler,
@@ -120,6 +138,7 @@ essences: dict[str, ItemData] = {  # TODO Aether essences
         pool_quantity=0,
         game_name="ess-butterflybird",
         item_type="Craft",
+        item_id=1233,
     ),
     "Bovarks Essence x3": ItemData(
         classification=IC.filler,
@@ -127,6 +146,7 @@ essences: dict[str, ItemData] = {  # TODO Aether essences
         pool_quantity=0,
         game_name="ess-bowcow",
         item_type="Craft",
+        item_id=1234,
     ),
     "Carota Essence x5": ItemData(
         classification=IC.filler,
@@ -134,6 +154,7 @@ essences: dict[str, ItemData] = {  # TODO Aether essences
         pool_quantity=0,
         game_name="ess-evil-garrot",
         item_type="Craft",
+        item_id=1350,
     ),
     "Pullu Essence x5": ItemData(
         classification=IC.filler,
@@ -141,6 +162,7 @@ essences: dict[str, ItemData] = {  # TODO Aether essences
         pool_quantity=0,
         game_name="ess-bamboo",
         item_type="Craft",
+        item_id=1351,
     ),
     "Fern Essence x5": ItemData(
         classification=IC.filler,
@@ -148,6 +170,7 @@ essences: dict[str, ItemData] = {  # TODO Aether essences
         pool_quantity=0,
         game_name="ess-water-plant",
         item_type="Craft",
+        item_id=1352,
     ),
     "Crista Essence x5": ItemData(
         classification=IC.filler,
@@ -155,6 +178,7 @@ essences: dict[str, ItemData] = {  # TODO Aether essences
         pool_quantity=0,
         game_name="ess-hexa-plant",
         item_type="Craft",
+        item_id=1353,
     ),
     "Curcur Essence x5": ItemData(
         classification=IC.filler,
@@ -162,5 +186,6 @@ essences: dict[str, ItemData] = {  # TODO Aether essences
         pool_quantity=0,
         game_name="ess-pumpkin",
         item_type="Craft",
+        item_id=1354,
     ),
 }
