@@ -19,25 +19,28 @@ class ItemMap:
     def __init__(self):
         self.data: dict[str, ItemData] = {}
         self.groups: dict[str, list[str]] = {"Filler": []}
-        self.id = 1
+        self.used_ids: dict[int, str] = {}
 
     def add_items(self, mapping: dict[str, ItemData]):
         """Add the items from mapping into the data."""
         for name, item in mapping.items():
             if name in self.data:
                 raise ValueError(f"Duplicate item name `{name}`")
+            if item.item_id in self.used_ids:
+                raise ValueError(f"Duplicate item id `{item.item_id}` between `{name}` "
+                                 f"and `{self.used_ids[item.item_id]}`")
             self.data.setdefault(
                 name,
                 ItemData(
                     item.classification,
+                    item.item_id,
                     item.pool_quantity,
                     item.item_quantity,
                     item.game_name,
                     item.item_type,
-                    self.id,
                 )
             )
-            self.id += 1
+            self.used_ids.setdefault(item.item_id, name)
 
             if item.item_type not in self.groups:
                 self.groups.setdefault(item.item_type, [])
@@ -74,7 +77,7 @@ def item_id_gamename_map():
 
         for data in item_map.data.values():
             data_txt = "{" + f'name: "{data.game_name}", qty: {data.item_quantity}' + "}"
-            f.write(f'    [{data.id}, {data_txt}],\n')
+            f.write(f'    [{data.item_id}, {data_txt}],\n')
 
         f.write("]);\n")
     print(f"File {base_path} created.")
@@ -90,7 +93,7 @@ def item_data_ap():
         f.write("from .data_structures import APItem\n\n")
         f.write("items: dict[str, APItem] = {\n")
         for name, item in item_map.data.items():
-            f.write(f'    "{name}": APItem(id={item.id}, quantity={item.pool_quantity}, '
+            f.write(f'    "{name}": APItem(id={item.item_id}, quantity={item.pool_quantity}, '
                     f'classification=IC({item.classification})),\n')
         f.write("}\n")
 

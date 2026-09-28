@@ -1,6 +1,8 @@
-"""Generated data, DO NOT MODIFY HERE.
+"""
+Generated data, DO NOT MODIFY HERE.
 Check the `data_extractors` folder to see how to generate this file or to make modifications.
-This file got generated in `item_maps.py` with `item_groups_ap`."""
+This file got generated in `item_maps.py` with `item_groups_ap`.
+"""
 
 item_groups: dict[str, list[str]] = {
     "Filler": [
@@ -15,6 +17,7 @@ item_groups: dict[str, list[str]] = {
         "Testudo Essence x3",
         "Rana Essence x5",
         "Pendicis Essence x3",
+        "Aranea Mu Essence",
         "Algae Dolus Essence x5",
         "Molis Essence x3",
         "Papilium Essence x3",
@@ -27,6 +30,7 @@ item_groups: dict[str, list[str]] = {
     ],
     "Element": [
         "Test",
+        "Test2",
         "Physis",
         "Aether",
     ],
@@ -168,7 +172,6 @@ item_groups: dict[str, list[str]] = {
     "Craft (limited)": [
         "Whisper of the gods x10",
         "Verse of the Gods",
-        "Aranea Mu Essence",
     ],
     "Craft": [
         "Shard of Order x5",
@@ -182,6 +185,7 @@ item_groups: dict[str, list[str]] = {
         "Testudo Essence x3",
         "Rana Essence x5",
         "Pendicis Essence x3",
+        "Aranea Mu Essence",
         "Algae Dolus Essence x5",
         "Molis Essence x3",
         "Papilium Essence x3",

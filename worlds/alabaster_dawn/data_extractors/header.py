@@ -8,14 +8,14 @@ def header_py(file_name: str, function_name: str | None = None) -> str:
     :param function_name: Function that generates the data (optional).
     """
     output = (
-        '"""Generated data, DO NOT MODIFY HERE.\n'
+        '"""\nGenerated data, DO NOT MODIFY HERE.\n'
         'Check the `data_extractors` folder to see how to generate this file or to make modifications.\n'
     )
     output += f"This file got generated in `{file_name}`"
     if function_name is not None:
-        output += f' with `{function_name}`."""\n\n'
+        output += f' with `{function_name}`.\n"""\n\n'
     else:
-        output += f'."""\n\n'
+        output += f'.\n"""\n\n'
 
     return output
 

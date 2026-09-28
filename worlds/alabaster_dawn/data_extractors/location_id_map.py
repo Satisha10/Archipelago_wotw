@@ -14,19 +14,22 @@ class LocationData:
     def __init__(self):
         self.location_name_to_id: dict[str, int] = {}
         self.location_gamename_to_id: dict[str, int] = {}
-        self.i = 1
+        self.used_ids: dict[int, str] = {}
     def add_data(self, loc_dict: dict):
         """
         Method to add the locations from a data file to the class data.
 
-        :param loc_dict: dict of str to a class with a `game_name` attribute, which has the data.
+        :param loc_dict: dict of str to a class with `game_name` and `loc_id` attributes, which has the data.
         """
         for name, data in loc_dict.items():
             if name in self.location_name_to_id:
                 raise ValueError(f"Duplicate location name `{name}`")
-            self.location_name_to_id.setdefault(name, self.i)
-            self.location_gamename_to_id.setdefault(data.game_name, self.i)
-            self.i += 1
+            if data.loc_id in self.used_ids:
+                raise ValueError(f"Duplicate item id `{data.loc_id}` between `{name}` "
+                                 f"and `{self.used_ids[data.loc_id]}`")
+            self.location_name_to_id.setdefault(name, data.loc_id)
+            self.location_gamename_to_id.setdefault(data.game_name, data.loc_id)
+            self.used_ids.setdefault(data.loc_id, name)
 
 loc_data = LocationData()
 
@@ -42,15 +45,14 @@ def loc_name_id():
     with open(file_path, "w") as f:
         f.write(header_py("location_id_map.py", "loc_name_id"))
         f.write("location_name_to_id: dict[str, int] = {\n")
-        for name, id in loc_data.location_name_to_id.items():
-            f.write(f'    "{name}": {id},\n')
+        for name, loc_id in loc_data.location_name_to_id.items():
+            f.write(f'    "{name}": {loc_id},\n')
         f.write("}\n")
 
     print(f"File {base_path} created.")
 
 
 # TODO use a loop instead of json
-# TODO Map name to [game_name, quantity] for items
 def loc_gamename_id():
     """Generate the location game-name to ID map for the client."""
     base_path = "output_client/location_gamename_id.ts"
