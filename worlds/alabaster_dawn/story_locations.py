@@ -56,4 +56,10 @@ story_loc: dict[str, StoryLocData] = {
              & Has("Trial Mark", count=2),
         loc_id=8,
     ),
+    "ScalaMoor.Spear": StoryLocData(
+        game_name="spear",
+        area="Scala Moor",
+        rule=HasAll("Physis", "Kama"),
+        loc_id=9,
+    ),
 }

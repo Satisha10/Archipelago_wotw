@@ -75,10 +75,10 @@ chests: dict[str, ChestData] = {
         rule=HasAll("Blunt", "Combat"),
         loc_id=341,
     ),
-    #"Plains.ImpactCrater": ChestData(  # Nyx nest, not reachable ? (need to go on sundalan's walls)
-    #    game_name="hub.north-04-1",
-    #    area="Aurum Plains",
-    #),
+    "Plains.ImpactCrater": ChestData(
+        game_name="hub.north-04-1",
+        area="Aurum Plains",
+    ),
     "Plains.RuinedRanch.West": ChestData(
         game_name="hub.north-05-1",
         area="Aurum Plains",
@@ -490,4 +490,173 @@ chests: dict[str, ChestData] = {
         rule=HasAll("Filia", "Chakram", "Blunt", "Pierce Range", "Aether"),
         loc_id=306,
     ),
+    "Plains.Somu.East": ChestData(
+        game_name="hub.west-01-2",
+        area="Aurum Plains",
+        rule=HasAll("Kama", "Cryo"),
+        loc_id=400,
+    ),
+    "Valley.Crescent.East": ChestData(  # TODO We'll need to nerf the level or exclude the location on that one
+        game_name="start.north-01-3",
+        area="Aurum Plains",
+        rule=Has("Slash"),
+        loc_id=400,
+    ),
+    "Valley.Crescent.South": ChestData(
+        game_name="start.north-01-1",
+        area="Aurum Plains",
+        loc_id=400,
+    ),
+    "ScalaMoor.Sodden.North": ChestData(
+        game_name="swamp.center-02-1",
+        area="Scala Moor",
+        rule=Has("Kama"),
+        loc_id=400,
+    ),
+    "ScalaMoor.Sodden.Center": ChestData(
+        game_name="swamp.center-02-2",
+        area="Scala Moor",
+        rule=Has("Kama"),
+        loc_id=400,
+    ),
+    "ScalaMoor.Pollo.East": ChestData(
+        game_name="swamp.center-09-1",
+        area="Scala Moor",  # TODO check that this one is free
+        loc_id=403,
+    ),
+    "ScalaMoor.Pollo.West": ChestData(
+        game_name="swamp.center-09-3",
+        area="Scala Moor",
+        rule=Has("Kama"),
+        loc_id=403,
+    ),
+    "ScalaMoor.Pollo.North": ChestData(
+        game_name="swamp.center-09-2",
+        area="Scala Moor",
+        rule=HasAll("Kama", "Cryo", "Physis", "Filia"),
+        loc_id=403,
+    ),
+    # TODO Past Cow boss, maybe make it optional to not lock all the area. Otherwise add Kama+Physis to all rules
+    # Also Kama + Filia to cross Mired (or mired already crossable after Nat)
+    # Past Cow
+    "ScalaMoor.DeepBog.West": ChestData(
+        game_name="swamp.center-03-1",
+        area="Scala Moor",
+        rule=HasAll("Kama", "Filia"),
+        loc_id=401,
+    ),
+    # Past Mired
+    "ScalaMoor.Mired.West": ChestData(
+        game_name="swamp.center-04-1",
+        area="Scala Moor",
+        rule=HasAll("Kama", "Filia"),
+        loc_id=402,
+    ),
+    "ScalaMoor.Training.South": ChestData(
+        game_name="swamp.center-05-1",
+        area="Scala Moor",
+        loc_id=404,
+    ),
+    "ScalaMoor.Mired.NorthWest": ChestData(
+        game_name="swamp.center-04-2",
+        area="Scala Moor",
+        loc_id=402,
+    ),
+    "ScalaMoor.Creek.NorthWest": ChestData(
+        game_name="swamp.center-06-1",
+        area="Scala Moor",
+        rule=Has("Kama"),
+        loc_id=405,
+    ),
+    # Kama for muddy creek
+    "ScalaMoor.Sunken.North": ChestData(
+        game_name="swamp.center-08-1",
+        area="Scala Moor",
+        rule=Has("Kama") & has_any_elements(2),
+        loc_id=405,
+    ),
+    "ScalaMoor.Stepped.North": ChestData(
+        game_name="swamp.center-07-1",
+        area="Scala Moor",
+        rule=Has("Kama"),
+        loc_id=405,
+    ),
+    "ScalaMoor.Thicket.West": ChestData(
+        game_name="swamp.center-10-1",
+        area="Scala Moor",
+        rule=Has("Fulcrum Mark", count=3),
+        loc_id=405,
+    ),
+    "ScalaMoor.Thicket.Puzzle": ChestData(
+        game_name="swamp.one-puzzle-dng",
+        area="Scala Moor",
+        rule=Has("Kama") & has_any_elements(2) & Has("Fulcrum Mark", count=3),
+        loc_id=405,
+    ),
+    # TODO Maybe add Kama for the entry
+    "Cryo.A3": ChestData(
+        game_name="swamp.swamp-dng.room-a3-key",
+        area="Scala Moor",
+        rule=HasAll("Kama", "Aether", "Range"),
+        loc_id=406,
+    ),
+    # Key to cross A2
+    "Cryo.A4.South": ChestData(
+        game_name="swamp.swamp-dng.room-a4-1",
+        area="Scala Moor",
+        rule=HasAll("Trial Mark", "Kama"),
+        loc_id=406,
+    ),
+    "Cryo.A2": ChestData(
+        game_name="swamp.swamp-dng.room-a4-1",
+        area="Scala Moor",
+        rule=HasAll("Trial Mark", "Kama") & has_any_elements(2),
+        loc_id=406,
+    ),
+
+    "Cryo.C1.Center": ChestData(
+        game_name="swamp.swamp-dng.room-c1-2",
+        area="Scala Moor",
+        rule=HasAll("Trial Mark", "Kama", "Chakram", "Cryo", "Aether"),  # TODO Maybe not key
+        loc_id=407,
+    ),
+    "Cryo.C1.North": ChestData(
+        game_name="swamp.swamp-dng.room-c1-1",
+        area="Scala Moor",
+        rule=HasAll("Trial Mark", "Kama", "Chakram", "Cryo", "Aether"),  # TODO Maybe not key
+        loc_id=407,
+    ),
+    "Cryo.Lake.East": ChestData(
+        game_name="swamp.swamp-dng.room-center-key",
+        area="Scala Moor",
+        rule=HasAll("Trial Mark", "Kama", "Chakram", "Cryo", "Aether"),
+        loc_id=408,
+    ),
+    # 2nd key door
+    "Cryo.D3": ChestData(
+        game_name="swamp.swamp-dng.room-d3",
+        area="Scala Moor",
+        rule=HasAll("Kama", "Cryo") & Has("Trial Mark", count=2),  # TODO check for kama
+        loc_id=408,
+    ),
+    "Cryo.A4.West": ChestData(
+        game_name="swamp.swamp-dng.room-a4-2",
+        area="Scala Moor",
+        rule=HasAll("Kama", "Cryo", "Physis", "Aether", "Filia") & Has("Trial Mark", count=2),
+        loc_id=408,
+    ),
+    "Cryo.D1": ChestData(
+        game_name="swamp.swamp-dng.room-d1-key",
+        area="Scala Moor",
+        rule=HasAll("Kama", "Cryo", "Shuriken") & Has("Trial Mark", count=2) & has_any_elements(2),
+        loc_id=408,
+    ),
+    # E: 3 keys
+    "Cryo.E2": ChestData(
+        game_name="swamp.swamp-dng.room-e2-key",
+        area="Scala Moor",
+        rule=HasAll("Cryo", "Physis", "Range", "Filia") & Has("Trial Mark", count=3),
+        loc_id=408,
+    ),
+    # TODO Boss location (Trial mark 4 + cryo + range)
 }
