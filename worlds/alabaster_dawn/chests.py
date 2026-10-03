@@ -8,11 +8,17 @@ from .rule_helpers import has_any_elements
 # TODO for any_elements, check if aether or physis are explicitly required
 
 chests: dict[str, ChestData] = {
-    "Plains.Somu": ChestData(
+    "Plains.Somu.West": ChestData(
         game_name="hub.west-01-1",
         area="Aurum Plains",
         rule=Has("Kama"),
         loc_id=330,
+    ),
+    "Plains.Somu.East": ChestData(
+        game_name="hub.west-01-2",
+        area="Aurum Plains",
+        rule=HasAll("Kama", "Cryo"),
+        loc_id=349,
     ),
     "Plains.Watchtower": ChestData(
         game_name="hub.south-01-1",
@@ -78,7 +84,7 @@ chests: dict[str, ChestData] = {
     "Plains.ImpactCrater": ChestData(
         game_name="hub.north-04-1",
         area="Aurum Plains",
-        loc_id=349,
+        loc_id=350,
     ),
     "Plains.RuinedRanch.West": ChestData(
         game_name="hub.north-05-1",
@@ -230,7 +236,7 @@ chests: dict[str, ChestData] = {
     "Valley.Crescent.East": ChestData(  # TODO We'll need to nerf the level or exclude the location on that one
         game_name="start.north-01-3",
         area="Aurum Plains",
-        rule=Has("Combat Slash"),
+        rule=Has("Slash Combat"),
         loc_id=256,
     ),
     "Valley.Crescent.South": ChestData(
@@ -501,12 +507,6 @@ chests: dict[str, ChestData] = {
         rule=HasAll("Filia", "Chakram", "Blunt", "Pierce Range", "Aether"),
         loc_id=306,
     ),
-    "Plains.Somu.East": ChestData(
-        game_name="hub.west-01-2",
-        area="Aurum Plains",
-        rule=HasAll("Kama", "Cryo"),
-        loc_id=400,
-    ),
     "ScalaMoor.Sodden.North": ChestData(
         game_name="swamp.center-02-1",
         area="Swamp.Entrance",
@@ -530,10 +530,11 @@ chests: dict[str, ChestData] = {
         rule=Has("Kama"),
         loc_id=403,
     ),
+    # This requires weaving things a bit everywhere, the rules also account for reaching all those areas
     "ScalaMoor.Pollo.North": ChestData(
         game_name="swamp.center-09-2",
         area="Swamp.North",
-        rule=HasAll("Kama", "Cryo", "Physis", "Filia"),  # TODO events
+        rule=HasAll("Kama", "Cryo", "Physis", "Filia"),
         loc_id=404,
     ),
     "ScalaMoor.DeepBog.West": ChestData(
@@ -612,7 +613,6 @@ chests: dict[str, ChestData] = {
         rule=HasAll("Kama", "Chakram", "Cryo", "Aether"),
         loc_id=453,
     ),
-    # TODO Button with cryo + kama
     "Cryo.C1.North": ChestData(
         game_name="swamp.swamp-dng.room-c1-1",
         area="Cryo.C",
@@ -628,7 +628,7 @@ chests: dict[str, ChestData] = {
     "Cryo.D3": ChestData(
         game_name="swamp.swamp-dng.room-d3",
         area="Cryo.D",
-        rule=HasAll("Kama", "Cryo", "Combat Pierce"),  # TODO Require buttons + big combat
+        rule=HasAll("Kama", "Cryo", "Pierce Combat"),  # TODO Require buttons + big combat
         loc_id=456,
     ),
     "Cryo.A4.West": ChestData(

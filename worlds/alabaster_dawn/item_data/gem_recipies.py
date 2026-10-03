@@ -17,7 +17,19 @@ gem_recipies: dict[str, ItemData] = {
         item_type="Construct",
         item_id=901,
     ),
-    "Amplifier Construct": ItemData(
+    "Dual Breach Construct": ItemData(
+        classification=IC.useful,
+        game_name="bp-mel-brkdmg",
+        item_type="Construct",
+        item_id=927,
+    ),
+    "Daring Joust Construct": ItemData(
+        classification=IC.useful,
+        game_name="bp-mel-cntrdmg",
+        item_type="Construct",
+        item_id=928,
+    ),
+    "Chaotic Tip Construct": ItemData(
         classification=IC.useful,
         game_name="bp-mel-min-ampli",
         item_type="Construct",
@@ -35,7 +47,13 @@ gem_recipies: dict[str, ItemData] = {
         item_type="Construct",
         item_id=904,
     ),
-    "Distant Mark Construct": ItemData(
+    "Hydro Power Construct": ItemData(
+        classification=IC.useful,
+        game_name="bp-rng-hydration",
+        item_type="Construct",
+        item_id=929,
+    ),
+    "Bloody Scar Construct": ItemData(
         classification=IC.useful,
         game_name="bp-rang-min-snip",
         item_type="Construct",
@@ -83,6 +101,12 @@ gem_recipies: dict[str, ItemData] = {
         item_type="Construct",
         item_id=912,
     ),
+    "Marquin's Blessing Construct": ItemData(
+        classification=IC.useful,
+        game_name="bp-cor-min-ignis",
+        item_type="Construct",
+        item_id=919,
+    ),
     "Blood Heart Construct": ItemData(
         classification=IC.useful,
         game_name="bp-cor-min-crit",
@@ -107,18 +131,59 @@ gem_recipies: dict[str, ItemData] = {
         item_type="Construct",
         item_id=916,
     ),
-    "Grit Construct": ItemData(
+    "Sharp Gravel Construct": ItemData(
         classification=IC.useful,
         game_name="bp-cor-min-grit",
         item_type="Construct",
         item_id=917,
     ),
-    "Cleanse Construct": ItemData(
+    "Cathartic Cleanse Construct": ItemData(
         classification=IC.useful,
-        game_name="bp-cor-min-balance",
+        game_name="bp-cor-min-balance",  # Forged into cor-min-status-heal-01
         item_type="Construct",
-        pool_quantity=0,
         item_id=918,
+    ),
+    "Stalwart Advance Construct": ItemData(
+        classification=IC.useful,
+        game_name="bp-cor-min-autogrd",
+        item_type="Construct",
+        item_id=920,
+    ),
+    "Layered Fold Construct": ItemData(
+        classification=IC.useful,
+        game_name="bp-cor-min-rangedef",
+        item_type="Construct",
+        item_id=921,
+    ),
+    "Fearless Zeal Construct": ItemData(
+        classification=IC.useful,
+        game_name="bp-cor-min-pevadedp",
+        item_type="Construct",
+        item_id=922,
+    ),
+    "Mentor's Trill Construct": ItemData(
+        classification=IC.useful,
+        game_name="bp-cor-min-exp-boost",
+        item_type="Construct",
+        item_id=923,
+    ),
+    "Basic Survival Construct": ItemData(
+        classification=IC.useful,
+        game_name="bp-cor-min-health",
+        item_type="Construct",
+        item_id=924,
+    ),
+    "Apothecary Construct": ItemData(
+        classification=IC.useful,
+        game_name="bp-cor-min-item-hp",
+        item_type="Construct",
+        item_id=925,
+    ),
+    "Due Appetite Construct": ItemData(
+        classification=IC.useful,
+        game_name="bp-cor-min-buffdur",
+        item_type="Construct",
+        item_id=926,
     ),
     "Chipped Edge Blueprint": ItemData(
         classification=IC.useful,
@@ -134,7 +199,7 @@ gem_recipies: dict[str, ItemData] = {
         item_type="Blueprint",
         item_id=1001,
     ),
-    "Ruff Edge Blueprint": ItemData(
+    "Humble Edge Blueprint": ItemData(
         classification=IC.useful,
         pool_quantity=0,
         game_name="bp-mel-spec",
@@ -176,7 +241,7 @@ gem_recipies: dict[str, ItemData] = {
         item_type="Blueprint",
         item_id=1007,
     ),
-    "Spirit Laurel Blueprint": ItemData(
+    "Aged Laurel Blueprint": ItemData(
         classification=IC.useful,
         pool_quantity=0,
         game_name="bp-up-maj-r-def",
@@ -211,7 +276,7 @@ gem_recipies: dict[str, ItemData] = {
         item_type="Blueprint",
         item_id=1012,
     ),
-    "Plebian Gauntlet Blueprint": ItemData(
+    "Plebeian Gauntlet Blueprint": ItemData(
         classification=IC.useful,
         pool_quantity=0,
         game_name="bp-mid-maj-r-def",

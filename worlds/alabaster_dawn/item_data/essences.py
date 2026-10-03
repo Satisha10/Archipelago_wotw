@@ -28,6 +28,14 @@ essences: dict[str, ItemData] = {  # TODO Aether essences
         item_type="Craft",
         item_id=1210,
     ),
+    "Shard of Wisdom x5": ItemData(
+        classification=IC.filler,
+        item_quantity=5,
+        pool_quantity=0,
+        game_name="dng-ess-cryo",
+        item_type="Craft",
+        item_id=1211,
+    ),
     "Sphera Essence x5": ItemData(
         classification=IC.filler,
         item_quantity=5,

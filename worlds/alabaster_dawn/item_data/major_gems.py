@@ -19,7 +19,7 @@ major_gems: dict[str, ItemData] = {
         item_type="Gem",
         item_id=605,
     ),
-    "Ruff Edge": ItemData(
+    "Humble Edge": ItemData(
         classification=IC.useful,
         pool_quantity=1,
         game_name="mel-spec-01",
@@ -61,7 +61,14 @@ major_gems: dict[str, ItemData] = {
         item_type="Gem",
         item_id=635,
     ),
-    "Spirit Laurel": ItemData(
+    "Budding Halo": ItemData(
+        classification=IC.useful,
+        pool_quantity=1,
+        game_name="up-maj-l-mhp-01",
+        item_type="Gem",
+        item_id=690,
+    ),
+    "Aged Laurel": ItemData(
         classification=IC.useful,
         pool_quantity=1,
         game_name="up-maj-r-def-01",
@@ -74,6 +81,13 @@ major_gems: dict[str, ItemData] = {
         game_name="up-maj-r-off-01",
         item_type="Gem",
         item_id=645,
+    ),
+    "Withering Laurel": ItemData(
+        classification=IC.useful,
+        pool_quantity=1,
+        game_name="up-maj-r-sts-01",
+        item_type="Gem",
+        item_id=695,
     ),
     "Flexing Bracer": ItemData(
         classification=IC.useful,
@@ -89,6 +103,13 @@ major_gems: dict[str, ItemData] = {
         item_type="Gem",
         item_id=655,
     ),
+    "Flinger's Bracer": ItemData(
+        classification=IC.useful,
+        pool_quantity=1,
+        game_name="mid-maj-l-ext-01",
+        item_type="Gem",
+        item_id=700,
+    ),
     "Ruffian's Gauntlet": ItemData(
         classification=IC.useful,
         pool_quantity=1,
@@ -96,12 +117,19 @@ major_gems: dict[str, ItemData] = {
         item_type="Gem",
         item_id=660,
     ),
-    "Plebian Gauntlet": ItemData(
+    "Plebeian Gauntlet": ItemData(
         classification=IC.useful,
         pool_quantity=1,
         game_name="mid-maj-r-def-01",
         item_type="Gem",
         item_id=665,
+    ),
+    "Glimmering Gauntlet": ItemData(
+        classification=IC.useful,
+        pool_quantity=1,
+        game_name="mid-maj-r-ext-01",
+        item_type="Gem",
+        item_id=705,
     ),
     "Brittle Shell": ItemData(
         classification=IC.useful,
@@ -117,6 +145,13 @@ major_gems: dict[str, ItemData] = {
         item_type="Gem",
         item_id=675,
     ),
+    "Dubious Shell": ItemData(
+        classification=IC.useful,
+        pool_quantity=1,
+        game_name="low-maj-l-art-01",
+        item_type="Gem",
+        item_id=710,
+    ),
     "Simple Cuirass": ItemData(
         classification=IC.useful,
         pool_quantity=1,
@@ -130,5 +165,12 @@ major_gems: dict[str, ItemData] = {
         game_name="low-maj-r-off-01",
         item_type="Gem",
         item_id=685,
+    ),
+    "Painted Cuirass": ItemData(
+        classification=IC.useful,
+        pool_quantity=1,
+        game_name="low-maj-r-yum-01",
+        item_type="Gem",
+        item_id=715,
     ),
 }

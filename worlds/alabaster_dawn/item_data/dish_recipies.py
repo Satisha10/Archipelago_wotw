@@ -99,4 +99,22 @@ dishes: dict[str, ItemData] = {
         item_type="Dish Recipie",
         item_id=1714,
     ),
+    "Shroomlett": ItemData(
+        classification=IC.useful,
+        game_name="shroom-egg",
+        item_type="Dish Recipie",
+        item_id=1715,
+    ),
+    "Swanana Nut Chips": ItemData(
+        classification=IC.useful,
+        game_name="banana-nut-chips",
+        item_type="Dish Recipie",
+        item_id=1716,
+    ),
+    "Sour Gugumber": ItemData(
+        classification=IC.useful,
+        game_name="sour-gugumber",
+        item_type="Dish Recipie",
+        item_id=1717,
+    ),
 }

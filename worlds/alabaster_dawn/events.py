@@ -43,8 +43,10 @@ has_combat = has_range | has_melee
 # TODO maybe not needed to make events for these, just use a combined rule. More efficient, doesn't create spheres
 def create_events(world: ADWorld):
     world.create_event("Blunt", has_blunt, "Menu")
+    world.create_event("Pierce Combat", HasAny("Spear", "Crossbow"), "Menu")
     world.create_event("Pierce", has_pierce, "Menu")
     world.create_event("Pierce Range", has_pierce_range, "Menu")
+    world.create_event("Slash Combat", HasAny("Chakram", "Sword"), "Menu")
     world.create_event("Slash", has_slash, "Menu")
     world.create_event("Slash Range", has_slash_range, "Menu")
     world.create_event("Range", has_range, "Menu")

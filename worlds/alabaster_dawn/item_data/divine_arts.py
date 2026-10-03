@@ -70,4 +70,10 @@ arts: dict[str, ItemData] = {
         item_type="Divine Art",
         item_id=1554,
     ),
+    "Frost Reaver": ItemData(  # Slash
+        classification=IC.useful,
+        game_name="cry-mel-aoe1",
+        item_type="Divine Art",
+        item_id=1600,
+    ),
 }
