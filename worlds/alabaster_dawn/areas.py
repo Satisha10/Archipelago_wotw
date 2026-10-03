@@ -62,11 +62,74 @@ areas: dict[str, AreaData] = {
             "Koro Valley North": Has("Boat travel"),
             "Trial of Aether B": HasAll("Combat", "Aether"),
             "Sundalan": True_(),
+            "Swamp.Entrance": Has("Kama"),  # TODO Separate with Somu
         },
     ),
     "Sundalan": AreaData(
         connections={
             "Aurum Plains": True_(),
+        },
+    ),
+    # Entrance, before the Moss cow fight
+    "Swamp.Entrance": AreaData(
+        connections={
+            "Aurum Plains": True_(),
+            "Swamp.DeepBog": HasAll("Kama", "Physis"),
+        },
+    ),
+    # After the Moss cow fight, before the bridge in Mired Crossing
+    "Swamp.DeepBog": AreaData(
+        connections={
+            "Swamp.Entrance": HasAll("Kama", "Physis"),
+            "Swamp.PastMired": HasAll("Kama", "Filia"),
+            "Swamp.Fulcrum": Has("Fulcrum Mark", count=3),
+        },
+    ),
+    # After the bridge in Mired Crossing, up until the bridge in Muddy Creek
+    "Swamp.PastMired": AreaData(
+        connections={
+            "Swamp.Entrance": True_(),  # Through Pollo's Abode
+            "Swamp.North": Has("Kama"),
+        },
+    ),
+    # After the bridge in Muddy Creek
+    "Swamp.North": AreaData(
+        connections={
+            "Swamp.PastMired": Has("Kama"),
+            "Cryo.Entrance": True_(),
+            "Swamp.Entrance": True_(),
+        },
+    ),
+    # After the door
+    "Swamp.Fulcrum": AreaData(
+        connections={
+            "Swamp.DeepBog": Has("Fulcrum Mark", count=3),
+        },
+    ),
+    # Dungeon entrance, before 1st door
+    "Cryo.Entrance": AreaData(
+        connections={
+            "Cryo.1Door": Has("Kama") & Has("Cryo Key", count=1),
+        },
+    ),
+    # After the 1st door, until going in the C rooms (so after Cryo + mini boss)
+    "Cryo.1Door": AreaData(
+        connections={
+            "Cryo.C": HasAll("Range", "Filia", "Cryo"),
+        },
+    ),
+    "Cryo.C": AreaData(
+        connections={
+            "Cryo.D": Has("Cryo Key", count=2),
+        },
+    ),
+    "Cryo.D": AreaData(
+        connections={
+            "Cryo.E": Has("Cryo Key", count=3) & Has("Combat"),  # TODO See if combat requires smthg else
+        },
+    ),
+    "Cryo.E": AreaData(
+        connections={
         },
     ),
 }

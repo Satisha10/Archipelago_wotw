@@ -58,8 +58,20 @@ story_loc: dict[str, StoryLocData] = {
     ),
     "ScalaMoor.Spear": StoryLocData(
         game_name="spear",
-        area="Scala Moor",
+        area="Swamp.DeepBog",
         rule=HasAll("Physis", "Kama"),
         loc_id=9,
+    ),
+    "Cryo.Element": StoryLocData(
+        game_name="cryo",
+        area="Cryo.1Door",
+        rule=HasAll("Kama", "Filia"),
+        loc_id=10,
+    ),
+    "Cryo.Spire": StoryLocData(
+        game_name="ap_spire_cryo.weaved",
+        area="Cryo.E",
+        rule=Has("Cryo Key", count=4) & Has("Cryo"), # TODO See base levels for bosses
+        loc_id=11,
     ),
 }
