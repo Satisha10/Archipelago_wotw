@@ -35,8 +35,8 @@ main_items: dict[str, ItemData] = {
     "Cryo": ItemData(
         classification=IC.progression | IC.useful,
         item_type="Element",
-        game_name="ELEMENT:16",
-        item_id=3,
+        game_name="ELEMENT:17",
+        item_id=4,
     ),
     "Sword": ItemData(
         classification=IC.progression | IC.useful,

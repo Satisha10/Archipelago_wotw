@@ -15,7 +15,7 @@ location_name_to_id: dict[str, int] = {
     "Aether.WeaveSpire": 8,
     "ScalaMoor.Spear": 9,
     "Cryo.Element": 10,
-    "Cryo.Spire": 11,
+    "Cryo.WeaveSpire": 11,
     "Plains.Somu.West": 330,
     "Plains.Somu.East": 349,
     "Plains.Watchtower": 331,

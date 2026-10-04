@@ -539,7 +539,7 @@ chests: dict[str, ChestData] = {
     ),
     "ScalaMoor.DeepBog.West": ChestData(
         game_name="swamp.center-03-1",
-        area="Swamp.CowBoss",
+        area="Swamp.DeepBog",
         rule=HasAll("Kama", "Filia"),
         loc_id=405,
     ),
@@ -640,7 +640,7 @@ chests: dict[str, ChestData] = {
     "Cryo.D1": ChestData(
         game_name="swamp.swamp-dng.room-d1-key",
         area="Cryo.D",
-        rule=HasAll("Kama", "Cryo", "Shuriken") & has_any_elements(2),
+        rule=HasAll("Kama", "Cryo", "Chakram") & has_any_elements(2),
         loc_id=458,
     ),
     "Cryo.E2": ChestData(

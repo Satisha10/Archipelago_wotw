@@ -1,6 +1,6 @@
 """Locations for main unlocks in the game (elements, weaving nests and spires). Location ID Band: 1-199"""
 
-from rule_builder.rules import Has, HasAll, True_, HasAny
+from rule_builder.rules import Has, HasAll, HasAny
 
 from .rule_helpers import has_any_elements
 from .data_structures import StoryLocData
@@ -53,7 +53,7 @@ story_loc: dict[str, StoryLocData] = {
         game_name="ap_spire_aether.weaved",
         area="Trial of Aether B",
         rule=HasAll("Filia", "Chakram", "Blunt", "Pierce Range", "Aether", "Physis")
-             & Has("Trial Mark", count=2),
+             & Has("Aether Trial Mark", count=2),
         loc_id=8,
     ),
     "ScalaMoor.Spear": StoryLocData(
@@ -63,13 +63,13 @@ story_loc: dict[str, StoryLocData] = {
         loc_id=9,
     ),
     "Cryo.Element": StoryLocData(
-        game_name="cryo",
+        game_name="Cryo",
         area="Cryo.1Door",
         rule=HasAll("Kama", "Filia"),
         loc_id=10,
     ),
-    "Cryo.Spire": StoryLocData(
-        game_name="ap_spire_cryo.weaved",
+    "Cryo.WeaveSpire": StoryLocData(
+        game_name="swamp.bossDefeated",
         area="Cryo.E",
         rule=Has("Cryo Trial Mark", count=4) & Has("Cryo"), # TODO See base levels for bosses
         loc_id=11,

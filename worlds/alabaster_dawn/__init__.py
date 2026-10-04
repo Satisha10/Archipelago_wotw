@@ -163,6 +163,7 @@ class ADWorld(World):
             & CanReachLocation("Plains.WeaveNest")
             & CanReachLocation("EternalSpring.WeaveNest")
             & CanReachLocation("Aether.WeaveSpire")
+            & CanReachLocation("Cryo.WeaveSpire")
         )
 
     def fill_slot_data(self) -> dict[str, Any]:

@@ -13,7 +13,7 @@ items: dict[str, APItem] = {
     "Test2": APItem(id=456123157, quantity=0, classification=IC(2)),
     "Physis": APItem(id=1, quantity=0, classification=IC(3)),
     "Aether": APItem(id=2, quantity=1, classification=IC(3)),
-    "Cryo": APItem(id=3, quantity=1, classification=IC(3)),
+    "Cryo": APItem(id=4, quantity=1, classification=IC(3)),
     "Sword": APItem(id=10, quantity=0, classification=IC(3)),
     "Hammer": APItem(id=11, quantity=1, classification=IC(3)),
     "Spear": APItem(id=12, quantity=1, classification=IC(3)),
