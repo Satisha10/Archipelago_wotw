@@ -45,6 +45,12 @@ main_items: dict[str, ItemData] = {
         game_name="WEAPON:hammer",
         item_id=11,
     ),
+    "Spear": ItemData(
+        classification=IC.progression | IC.useful,
+        item_type="Melee weapon",
+        game_name="WEAPON:spear",
+        item_id=12,
+    ),
     "Crossbow": ItemData(
         classification=IC.progression | IC.useful,
         item_type="Range weapon",
@@ -96,17 +102,31 @@ main_items: dict[str, ItemData] = {
     ),
     "Fulcrum Mark": ItemData(
         classification=IC.progression,
-        pool_quantity=2,
+        pool_quantity=3,
         game_name="the-key",
         item_type="Key",
         item_id=100,
     ),
     "Trial Mark": ItemData(
         classification=IC.progression,
-        pool_quantity=2,
+        pool_quantity=0,
         game_name="the-key-dng",
         item_type="Key",
         item_id=101,
+    ),
+    "Aether Trial Mark": ItemData(
+        classification=IC.progression,
+        pool_quantity=2,
+        game_name="ap-key-aether",
+        item_type="Key",
+        item_id=102,
+    ),
+    "Cryo Trial Mark": ItemData(
+        classification=IC.progression,
+        pool_quantity=4,
+        game_name="ap-key-cryo",
+        item_type="Key",
+        item_id=103,
     ),
     "Divine Connection": ItemData(
         classification=IC.useful,

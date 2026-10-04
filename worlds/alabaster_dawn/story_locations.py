@@ -9,7 +9,7 @@ story_loc: dict[str, StoryLocData] = {
     "Aether.Element": StoryLocData(
         game_name="Aether",
         area="Trial of Aether A",
-        rule=HasAll("Filia", "Blunt", "Range") & Has("Trial Mark", count=2),
+        rule=HasAll("Filia", "Blunt", "Range") & Has("Aether Trial Mark", count=2),
         loc_id=1,
     ),
     "Valley.Hammer": StoryLocData(
@@ -71,7 +71,7 @@ story_loc: dict[str, StoryLocData] = {
     "Cryo.Spire": StoryLocData(
         game_name="ap_spire_cryo.weaved",
         area="Cryo.E",
-        rule=Has("Cryo Key", count=4) & Has("Cryo"), # TODO See base levels for bosses
+        rule=Has("Cryo Trial Mark", count=4) & Has("Cryo"), # TODO See base levels for bosses
         loc_id=11,
     ),
 }

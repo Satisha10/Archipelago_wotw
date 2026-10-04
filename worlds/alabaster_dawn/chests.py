@@ -473,19 +473,19 @@ chests: dict[str, ChestData] = {
         game_name="start.start-dng.f1-room-02-1",
         area="Trial of Aether A",
         # Pierce not strictly required with parkour
-        rule=HasAll("Pierce Range", "Filia", "Range") & Has("Trial Mark", count=2),
+        rule=HasAll("Pierce Range", "Filia", "Range") & Has("Aether Trial Mark", count=2),
         loc_id=301,
     ),
     "Aether.B4": ChestData(
         game_name="start.start-dng.f2-room-02b-1",
         area="Trial of Aether B",
-        rule=HasAll("Filia", "Chakram", "Blunt", "Pierce Range", "Aether") & Has("Trial Mark", count=2),
+        rule=HasAll("Filia", "Chakram", "Blunt", "Pierce Range", "Aether") & Has("Aether Trial Mark", count=2),
         loc_id=302,
     ),
     "Aether.A4": ChestData(
         game_name="start.start-dng.f1-room-04-1",
         area="Trial of Aether A",
-        rule=HasAll("Blunt", "Filia", "Range") & Has("Trial Mark", count=2),
+        rule=HasAll("Blunt", "Filia", "Range") & Has("Aether Trial Mark", count=2),
         loc_id=303,
     ),
     "Aether.B7": ChestData(
@@ -640,7 +640,7 @@ chests: dict[str, ChestData] = {
     "Cryo.D1": ChestData(
         game_name="swamp.swamp-dng.room-d1-key",
         area="Cryo.D",
-        rule=HasAll("Kama", "Cryo", "Shuriken") & Has("Trial Mark", count=2) & has_any_elements(2),
+        rule=HasAll("Kama", "Cryo", "Shuriken") & has_any_elements(2),
         loc_id=458,
     ),
     "Cryo.E2": ChestData(

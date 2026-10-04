@@ -14,7 +14,7 @@ areas: dict[str, AreaData] = {
         connections={
             "Lyhamn": True_(),
             # Eternal spring can be entered with just the key, but you need the rest to be able to do anything useful.
-            "Eternal Spring": Has("Fulcrum Mark", count=2) & HasAll("Filia", "Aether", "Blunt", "Pierce", "Chakram"),
+            "Eternal Spring": Has("Fulcrum Mark", count=3) & HasAll("Filia", "Aether", "Blunt", "Pierce", "Chakram"),
             "Silver Peak": Has("Blunt"),
             "Koro Valley North": Has("Valley bridges")
         },
@@ -38,7 +38,7 @@ areas: dict[str, AreaData] = {
     ),
     "Trial of Aether A": AreaData(
         connections={
-            "Trial of Aether Outside": HasAll("Filia", "Aether", "Blunt") & Has("Trial Mark", count=2)
+            "Trial of Aether Outside": HasAll("Filia", "Aether", "Blunt") & Has("Aether Trial Mark", count=2)
         },
     ),
     "Trial of Aether Outside": AreaData(  # Between A and B, up until the divine bridge
@@ -54,7 +54,7 @@ areas: dict[str, AreaData] = {
     ),
     "Eternal Spring": AreaData(
         connections={
-            "Koro Valley": Has("Fulcrum Mark", count=2),
+            "Koro Valley": Has("Fulcrum Mark", count=3),
         },
     ),
     "Aurum Plains": AreaData(
@@ -109,7 +109,7 @@ areas: dict[str, AreaData] = {
     # Dungeon entrance, before 1st door
     "Cryo.Entrance": AreaData(
         connections={
-            "Cryo.1Door": Has("Kama") & Has("Cryo Key", count=1),
+            "Cryo.1Door": Has("Kama") & Has("Cryo Trial Mark", count=1),
         },
     ),
     # After the 1st door, until going in the C rooms (so after Cryo + mini boss)
@@ -120,12 +120,12 @@ areas: dict[str, AreaData] = {
     ),
     "Cryo.C": AreaData(
         connections={
-            "Cryo.D": Has("Cryo Key", count=2),
+            "Cryo.D": Has("Cryo Trial Mark", count=2),
         },
     ),
     "Cryo.D": AreaData(
         connections={
-            "Cryo.E": Has("Cryo Key", count=3) & Has("Combat"),  # TODO See if combat requires smthg else
+            "Cryo.E": Has("Cryo Trial Mark", count=3) & Has("Combat"),  # TODO See if combat requires smthg else
         },
     ),
     "Cryo.E": AreaData(
