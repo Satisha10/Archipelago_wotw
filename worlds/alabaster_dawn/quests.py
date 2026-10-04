@@ -60,7 +60,7 @@ quests: dict[str, QuestData] = {
         area="Koro Valley",
         game_name="subDungeonMesa",
         level_progress=None,
-        rule=HasAll("Blunt", "Filia", "Chakram") & Has("Fulcrum Mark", count=2),
+        rule=HasAll("Blunt", "Filia", "Chakram") & Has("Fulcrum Mark", count=3),
         loc_id=1507,
     ),
     "Iron Deficiency": QuestData(

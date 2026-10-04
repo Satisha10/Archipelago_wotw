@@ -115,12 +115,12 @@ areas: dict[str, AreaData] = {
     # After the 1st door, until going in the C rooms (so after Cryo + mini boss)
     "Cryo.1Door": AreaData(
         connections={
-            "Cryo.C": HasAll("Range", "Filia", "Cryo"),
+            "Cryo.C": HasAll("Range", "Filia", "Cryo", "Slash Combat"),
         },
     ),
     "Cryo.C": AreaData(
         connections={
-            "Cryo.D": Has("Cryo Trial Mark", count=2),
+            "Cryo.D": Has("Cryo Trial Mark", count=2) & Has("Slash Combat"),
         },
     ),
     "Cryo.D": AreaData(

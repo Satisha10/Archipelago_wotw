@@ -71,7 +71,8 @@ story_loc: dict[str, StoryLocData] = {
     "Cryo.WeaveSpire": StoryLocData(
         game_name="swamp.bossDefeated",
         area="Cryo.E",
-        rule=Has("Cryo Trial Mark", count=4) & Has("Cryo"), # TODO See base levels for bosses
+        # Slash combat + Chakram for the enemy gauntlet that triggers after opening the 4th key chest.
+        rule=Has("Cryo Trial Mark", count=4) & HasAll("Cryo", "Slash Combat", "Chakram"),
         loc_id=11,
     ),
 }

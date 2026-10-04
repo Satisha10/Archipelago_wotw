@@ -602,9 +602,9 @@ chests: dict[str, ChestData] = {
         loc_id=451,
     ),
     "Cryo.A2": ChestData(
-        game_name="swamp.swamp-dng.room-a4-1",
+        game_name="swamp.swamp-dng.room-a2-1",
         area="Cryo.1Door",
-        rule=HasAll("Kama", "Filia") & has_any_elements(2),
+        rule=HasAll("Kama", "Filia", "Slash Combat") & has_any_elements(2),
         loc_id=452,
     ),
     "Cryo.C1.Center": ChestData(
@@ -622,7 +622,7 @@ chests: dict[str, ChestData] = {
     "Cryo.Lake.East": ChestData(
         game_name="swamp.swamp-dng.room-center-key",
         area="Cryo.C",
-        rule=HasAll("Kama", "Chakram", "Cryo", "Aether"),
+        rule=HasAll("Kama", "Chakram", "Cryo", "Aether", "Filia"),
         loc_id=455,
     ),
     "Cryo.D3": ChestData(
@@ -634,13 +634,13 @@ chests: dict[str, ChestData] = {
     "Cryo.A4.West": ChestData(
         game_name="swamp.swamp-dng.room-a4-2",
         area="Cryo.D",
-        rule=HasAll("Kama", "Cryo", "Physis", "Aether", "Filia"),
+        rule=HasAll("Kama", "Cryo", "Physis", "Aether", "Filia", "Pierce Combat"),
         loc_id=457,
     ),
     "Cryo.D1": ChestData(
         game_name="swamp.swamp-dng.room-d1-key",
         area="Cryo.D",
-        rule=HasAll("Kama", "Cryo", "Chakram") & has_any_elements(2),
+        rule=HasAll("Kama", "Cryo", "Chakram", "Pierce Combat") & has_any_elements(2),
         loc_id=458,
     ),
     "Cryo.E2": ChestData(
