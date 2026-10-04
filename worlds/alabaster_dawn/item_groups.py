@@ -44,6 +44,7 @@ item_groups: dict[str, list[str]] = {
         "Test2",
         "Physis",
         "Aether",
+        "Cryo",
     ],
     "Melee weapon": [
         "Sword",
