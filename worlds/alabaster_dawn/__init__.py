@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Any
 
 from worlds.AutoWorld import World, WebWorld
-from BaseClasses import Item, Location, Region, Tutorial, ItemClassification
+from BaseClasses import Item, Location, Region, Tutorial, ItemClassification, LocationProgressType
 from rule_builder.rules import Rule, True_, CanReachLocation
 from .events import create_events
 
@@ -106,6 +106,8 @@ class ADWorld(World):
                 region.locations.append(dish_loc)
                 self.set_rule(dish_loc, dish_data.rule)
         """
+        # Exclude the chest after the superboss
+        self.get_location("Valley.Crescent.East").progress_type = LocationProgressType.EXCLUDED
     def create_items(self) -> None:
         # TODO change item classification depending on settings
         mworld = self.multiworld

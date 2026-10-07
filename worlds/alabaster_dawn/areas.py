@@ -96,7 +96,7 @@ areas: dict[str, AreaData] = {
     "Swamp.North": AreaData(
         connections={
             "Swamp.PastMired": Has("Kama"),
-            "Cryo.Entrance": True_(),
+            "Cryo.Entrance": Has("Slash Combat"),  # Mandatory fight before the entrance
             "Swamp.Entrance": True_(),
         },
     ),

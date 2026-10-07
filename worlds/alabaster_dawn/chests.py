@@ -574,7 +574,7 @@ chests: dict[str, ChestData] = {
     "ScalaMoor.Stepped.North": ChestData(
         game_name="swamp.center-07-1",
         area="Swamp.North",
-        rule=Has("Kama"),
+        rule=HasAll("Kama", "Slash Combat"),
         loc_id=411,
     ),
     "ScalaMoor.Thicket.West": ChestData(
