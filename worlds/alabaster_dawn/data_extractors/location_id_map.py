@@ -15,6 +15,7 @@ class LocationData:
         self.location_name_to_id: dict[str, int] = {}
         self.location_gamename_to_id: dict[str, int] = {}
         self.used_ids: dict[int, str] = {}
+        self.used_gamenames: dict[str, str] = {}
     def add_data(self, loc_dict: dict):
         """
         Method to add the locations from a data file to the class data.
@@ -27,9 +28,13 @@ class LocationData:
             if data.loc_id in self.used_ids:
                 raise ValueError(f"Duplicate item id `{data.loc_id}` between `{name}` "
                                  f"and `{self.used_ids[data.loc_id]}`")
+            if data.game_name in self.used_gamenames:
+                raise ValueError(f"Duplicate game_name `{data.game_name}` between `{name}` "
+                             f"and `{self.used_gamenames[data.game_name]}`")
             self.location_name_to_id.setdefault(name, data.loc_id)
             self.location_gamename_to_id.setdefault(data.game_name, data.loc_id)
             self.used_ids.setdefault(data.loc_id, name)
+            self.used_gamenames.setdefault(data.game_name, name)
 
 loc_data = LocationData()
 

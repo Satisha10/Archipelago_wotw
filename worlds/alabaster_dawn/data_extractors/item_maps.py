@@ -20,6 +20,7 @@ class ItemMap:
         self.data: dict[str, ItemData] = {}
         self.groups: dict[str, list[str]] = {"Filler": []}
         self.used_ids: dict[int, str] = {}
+        self.used_gamenames: dict[str, str] = {}
 
     def add_items(self, mapping: dict[str, ItemData]):
         """Add the items from mapping into the data."""
@@ -29,6 +30,9 @@ class ItemMap:
             if item.item_id in self.used_ids:
                 raise ValueError(f"Duplicate item id `{item.item_id}` between `{name}` "
                                  f"and `{self.used_ids[item.item_id]}`")
+            if item.game_name in self.used_gamenames:
+                raise ValueError(f"Duplicate game_name `{item.game_name}` between `{name}` "
+                             f"and `{self.used_gamenames[item.game_name]}`")
             self.data.setdefault(
                 name,
                 ItemData(
@@ -41,6 +45,7 @@ class ItemMap:
                 )
             )
             self.used_ids.setdefault(item.item_id, name)
+            self.used_gamenames.setdefault(item.game_name, name)
 
             if item.item_type not in self.groups:
                 self.groups.setdefault(item.item_type, [])

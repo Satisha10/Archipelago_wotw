@@ -150,7 +150,6 @@ item_groups: dict[str, list[str]] = {
         "Daring Joust Construct",
         "Chaotic Tip Construct",
         "Finishing Touch Construct",
-        "Double Trouble Construct",
         "Hydro Power Construct",
         "Bloody Scar Construct",
         "High Ground Construct",

@@ -99,7 +99,6 @@ items: dict[str, APItem] = {
     "Daring Joust Construct": APItem(id=928, quantity=1, classification=IC(2)),
     "Chaotic Tip Construct": APItem(id=902, quantity=1, classification=IC(2)),
     "Finishing Touch Construct": APItem(id=903, quantity=1, classification=IC(2)),
-    "Double Trouble Construct": APItem(id=904, quantity=1, classification=IC(2)),
     "Hydro Power Construct": APItem(id=929, quantity=1, classification=IC(2)),
     "Bloody Scar Construct": APItem(id=905, quantity=1, classification=IC(2)),
     "High Ground Construct": APItem(id=906, quantity=1, classification=IC(2)),

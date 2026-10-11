@@ -41,12 +41,6 @@ gem_recipies: dict[str, ItemData] = {
         item_type="Construct",
         item_id=903,
     ),
-    "Double Trouble Construct": ItemData(
-        classification=IC.useful,
-        game_name="bp-mel-brkdmg",
-        item_type="Construct",
-        item_id=904,
-    ),
     "Hydro Power Construct": ItemData(
         classification=IC.useful,
         game_name="bp-rng-hydration",

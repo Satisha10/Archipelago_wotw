@@ -122,7 +122,7 @@ chests: dict[str, ChestData] = {
     "Plains.SolGate.Puzzle": ChestData(
         game_name="hub.bridge-01-puzzle-01",
         area="Aurum Plains",
-        rule=HasAll("Chakram", "Aether", "Filia") & Has("Fulcrum Mark", count=2) & has_any_elements(2),
+        rule=HasAll("Chakram", "Aether", "Filia") & Has("Fulcrum Mark", count=3) & has_any_elements(2),
         loc_id=348,
     ),
     "Valley.ForkedRoad.East": ChestData(
