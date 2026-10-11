@@ -194,7 +194,7 @@ item_groups: dict[str, list[str]] = {
         "Simple Cuirass Blueprint",
         "Runner's Cuirass Blueprint",
     ],
-    "Dish Recipie": [
+    "Dish Recipe": [
         "Basic Ration",
         "Ring Ration",
         "Scrambled Egg",

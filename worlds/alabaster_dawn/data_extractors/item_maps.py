@@ -9,8 +9,8 @@ from ..data_structures import ItemData
 from ..item_data.main_items import main_items
 from ..item_data.major_gems import major_gems
 from ..item_data.minor_gems import minor_gems
-from ..item_data.gem_recipies import gem_recipies
-from ..item_data.dish_recipies import dishes
+from ..item_data.gem_recipes import gem_recipes
+from ..item_data.dish_recipes import dishes
 from ..item_data.divine_arts import arts
 from ..item_data.essences import essences
 
@@ -60,7 +60,7 @@ item_map.add_items(main_items)
 item_map.add_items(arts)
 item_map.add_items(major_gems)
 item_map.add_items(minor_gems)
-item_map.add_items(gem_recipies)
+item_map.add_items(gem_recipes)
 item_map.add_items(dishes)
 item_map.add_items(essences)
 
