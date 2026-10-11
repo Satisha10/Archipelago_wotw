@@ -13,6 +13,7 @@ from ..item_data.gem_recipes import gem_recipes
 from ..item_data.dish_recipes import dishes
 from ..item_data.divine_arts import arts
 from ..item_data.essences import essences
+from ..item_data.ingredients import ingredients
 
 class ItemMap:
     """Class that contain the item data that will be added to the generated code."""
@@ -63,6 +64,7 @@ item_map.add_items(minor_gems)
 item_map.add_items(gem_recipes)
 item_map.add_items(dishes)
 item_map.add_items(essences)
+item_map.add_items(ingredients)
 
 
 type_def = """type ItemData = {
