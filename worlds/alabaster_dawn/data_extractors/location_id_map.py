@@ -14,6 +14,7 @@ class LocationData:
     def __init__(self):
         self.location_name_to_id: dict[str, int] = {}
         self.location_gamename_to_id: dict[str, int] = {}
+        self.location_gamename_to_name: dict[str, str] = {}
         self.used_ids: dict[int, str] = {}
         self.used_gamenames: dict[str, str] = {}
     def add_data(self, loc_dict: dict):
@@ -33,6 +34,7 @@ class LocationData:
                              f"and `{self.used_gamenames[data.game_name]}`")
             self.location_name_to_id.setdefault(name, data.loc_id)
             self.location_gamename_to_id.setdefault(data.game_name, data.loc_id)
+            self.location_gamename_to_name.setdefault(data.game_name, name)
             self.used_ids.setdefault(data.loc_id, name)
             self.used_gamenames.setdefault(data.game_name, name)
 
@@ -57,17 +59,27 @@ def loc_name_id():
     print(f"File {base_path} created.")
 
 
-# TODO use a loop instead of json
 def loc_gamename_id():
     """Generate the location game-name to ID map for the client."""
     base_path = "output_client/location_gamename_id.ts"
     file_path = os.path.join("worlds/alabaster_dawn/data_extractors", base_path)
     with open(file_path, "w") as f:
         f.write(header_ts("location_id_map.py", "loc_gamename_id"))
-        f.write("export const loc_game_name_id = new Map<string, number>([\n    [")
-        temp = json.dumps(loc_data.location_gamename_to_id)[1:-1]
-        output = temp.replace(", ", "],\n    [")
-        output = output.replace(":", ",")
-        f.write(output)
-        f.write("]\n]);\n")
+        f.write("export const loc_game_name_id = new Map<string, number>([\n")
+        for name, loc_id in loc_data.location_gamename_to_id.items():
+            f.write(f'    ["{name}", {loc_id}],\n')
+        f.write("]);\n")
+    print(f"File {base_path} created.")
+
+
+def loc_gamename_name():
+    """Generate the location game-name to AP location name for the client."""
+    base_path = "output_client/location_gamename_name.ts"
+    file_path = os.path.join("worlds/alabaster_dawn/data_extractors", base_path)
+    with open(file_path, "w") as f:
+        f.write(header_ts("location_id_map.py", "loc_gamename_name"))
+        f.write("export const loc_game_name_id = new Map<string, number>([\n")
+        for game_name, name in loc_data.location_gamename_to_name.items():
+            f.write(f'    ["{game_name}", "{name}"],\n')
+        f.write("]);\n")
     print(f"File {base_path} created.")

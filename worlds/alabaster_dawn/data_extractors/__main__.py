@@ -7,8 +7,9 @@ Use `python -m worlds.alabaster_dawn.data_extractors` in the console to run this
 """
 
 import argparse
+import os
 
-from worlds.alabaster_dawn.data_extractors.location_id_map import loc_gamename_id, loc_name_id
+from worlds.alabaster_dawn.data_extractors.location_id_map import loc_gamename_id, loc_name_id, loc_gamename_name
 from worlds.alabaster_dawn.data_extractors.item_maps import item_id_gamename_map, item_data_ap, item_groups_ap
 
 parser = argparse.ArgumentParser(
@@ -32,8 +33,12 @@ parser.add_argument(
 
 arguments = parser.parse_args()
 
+os.makedirs("worlds/alabaster_dawn/data_extractors/output_client", exist_ok=True)
+os.makedirs("worlds/alabaster_dawn/data_extractors/output_apworld", exist_ok=True)
+
 if not arguments.no_client:
     loc_gamename_id()
+    loc_gamename_name()
     item_id_gamename_map()
 
 if not arguments.no_ap:
