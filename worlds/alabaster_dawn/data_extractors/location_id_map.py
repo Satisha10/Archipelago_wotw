@@ -1,4 +1,3 @@
-import json
 import os
 
 from .header import header_py, header_ts
@@ -78,7 +77,7 @@ def loc_gamename_name():
     file_path = os.path.join("worlds/alabaster_dawn/data_extractors", base_path)
     with open(file_path, "w") as f:
         f.write(header_ts("location_id_map.py", "loc_gamename_name"))
-        f.write("export const loc_game_name_id = new Map<string, number>([\n")
+        f.write("export const loc_game_name_ap_name = new Map<string, string>([\n")
         for game_name, name in loc_data.location_gamename_to_name.items():
             f.write(f'    ["{game_name}", "{name}"],\n')
         f.write("]);\n")
