@@ -67,7 +67,11 @@ def loc_gamename_id():
         f.write("export const loc_game_name_id = new Map<string, number>([\n")
         for name, loc_id in loc_data.location_gamename_to_id.items():
             f.write(f'    ["{name}", {loc_id}],\n')
-        f.write("]);\n")
+        f.write("]);\n\n")
+
+        # Create the reverse map
+        f.write("export const loc_id_game_name = "
+                "new Map<number, string>(Array.from(loc_game_name_id, ([key, value]) => [value, key]));\n")
     print(f"File {base_path} created.")
 
 
