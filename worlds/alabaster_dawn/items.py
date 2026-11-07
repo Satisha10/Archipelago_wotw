@@ -17,7 +17,7 @@ items: dict[str, APItem] = {
     "Sword": APItem(id=10, quantity=1, classification=IC(3)),
     "Hammer": APItem(id=11, quantity=1, classification=IC(3)),
     "Spear": APItem(id=12, quantity=1, classification=IC(3)),
-    "Crossbow": APItem(id=15, quantity=0, classification=IC(3)),
+    "Crossbow": APItem(id=15, quantity=1, classification=IC(3)),
     "Chakram": APItem(id=16, quantity=1, classification=IC(3)),
     "Kama": APItem(id=17, quantity=1, classification=IC(3)),
     "Filia": APItem(id=20, quantity=1, classification=IC(3)),

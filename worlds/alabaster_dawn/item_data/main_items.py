@@ -58,7 +58,6 @@ main_items: dict[str, ItemData] = {
     "Crossbow": ItemData(
         classification=IC.progression | IC.useful,
         item_type="Range weapon",
-        pool_quantity=0,
         game_name="WEAPON:crossbow",
         item_id=15,
     ),
