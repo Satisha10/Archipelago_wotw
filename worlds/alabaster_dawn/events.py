@@ -54,9 +54,3 @@ def create_events(world: ADWorld):
     world.create_event("Combat", has_combat, "Menu")
 
     world.create_event("Red Forest Bridges", HasAll("Blunt", "Range", "Valley bridges") & Has("Lyhamn level", count=1), "Menu")
-
-    # TODO spawn with random weapon/element
-    world.create_event("Sword", True_(), "Menu")
-    world.create_event("Crossbow", True_(), "Menu")
-    world.create_event("Physis", True_(), "Menu")
-    world.create_event("Filia", Has("Valley bridges"), "Menu")

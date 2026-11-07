@@ -112,8 +112,26 @@ class ADWorld(World):
         # TODO change item classification depending on settings
         mworld = self.multiworld
         pool: list[ADItem] = []
+        removed_items: set[str] = set()  # Item names that are removed from the pool, no matter the quantity.
+
+        # Spawn weapons and aspect
+        aspect_names = ["Physis", "Aether", "Cryo"]
+        melee_item_names = ["Sword", "Hammer", "Spear"]
+        range_item_names = ["Crossbow", "Chakram", "Kama"]
+        spawn_aspect = aspect_names[self.options.spawn_aspect.value]
+        spawn_melee = melee_item_names[self.options.spawn_melee.value]
+        spawn_range = range_item_names[self.options.spawn_range.value]
+        self.push_precollected(self.create_item(spawn_aspect))
+        self.push_precollected(self.create_item(spawn_melee))
+        self.push_precollected(self.create_item(spawn_range))
+        removed_items.add(spawn_aspect)
+        removed_items.add(spawn_melee)
+        removed_items.add(spawn_range)
 
         for name, data in items.items():
+            if name in removed_items:
+                removed_items.remove(name)
+                continue
             for _ in range(data.quantity):
                 item = self.create_item(name)
                 if self.options.divine_logic and item in item_groups["Divine Art"]:

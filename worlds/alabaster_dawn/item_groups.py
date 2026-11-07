@@ -72,6 +72,9 @@ item_groups: dict[str, list[str]] = {
         "Chakram",
         "Kama",
     ],
+    "Party member": [
+        "Filia",
+    ],
     "Community level": [
         "Lyhamn level",
     ],

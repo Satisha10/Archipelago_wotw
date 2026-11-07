@@ -22,7 +22,6 @@ main_items: dict[str, ItemData] = {
     "Physis": ItemData(
         classification=IC.progression | IC.useful,
         item_type="Element",
-        pool_quantity=0,
         game_name="ELEMENT:14",
         item_id=1,
     ),
@@ -41,7 +40,6 @@ main_items: dict[str, ItemData] = {
     "Sword": ItemData(
         classification=IC.progression | IC.useful,
         item_type="Melee weapon",
-        pool_quantity=0,
         game_name="WEAPON:sword",
         item_id=10,
     ),
@@ -76,12 +74,12 @@ main_items: dict[str, ItemData] = {
         game_name="WEAPON:kama",
         item_id=17,
     ),
-    #"Filia": ItemData(
-    #    classification=IC.progression | IC.useful,
-    #    id=30,
-    #    item_type="Party member",
-    #    game_name="PARTY:filia",
-    #),
+    "Filia": ItemData(
+        classification=IC.progression | IC.useful,
+        item_type="Party member",
+        game_name="PARTY:filia",
+        item_id=20,
+    ),
     "Lyhamn level": ItemData(
         classification=IC.progression | IC.useful,
         item_type="Community level",
