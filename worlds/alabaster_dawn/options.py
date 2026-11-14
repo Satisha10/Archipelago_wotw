@@ -3,6 +3,11 @@ from dataclasses import dataclass
 from Options import OptionGroup, PerGameCommonOptions, Toggle, DefaultOnToggle, Choice
 
 
+class CombinedAreaUnlock(DefaultOnToggle):
+    """Combine Overworld Area and Dungeon unlocks into the same item."""
+    display_name = "Combined Area Unlock"
+
+
 class SpawnMeleeWeapon(Choice):
     """Choose the starting melee weapon."""
     display_name = "Spawn Melee Weapon"
@@ -52,6 +57,7 @@ class Craftsanity(Toggle):
 
 @dataclass
 class ADOptions(PerGameCommonOptions):
+    combine_area: CombinedAreaUnlock
     spawn_melee: SpawnMeleeWeapon
     spawn_range: SpawnRangeWeapon
     spawn_aspect: SpawnAspect
@@ -61,6 +67,12 @@ class ADOptions(PerGameCommonOptions):
     cooksanity: Cooksanity
 
 option_groups = [
+    OptionGroup(
+        "Items",
+        [
+            CombinedAreaUnlock,
+        ],
+    ),
     OptionGroup(
         "Starting items",
         [

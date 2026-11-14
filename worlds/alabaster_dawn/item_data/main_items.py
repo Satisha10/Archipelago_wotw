@@ -85,6 +85,7 @@ main_items: dict[str, ItemData] = {
         game_name="CL:lyhamn",
         item_id=30,
     ),
+    # TODO remove these 3
     "Valley bridges": ItemData(
         classification=IC.progression,
         item_type="Area access",
@@ -102,6 +103,27 @@ main_items: dict[str, ItemData] = {
         item_type="Area access",
         game_name="PLOT:ap_boat.received",
         item_id=42,
+    ),
+    "Area unlock": ItemData(
+        classification=IC.progression | IC.useful,
+        item_type="Area access",
+        game_name="AREA:global",
+        item_id=50,
+        pool_quantity=4,
+    ),
+    "Dungeon unlock": ItemData(
+        classification=IC.progression | IC.useful,
+        item_type="Area access",
+        game_name="AREA:dng",
+        item_id=51,
+        pool_quantity=2,
+    ),
+    "Overworld Area unlock": ItemData(
+        classification=IC.progression | IC.useful,
+        item_type="Area access",
+        game_name="AREA:area",
+        item_id=52,
+        pool_quantity=2,
     ),
     "Fulcrum Mark": ItemData(
         classification=IC.progression,

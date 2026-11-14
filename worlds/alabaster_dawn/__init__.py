@@ -128,6 +128,12 @@ class ADWorld(World):
         removed_items.add(spawn_melee)
         removed_items.add(spawn_range)
 
+        if self.options.combine_area:
+            removed_items.add("Dungeon unlock")
+            removed_items.add("Overworld Area unlock")
+        else:
+            removed_items.add("Area unlock")
+
         for name, data in items.items():
             if name in removed_items:
                 removed_items.remove(name)
