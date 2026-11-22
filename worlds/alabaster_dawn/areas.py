@@ -1,6 +1,7 @@
 from rule_builder.rules import True_, Has, HasAll
 
 from .data_structures import AreaData
+from .rule_helpers import has_area_unlock
 
 
 areas: dict[str, AreaData] = {
@@ -16,14 +17,8 @@ areas: dict[str, AreaData] = {
             # Eternal spring can be entered with just the key, but you need the rest to be able to do anything useful.
             "Eternal Spring": Has("Fulcrum Mark", count=3) & HasAll("Filia", "Aether", "Blunt", "Pierce", "Chakram"),
             "Silver Peak": Has("Blunt"),
-            "Koro Valley North": Has("Valley bridges")
-        },
-    ),
-    "Koro Valley North": AreaData(  # Dusk approach and ValleyEntrance
-        connections={
-            "Trial of Aether A": HasAll("Filia", "Low tide"),
-            "Aurum Plains": Has("Boat travel"),
-            "Koro Valley": True_(),
+            "Trial of Aether A": has_area_unlock("aether"),
+            "Aurum Plains": has_area_unlock("plains"),
         },
     ),
     "Silver Peak": AreaData(
@@ -43,13 +38,14 @@ areas: dict[str, AreaData] = {
     ),
     "Trial of Aether Outside": AreaData(  # Between A and B, up until the divine bridge
         connections={
-            "Aurum Plains": HasAll("Aether", "Filia", "Chakram"),
+            "Aurum Plains": HasAll("Aether", "Filia", "Chakram") & has_area_unlock("plains"),
+            "Trial of Aether B": HasAll("Aether", "Filia", "Chakram"),
         }
     ),
     "Trial of Aether B": AreaData(
         connections={
             # No connection to Outside, since it is before the divine bridge, that is activated when coming from Trial A
-            "Aurum Plains": True_(),
+            "Aurum Plains": has_area_unlock("plains"),
         }
     ),
     "Eternal Spring": AreaData(
@@ -59,10 +55,10 @@ areas: dict[str, AreaData] = {
     ),
     "Aurum Plains": AreaData(
         connections={
-            "Koro Valley North": Has("Boat travel"),
-            "Trial of Aether B": HasAll("Combat", "Aether"),
+            "Koro Valley": has_area_unlock("valley"),
+            "Trial of Aether B": HasAll("Combat", "Aether") & has_area_unlock("aether"),
             "Sundalan": True_(),
-            "Swamp.Entrance": Has("Kama"),  # TODO Separate with Somu
+            "Swamp.Entrance": Has("Kama") & has_area_unlock("swamp"),
         },
     ),
     "Sundalan": AreaData(
@@ -73,8 +69,9 @@ areas: dict[str, AreaData] = {
     # Entrance, before the Moss cow fight
     "Swamp.Entrance": AreaData(
         connections={
-            "Aurum Plains": True_(),
+            "Aurum Plains": has_area_unlock("plains"),
             "Swamp.DeepBog": HasAll("Kama", "Physis"),
+            "Swamp.North": True_(),
         },
     ),
     # After the Moss cow fight, before the bridge in Mired Crossing
@@ -96,7 +93,7 @@ areas: dict[str, AreaData] = {
     "Swamp.North": AreaData(
         connections={
             "Swamp.PastMired": Has("Kama"),
-            "Cryo.Entrance": Has("Slash Combat"),  # Mandatory fight before the entrance
+            "Cryo.Entrance": has_area_unlock("cryo"),
             "Swamp.Entrance": True_(),
         },
     ),

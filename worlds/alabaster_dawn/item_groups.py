@@ -79,9 +79,9 @@ item_groups: dict[str, list[str]] = {
         "Lyhamn level",
     ],
     "Area access": [
-        "Valley bridges",
-        "Low tide",
-        "Boat travel",
+        "Area unlock",
+        "Dungeon unlock",
+        "Overworld Area unlock",
     ],
     "Key": [
         "Fulcrum Mark",

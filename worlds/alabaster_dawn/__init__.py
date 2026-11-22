@@ -17,7 +17,6 @@ from .story_locations import story_loc
 from .locations import location_name_to_id
 from .item_groups import item_groups
 
-# TODO item groups
 
 class ADWeb(WebWorld):
     theme = "ocean"  # TODO documentation
@@ -106,8 +105,6 @@ class ADWorld(World):
                 region.locations.append(dish_loc)
                 self.set_rule(dish_loc, dish_data.rule)
         """
-        # Exclude the chest after the superboss
-        self.get_location("Valley.Crescent.East").progress_type = LocationProgressType.EXCLUDED
     def create_items(self) -> None:
         # TODO change item classification depending on settings
         mworld = self.multiworld
@@ -140,7 +137,7 @@ class ADWorld(World):
                 continue
             for _ in range(data.quantity):
                 item = self.create_item(name)
-                if self.options.divine_logic and item in item_groups["Divine Art"]:
+                if self.options.divine_logic and name in item_groups["Divine Art"]:
                     item.classification = ItemClassification.progression
                 pool.append(item)
 
@@ -153,7 +150,7 @@ class ADWorld(World):
     def create_item(self, name: str) -> ADItem:
         return ADItem(name, items[name].classification, items[name].id, self.player)
 
-    def get_filler_item_name(self) -> str:  # TODO use a random filler once they are implemented
+    def get_filler_item_name(self) -> str:
         return self.random.choice(item_groups["Filler"])
 
     def create_event_item(self, event: str) -> ADItem:

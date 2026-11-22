@@ -3,9 +3,8 @@
 from rule_builder.rules import Has, HasAll
 
 from .data_structures import ChestData
-from .rule_helpers import has_any_elements
+from .rule_helpers import has_any_elements, has_area_unlock
 
-# TODO for any_elements, check if aether or physis are explicitly required
 
 chests: dict[str, ChestData] = {
     "Plains.Somu.West": ChestData(
@@ -224,19 +223,19 @@ chests: dict[str, ChestData] = {
     "EternalSpring.Outside": ChestData(
         game_name="start.center-08-1",
         area="Eternal Spring",
-        rule=has_any_elements(2) & Has("Pierce Range"),  # TODO check that it is only reachable once dng complete
+        rule=has_any_elements(2) & Has("Pierce Range"),
         loc_id=217,
     ),  # The rules are for completing the dungeon, most of them are in the area rule
     "Valley.Crescent.SouthWest": ChestData(
         game_name="start.north-01-2",
         area="Koro Valley",
-        rule=Has("Valley bridges"),
+        # rule=Has("Valley bridges"),
         loc_id=218,
     ),
-    "Valley.Crescent.East": ChestData(  # TODO We'll need to nerf the level or exclude the location on that one
+    "Valley.Crescent.East": ChestData(  # The superboss has reduced level, but still require Plains access to get levels
         game_name="start.north-01-3",
         area="Aurum Plains",
-        rule=Has("Slash Combat"),
+        rule=Has("Slash Combat") & has_area_unlock("plains"),
         loc_id=256,
     ),
     "Valley.Crescent.South": ChestData(
@@ -246,31 +245,29 @@ chests: dict[str, ChestData] = {
     ),
     "Valley.ValleyEntrance.Bridge": ChestData(
         game_name="start.north-02-1",
-        area="Koro Valley North",
+        area="Koro Valley",
         loc_id=219,
     ),
     "Valley.ValleyEntrance.East": ChestData(
         game_name="start.north-02-2",
-        area="Koro Valley North",
+        area="Koro Valley",
         rule=Has("Range"),
         loc_id=220,
     ),
     "Valley.DuskApproach.East": ChestData(
         game_name="start.north-03-1",
-        area="Koro Valley North",
+        area="Koro Valley",
         rule=Has("Kama"),
         loc_id=221,
     ),
-    "Valley.DuskApproach.South": ChestData(  # Missable in 0.1.0, but might be ok if tide is an item
+    "Valley.DuskApproach.South": ChestData(
         game_name="start.north-03-2",
-        area="Koro Valley North",
-        rule=Has("Low tide"),
+        area="Koro Valley",
         loc_id=222,
     ),
     "Valley.DuskApproach.West": ChestData(
         game_name="start.north-03-3",
-        area="Koro Valley North",
-        rule=HasAll("Low tide"),
+        area="Koro Valley",
         loc_id=223,
     ),
     "Valley.CliffSide": ChestData(
@@ -289,17 +286,16 @@ chests: dict[str, ChestData] = {
         rule=HasAll("Kama", "Blunt"),
         loc_id=226,
     ),
-    # TODO Maybe use an event for quickwood quest / repair these bridges (or area)
     "Valley.RedForest.West": ChestData(
         game_name="start.south-01-1",
         area="Koro Valley",
-        rule=HasAll("Blunt", "Kama", "Valley bridges") & Has("Lyhamn level", count=1),
+        rule=HasAll("Blunt", "Kama"),
         loc_id=227,
     ),
     "Valley.RedForest.South": ChestData(
         game_name="start.south-01-2",
         area="Koro Valley",
-        rule=HasAll("Blunt", "Range", "Valley bridges") & Has("Lyhamn level", count=1),
+        rule=HasAll("Blunt", "Range"),  # TODO Change when events for quests
         loc_id=228,
     ),
     "Valley.Lake.West": ChestData(
@@ -354,8 +350,7 @@ chests: dict[str, ChestData] = {
     ),
     "Valley.RemisRock.North": ChestData(
         game_name="start.dng-outer-2",
-        area="Aurum Plains",
-        rule=HasAll("Aether", "Combat"),
+        area="Trial of Aether B",
         loc_id=237,
     ),
     "Valley.RemisRock.East": ChestData(
@@ -588,7 +583,6 @@ chests: dict[str, ChestData] = {
         rule=Has("Kama") & has_any_elements(2),
         loc_id=413,
     ),
-    # TODO Check for Combat Pierce everywhere
     "Cryo.A3": ChestData(
         game_name="swamp.swamp-dng.room-a3-key",
         area="Cryo.Entrance",
@@ -628,7 +622,7 @@ chests: dict[str, ChestData] = {
     "Cryo.D3": ChestData(
         game_name="swamp.swamp-dng.room-d3",
         area="Cryo.D",
-        rule=HasAll("Kama", "Cryo", "Pierce Combat"),  # TODO Require buttons + big combat
+        rule=HasAll("Kama", "Cryo", "Pierce Combat"),
         loc_id=456,
     ),
     "Cryo.A4.West": ChestData(

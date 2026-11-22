@@ -86,24 +86,24 @@ main_items: dict[str, ItemData] = {
         item_id=30,
     ),
     # TODO remove these 3
-    "Valley bridges": ItemData(
-        classification=IC.progression,
-        item_type="Area access",
-        game_name="PLOT:ap_bridges.received",
-        item_id=40,
-    ),
-    "Low tide": ItemData(
-        classification=IC.progression,
-        item_type="Area access",
-        game_name="PLOT:ap_tide.received",
-        item_id=41,
-    ),
-    "Boat travel": ItemData(
-        classification=IC.progression,
-        item_type="Area access",
-        game_name="PLOT:ap_boat.received",
-        item_id=42,
-    ),
+    #"Valley bridges": ItemData(
+    #    classification=IC.progression,
+    #    item_type="Area access",
+    #    game_name="PLOT:ap_bridges.received",
+    #    item_id=40,
+    #),
+    #"Low tide": ItemData(
+    #    classification=IC.progression,
+    #    item_type="Area access",
+    #    game_name="PLOT:ap_tide.received",
+    #    item_id=41,
+    #),
+    #"Boat travel": ItemData(
+    #    classification=IC.progression,
+    #    item_type="Area access",
+    #    game_name="PLOT:ap_boat.received",
+    #    item_id=42,
+    #),
     "Area unlock": ItemData(
         classification=IC.progression | IC.useful,
         item_type="Area access",

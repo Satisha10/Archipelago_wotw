@@ -53,7 +53,7 @@ quests: dict[str, QuestData] = {
         game_name="southBarrier1",
         level_progress="Lyhamn",
         # Blunt required because Branching Out (quickwood) must be done beforehand
-        rule=HasAll("Blunt", "Range", "Valley bridges") & Has("Lyhamn level", count=1),
+        rule=HasAll("Blunt", "Range") & Has("Lyhamn level", count=1),  # TODO Event for quests
         loc_id=1506,
     ),
     "Temple Incursion": QuestData(
@@ -90,7 +90,7 @@ quests: dict[str, QuestData] = {
         game_name="hotHeadLad1",
         level_progress=None,
         # Blunt required because Branching Out (quickwood) must be done beforehand
-        rule=HasAll("Blunt", "Range", "Valley bridges") & Has("Lyhamn level", count=1),
+        rule=HasAll("Blunt", "Range") & Has("Lyhamn level", count=1),  # TODO Event for quests
         loc_id=1511,
     ),
     "Free the Fish": QuestData(

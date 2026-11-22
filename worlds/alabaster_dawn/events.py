@@ -29,6 +29,7 @@ has_slash = HasAny("Sword", "Chakram") | da_filter & (
         | HasAll("Leaf Blades", "Physis")
         | HasAll("Zapflash Slash", "Aether")
         | HasAll("Crack Shock", "Aether")
+        | HasAll("Frost Reaver", "Cryo")
 )
 has_slash_range = Has("Chakram") | da_filter & (
         HasAll("Leaf Blades", "Physis")
@@ -52,5 +53,3 @@ def create_events(world: ADWorld):
     world.create_event("Range", has_range, "Menu")
     world.create_event("Melee", has_melee, "Menu")
     world.create_event("Combat", has_combat, "Menu")
-
-    world.create_event("Red Forest Bridges", HasAll("Blunt", "Range", "Valley bridges") & Has("Lyhamn level", count=1), "Menu")
