@@ -3,9 +3,19 @@ from dataclasses import dataclass
 from Options import OptionGroup, PerGameCommonOptions, Toggle, DefaultOnToggle, Choice
 
 
-class CombinedAreaUnlock(DefaultOnToggle):
-    """Combine Overworld Area and Dungeon unlocks into the same item."""
-    display_name = "Combined Area Unlock"
+class ProgressiveAreas(Choice):
+    """
+    Turn area and dungeon unlocks into progressive items. The order is the vanilla progression from the story.
+
+    - **false**: each area has its own item to be unlocked.
+    - **split**: add Overworld Area unlock and Dungeon unlock items.
+    - **combine**: add Area unlock items that unlock both dungeons and areas.
+    """
+    display_name = "Progressive Area Unlocks"
+    option_false = 0
+    option_split = 1
+    option_combine = 2
+    default = 2
 
 
 class SpawnMeleeWeapon(Choice):
@@ -57,7 +67,7 @@ class Craftsanity(Toggle):
 
 @dataclass
 class ADOptions(PerGameCommonOptions):
-    combine_area: CombinedAreaUnlock
+    progressive_areas: ProgressiveAreas
     spawn_melee: SpawnMeleeWeapon
     spawn_range: SpawnRangeWeapon
     spawn_aspect: SpawnAspect
@@ -70,7 +80,7 @@ option_groups = [
     OptionGroup(
         "Items",
         [
-            CombinedAreaUnlock,
+            ProgressiveAreas,
         ],
     ),
     OptionGroup(

@@ -78,10 +78,15 @@ item_groups: dict[str, list[str]] = {
     "Community level": [
         "Lyhamn level",
     ],
-    "Area access": [
+    "Area unlock": [
         "Area unlock",
         "Dungeon unlock",
         "Overworld Area unlock",
+        "Koro Valley unlock",
+        "Trial of Aether unlock",
+        "Aurum Plains unlock",
+        "Scala Moor unlock",
+        "Trial of Cryo unlock",
     ],
     "Key": [
         "Fulcrum Mark",

@@ -3,11 +3,11 @@ from __future__ import annotations
 from typing import Any
 
 from worlds.AutoWorld import World, WebWorld
-from BaseClasses import Item, Location, Region, Tutorial, ItemClassification, LocationProgressType
+from BaseClasses import Item, Location, Region, Tutorial, ItemClassification
 from rule_builder.rules import Rule, True_, CanReachLocation
 from .events import create_events
 
-from .options import ADOptions, option_groups
+from .options import ADOptions, option_groups, ProgressiveAreas
 from .areas import areas
 from .items import items
 from .chests import chests
@@ -125,11 +125,15 @@ class ADWorld(World):
         removed_items.add(spawn_melee)
         removed_items.add(spawn_range)
 
-        if self.options.combine_area:
+        if self.options.progressive_areas != ProgressiveAreas.option_split:
             removed_items.add("Dungeon unlock")
             removed_items.add("Overworld Area unlock")
-        else:
+        if self.options.progressive_areas != ProgressiveAreas.option_combine:
             removed_items.add("Area unlock")
+        if self.options.progressive_areas != ProgressiveAreas.option_false:
+            for item_name in item_groups["Area unlock"]:
+                if item_name not in ("Dungeon unlock", "Overworld Area unlock", "Area unlock"):
+                    removed_items.add(item_name)
 
         for name, data in items.items():
             if name in removed_items:
@@ -191,6 +195,7 @@ class ADWorld(World):
 
     def fill_slot_data(self) -> dict[str, Any]:
         return self.options.as_dict(
+            "progressive_areas",
             "quests",
             "divine_logic",
             "craftsanity",
