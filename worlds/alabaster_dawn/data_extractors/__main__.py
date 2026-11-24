@@ -10,7 +10,12 @@ import argparse
 import os
 
 from worlds.alabaster_dawn.data_extractors.location_id_map import loc_gamename_id, loc_name_id, loc_gamename_name
-from worlds.alabaster_dawn.data_extractors.item_maps import item_id_gamename_map, item_data_ap, item_groups_ap
+from worlds.alabaster_dawn.data_extractors.item_maps import (
+    item_id_gamename_map,
+    item_data_ap,
+    item_groups_ap,
+    gem_data_ap
+)
 
 parser = argparse.ArgumentParser(
     prog="Data extractor for Alabaster Dawn AP",
@@ -45,3 +50,4 @@ if not arguments.no_ap:
     loc_name_id()
     item_data_ap()
     item_groups_ap()
+    gem_data_ap()

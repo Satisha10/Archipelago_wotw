@@ -4,24 +4,41 @@ from BaseClasses import ItemClassification
 
 from .header import header_ts, header_py
 
-from ..data_structures import ItemData
+from ..data_structures import ItemData, GemData, GemSlot
 
 from ..item_data.main_items import main_items
 from ..item_data.major_gems import major_gems
 from ..item_data.minor_gems import minor_gems
-from ..item_data.gem_recipes import gem_recipes
 from ..item_data.dish_recipes import dishes
 from ..item_data.divine_arts import arts
 from ..item_data.essences import essences
 from ..item_data.ingredients import ingredients
 
+
+gem_item_types_map = {
+    GemSlot.melee: "Major Gem",
+    GemSlot.ranged: "Major Gem",
+    GemSlot.ul: "Major Gem",
+    GemSlot.ur: "Major Gem",
+    GemSlot.mr: "Major Gem",
+    GemSlot.ml: "Major Gem",
+    GemSlot.lr: "Major Gem",
+    GemSlot.ll: "Major Gem",
+    GemSlot.core: "Minor Gem",
+    GemSlot.melee_m: "Minor Gem",
+    GemSlot.ranged_m: "Minor Gem",
+}
+
+
 class ItemMap:
     """Class that contain the item data that will be added to the generated code."""
+
     def __init__(self):
         self.data: dict[str, ItemData] = {}
         self.groups: dict[str, list[str]] = {"Filler": []}
         self.used_ids: dict[int, str] = {}
         self.used_gamenames: dict[str, str] = {}
+        self.gem_data: dict[tuple[GemSlot, int], list[str]] = {}
 
     def add_items(self, mapping: dict[str, ItemData]):
         """Add the items from mapping into the data."""
@@ -54,17 +71,49 @@ class ItemMap:
             if item.classification == ItemClassification.filler:
                 self.groups["Filler"].append(name)
 
+    def parse_gems(self, gems: dict[str, GemData]):
+        """Create items for gems and their blueprint/construct, and add them to gem_data."""
+        output: dict[str, ItemData] = {}
+        for name, data in gems.items():
+            # Duplicate IDs are checked later in add_items
+            if name in output:
+                raise ValueError(f"Duplicate gem name `{name}`")
+            item_type = gem_item_types_map[data.slot]
+            data.item_type = item_type
+            output.setdefault(name, data)
+
+            if (data.slot, data.purity) not in self.gem_data:
+                self.gem_data.setdefault((data.slot, data.purity), [name])
+            else:
+                self.gem_data[(data.slot, data.purity)].append(name)
+
+            # Create items for the constructs as well
+            if data.bp_id is not None and data.bp_name is not None:
+                # TODO other gem slots with addendums or single blueprints
+                if data.slot in (GemSlot.core, GemSlot.melee_m, GemSlot.ranged_m):
+                    output.setdefault(
+                        name + " Construct",
+                        ItemData(
+                            classification = ItemClassification.useful,
+                            item_id = data.bp_id,
+                            pool_quantity = 0,
+                            item_quantity = 1,
+                            game_name = data.bp_name,
+                            item_type = "Construct",
+                        )
+                    )
+        # Add the items
+        self.add_items(output)
 
 item_map = ItemMap()
 
 item_map.add_items(main_items)
 item_map.add_items(arts)
-item_map.add_items(major_gems)
-item_map.add_items(minor_gems)
-item_map.add_items(gem_recipes)
 item_map.add_items(dishes)
 item_map.add_items(essences)
 item_map.add_items(ingredients)
+item_map.parse_gems(major_gems)
+item_map.parse_gems(minor_gems)
 
 
 type_def = """type ItemData = {
@@ -119,6 +168,20 @@ def item_groups_ap():
             for item in items:
                 f.write(f'        "{item}",\n')
             f.write("    ],\n")
+        f.write("}\n")
+
+    print(f"File {base_path} created.")
+
+
+def gem_data_ap():
+    """Generate the gem data (dictionary of gem slot + purity to item names) for the AP World."""
+    base_path = "output_apworld/gems.py"
+    file_path = os.path.join("worlds/alabaster_dawn/data_extractors", base_path)
+    with open(file_path, "w") as f:
+        f.write(header_py("item_maps.py", "gem_data_ap"))
+        f.write("gem_data: dict[tuple[int, int], list[str]] = {\n")
+        for key, value in item_map.gem_data.items():
+            f.write(f'    ({key[0]}, {key[1]}): {value},\n')
         f.write("}\n")
 
     print(f"File {base_path} created.")

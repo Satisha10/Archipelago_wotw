@@ -5,8 +5,9 @@ from typing import Any
 from worlds.AutoWorld import World, WebWorld
 from BaseClasses import Item, Location, Region, Tutorial, ItemClassification
 from rule_builder.rules import Rule, True_, CanReachLocation
-from .events import create_events
 
+from .data_structures import GemSlot
+from .events import create_events
 from .options import ADOptions, option_groups, ProgressiveAreas
 from .areas import areas
 from .items import items
@@ -16,7 +17,7 @@ from .dishes import dishes
 from .story_locations import story_loc
 from .locations import location_name_to_id
 from .item_groups import item_groups
-
+from .gems import gem_data
 
 class ADWeb(WebWorld):
     theme = "ocean"  # TODO documentation
@@ -106,7 +107,6 @@ class ADWorld(World):
                 self.set_rule(dish_loc, dish_data.rule)
         """
     def create_items(self) -> None:
-        # TODO change item classification depending on settings
         mworld = self.multiworld
         pool: list[ADItem] = []
         removed_items: set[str] = set()  # Item names that are removed from the pool, no matter the quantity.
@@ -135,6 +135,7 @@ class ADWorld(World):
                 if item_name not in ("Dungeon unlock", "Overworld Area unlock", "Area unlock"):
                     removed_items.add(item_name)
 
+        # Base items (except the ones removed above)
         for name, data in items.items():
             if name in removed_items:
                 removed_items.remove(name)
@@ -144,6 +145,31 @@ class ADWorld(World):
                 if self.options.divine_logic and name in item_groups["Divine Art"]:
                     item.classification = ItemClassification.progression
                 pool.append(item)
+
+        gem_amounts = {  # TODO Put in a data file, and generalize when gem upgrades are there
+            GemSlot.melee: 5,
+            GemSlot.ranged: 5,
+            GemSlot.ul: 2,
+            GemSlot.ur: 2,
+            GemSlot.ml: 2,
+            GemSlot.mr: 2,
+            GemSlot.ll: 2,
+            GemSlot.lr: 2,
+            GemSlot.core: 3,
+            GemSlot.melee_m: 3,
+            GemSlot.ranged_m: 3,
+        }
+
+        # TODO Make progressive gems when the upgrades are there
+        # Add items for gems
+        for key, gems in gem_data.items():
+            amount = gem_amounts[key[0]]  # How many gems are generated from this set
+            # complete: the number of times the list is added completely
+            # rand: take this number of gems at random from the list
+            complete, rand = amount // len(gems), amount % len(gems)
+            for _ in range(complete):
+                pool += [self.create_item(gem) for gem in gems]
+            pool += [self.create_item(gem) for gem in self.random.sample(gems, rand)]
 
         # Add filler items to have the same number of items and locations
         extras = len(mworld.get_unfilled_locations(player=self.player)) - len(pool)
