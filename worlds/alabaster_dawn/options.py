@@ -73,6 +73,20 @@ class DivineArtLogic(Toggle):
     display_name = "Divine Art Logic"
 
 
+class ChestHints(Choice):
+    """
+    Show the classification of the items contained in the chests (on the map and in the chest appearance).
+    - **never**: the classification is never shown.
+    - **seen**: only show the hint once the chest appeared on screen once.
+    - **always**: always show the hints for all chests.
+    """
+    display_name = "Chest Hints"
+    option_never = 0
+    option_seen = 1
+    option_always = 2
+    default = 1
+
+
 class Cooksanity(Toggle):
     """NOT IMPLEMENTED ! Add locations for cooking dishes and using spice."""
     display_name = "Cooksanity"
@@ -94,6 +108,7 @@ class ADOptions(PerGameCommonOptions):
     master_keys: MasterKeys
     quests: Quests
     divine_logic: DivineArtLogic
+    chest_hints: ChestHints
     craftsanity: Craftsanity
     cooksanity: Cooksanity
 
@@ -132,6 +147,12 @@ option_groups = [
             Quests,
             Cooksanity,
             Craftsanity,
+        ],
+    ),
+    OptionGroup(
+        "Hints",
+        [
+            ChestHints
         ],
     ),
 ]

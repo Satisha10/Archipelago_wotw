@@ -235,6 +235,7 @@ class ADWorld(World):
         )
 
     def fill_slot_data(self) -> dict[str, Any]:
+        # TODO See if choice options are sent as ints or str for client code
         return self.options.as_dict(
             "weave_goal",
             "progressive_areas",
@@ -242,6 +243,7 @@ class ADWorld(World):
             "master_keys",
             "quests",
             "divine_logic",
+            "chest_hints",
             "craftsanity",
             "cooksanity",
         )
