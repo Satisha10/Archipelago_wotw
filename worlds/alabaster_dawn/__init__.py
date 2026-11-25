@@ -57,6 +57,7 @@ class ADWorld(World):
             slot_data: dict[str, Any] = re_gen_passthrough[self.game]
 
             self.options.weave_goal = slot_data["weave_goal"]
+            self.options.master_keys = slot_data["master_keys"]
             self.options.quests.value = slot_data["quests"]
             self.options.divine_logic.value = slot_data["divine_logic"]
             self.options.craftsanity.value = slot_data["craftsanity"]
@@ -138,6 +139,13 @@ class ADWorld(World):
 
         if self.options.spawn_relics:
             removed_items += ["Winged Boots", "Great Attractor", "Utility Belt I", "Utility Belt II"]
+
+        # Create only one of each key instead of the normal amount
+        if self.options.master_keys:
+            keys = ["Aether Trial Mark", "Cryo Trial Mark"]
+            removed_items += keys
+            for key in keys:
+                pool.append(self.create_item(key))
 
         # Base items (except the ones removed above)
         for name, data in items.items():
@@ -231,6 +239,7 @@ class ADWorld(World):
             "weave_goal",
             "progressive_areas",
             "spawn_relics",
+            "master_keys",
             "quests",
             "divine_logic",
             "craftsanity",

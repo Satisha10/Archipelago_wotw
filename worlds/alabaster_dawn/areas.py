@@ -1,7 +1,7 @@
 from rule_builder.rules import True_, Has, HasAll
 
 from .data_structures import AreaData
-from .rule_helpers import has_area_unlock
+from .rule_helpers import has_area_unlock, has_keys
 
 
 areas: dict[str, AreaData] = {
@@ -33,7 +33,7 @@ areas: dict[str, AreaData] = {
     ),
     "Trial of Aether A": AreaData(
         connections={
-            "Trial of Aether Outside": HasAll("Filia", "Aether", "Blunt") & Has("Aether Trial Mark", count=2)
+            "Trial of Aether Outside": HasAll("Filia", "Aether", "Blunt") & has_keys("Aether Trial Mark", count=2)
         },
     ),
     "Trial of Aether Outside": AreaData(  # Between A and B, up until the divine bridge
@@ -106,7 +106,7 @@ areas: dict[str, AreaData] = {
     # Dungeon entrance, before 1st door
     "Cryo.Entrance": AreaData(
         connections={
-            "Cryo.1Door": Has("Kama") & Has("Cryo Trial Mark", count=1),
+            "Cryo.1Door": Has("Kama") & has_keys("Cryo Trial Mark", count=1),
         },
     ),
     # After the 1st door, until going in the C rooms (so after Cryo + mini boss)
@@ -117,12 +117,12 @@ areas: dict[str, AreaData] = {
     ),
     "Cryo.C": AreaData(
         connections={
-            "Cryo.D": Has("Cryo Trial Mark", count=2) & Has("Slash Combat"),
+            "Cryo.D": has_keys("Cryo Trial Mark", count=2) & Has("Slash Combat"),
         },
     ),
     "Cryo.D": AreaData(
         connections={
-            "Cryo.E": Has("Cryo Trial Mark", count=3) & Has("Combat"),  # TODO See if combat requires smthg else
+            "Cryo.E": has_keys("Cryo Trial Mark", count=3) & Has("Combat"),  # TODO See if combat requires smthg else
         },
     ),
     "Cryo.E": AreaData(

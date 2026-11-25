@@ -3,7 +3,7 @@
 from rule_builder.rules import Has, HasAll
 
 from .data_structures import ChestData
-from .rule_helpers import has_any_elements, has_area_unlock
+from .rule_helpers import has_any_elements, has_area_unlock, has_keys
 
 
 chests: dict[str, ChestData] = {
@@ -468,19 +468,19 @@ chests: dict[str, ChestData] = {
         game_name="start.start-dng.f1-room-02-1",
         area="Trial of Aether A",
         # Pierce not strictly required with parkour
-        rule=HasAll("Pierce Range", "Filia", "Range") & Has("Aether Trial Mark", count=2),
+        rule=HasAll("Pierce Range", "Filia", "Range") & has_keys("Aether Trial Mark", count=2),
         loc_id=301,
     ),
     "Aether.B4": ChestData(
         game_name="start.start-dng.f2-room-02b-1",
         area="Trial of Aether B",
-        rule=HasAll("Filia", "Chakram", "Blunt", "Pierce Range", "Aether") & Has("Aether Trial Mark", count=2),
+        rule=HasAll("Filia", "Chakram", "Blunt", "Pierce Range", "Aether") & has_keys("Aether Trial Mark", count=2),
         loc_id=302,
     ),
     "Aether.A4": ChestData(
         game_name="start.start-dng.f1-room-04-1",
         area="Trial of Aether A",
-        rule=HasAll("Blunt", "Filia", "Range") & Has("Aether Trial Mark", count=2),
+        rule=HasAll("Blunt", "Filia", "Range") & has_keys("Aether Trial Mark", count=2),
         loc_id=303,
     ),
     "Aether.B7": ChestData(

@@ -26,6 +26,11 @@ class ProgressiveAreas(Choice):
     default = 2
 
 
+class MasterKeys(Toggle):
+    """Add only one key per dungeon in the item pool which can open every door, instead of multiple keys."""
+    display_name = "Master Dungeon Keys"
+
+
 class SpawnMeleeWeapon(Choice):
     """Choose the starting melee weapon."""
     display_name = "Spawn Melee Weapon"
@@ -86,6 +91,7 @@ class ADOptions(PerGameCommonOptions):
     spawn_range: SpawnRangeWeapon
     spawn_aspect: SpawnAspect
     spawn_relics: SpawnWithRelics
+    master_keys: MasterKeys
     quests: Quests
     divine_logic: DivineArtLogic
     craftsanity: Craftsanity
@@ -102,6 +108,7 @@ option_groups = [
         "Items",
         [
             ProgressiveAreas,
+            MasterKeys,
         ],
     ),
     OptionGroup(
