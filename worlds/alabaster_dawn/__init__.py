@@ -135,6 +135,9 @@ class ADWorld(World):
                 if item_name not in ("Dungeon unlock", "Overworld Area unlock", "Area unlock"):
                     removed_items.add(item_name)
 
+        if self.options.spawn_relics:
+            removed_items += ["Winged Boots", "Great Attractor", "Utility Belt I", "Utility Belt II"]
+
         # Base items (except the ones removed above)
         for name, data in items.items():
             if name in removed_items:

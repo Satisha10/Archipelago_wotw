@@ -189,6 +189,13 @@ item_groups: dict[str, list[str]] = {
         "Mint x5",
         "Lavander x5",
     ],
+    "Relic": [
+        "Treasure Radar",
+        "Winged Boots",
+        "Great Attractor",
+        "Utility Belt I",
+        "Utility Belt II",
+    ],
     "Major Gem": [
         "Chipped Edge",
         "Bent Edge",

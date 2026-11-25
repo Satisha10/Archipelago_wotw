@@ -13,6 +13,7 @@ from ..item_data.dish_recipes import dishes
 from ..item_data.divine_arts import arts
 from ..item_data.essences import essences
 from ..item_data.ingredients import ingredients
+from ..item_data.relics import relic_items
 
 
 gem_item_types_map = {
@@ -112,6 +113,8 @@ item_map.add_items(arts)
 item_map.add_items(dishes)
 item_map.add_items(essences)
 item_map.add_items(ingredients)
+item_map.add_items(relic_items)
+
 item_map.parse_gems(major_gems)
 item_map.parse_gems(minor_gems)
 

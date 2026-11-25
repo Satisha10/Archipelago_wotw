@@ -1,4 +1,4 @@
-"""Main items that are usually required to unlock new areas. Item ID band: 1-29: """
+"""Main items that are usually required to unlock new areas or locations. Item ID band: 1-199."""
 
 from BaseClasses import ItemClassification as IC
 

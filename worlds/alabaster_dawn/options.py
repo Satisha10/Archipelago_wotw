@@ -45,6 +45,11 @@ class SpawnAspect(Choice):
     default = 0
 
 
+class SpawnWithRelics(Toggle):
+    """Receive relics on spawn, otherwise they are added as items."""
+    display_name = "Spawn with Relics"
+
+
 class Quests(DefaultOnToggle):
     """Add locations for side-quests."""
     display_name = "Quests"
@@ -71,6 +76,7 @@ class ADOptions(PerGameCommonOptions):
     spawn_melee: SpawnMeleeWeapon
     spawn_range: SpawnRangeWeapon
     spawn_aspect: SpawnAspect
+    spawn_relics: SpawnWithRelics
     quests: Quests
     divine_logic: DivineArtLogic
     craftsanity: Craftsanity
@@ -89,6 +95,7 @@ option_groups = [
             SpawnMeleeWeapon,
             SpawnRangeWeapon,
             SpawnAspect,
+            SpawnWithRelics,
         ],
     ),
     OptionGroup(
