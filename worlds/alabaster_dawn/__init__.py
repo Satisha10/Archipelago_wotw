@@ -4,7 +4,7 @@ from typing import Any
 
 from worlds.AutoWorld import World, WebWorld
 from BaseClasses import Item, Location, Region, Tutorial, ItemClassification
-from rule_builder.rules import Rule, True_, CanReachLocation
+from rule_builder.rules import Rule, True_, CanReachLocation, AtLeast
 
 from .data_structures import GemSlot
 from .events import create_events
@@ -56,6 +56,7 @@ class ADWorld(World):
         if re_gen_passthrough and self.game in re_gen_passthrough:
             slot_data: dict[str, Any] = re_gen_passthrough[self.game]
 
+            self.options.weave_goal = slot_data["weave_goal"]
             self.options.quests.value = slot_data["quests"]
             self.options.divine_logic.value = slot_data["divine_logic"]
             self.options.craftsanity.value = slot_data["craftsanity"]
@@ -215,16 +216,21 @@ class ADWorld(World):
         create_events(self)
 
         self.set_completion_rule(
-            CanReachLocation("Valley.WeaveNest")
-            & CanReachLocation("Plains.WeaveNest")
-            & CanReachLocation("EternalSpring.WeaveNest")
-            & CanReachLocation("Aether.WeaveSpire")
-            & CanReachLocation("Cryo.WeaveSpire")
+            AtLeast(
+                self.options.weave_goal.value,
+                CanReachLocation("Valley.WeaveNest"),
+                CanReachLocation("Plains.WeaveNest"),
+                CanReachLocation("EternalSpring.WeaveNest"),
+                CanReachLocation("Aether.WeaveSpire"),
+                CanReachLocation("Cryo.WeaveSpire"),
+            )
         )
 
     def fill_slot_data(self) -> dict[str, Any]:
         return self.options.as_dict(
+            "weave_goal",
             "progressive_areas",
+            "spawn_relics",
             "quests",
             "divine_logic",
             "craftsanity",

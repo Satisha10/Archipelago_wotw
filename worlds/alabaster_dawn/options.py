@@ -1,6 +1,14 @@
 from dataclasses import dataclass
 
-from Options import OptionGroup, PerGameCommonOptions, Toggle, DefaultOnToggle, Choice
+from Options import OptionGroup, PerGameCommonOptions, Toggle, DefaultOnToggle, Choice, Range
+
+
+class WeaveGoalAmount(Range):
+    """How many Nyx Nests or Spires are required to weave before goaling."""
+    display_name = "Weave Goal Amount"
+    range_start = 1
+    range_end = 5
+    default = 5
 
 
 class ProgressiveAreas(Choice):
@@ -72,6 +80,7 @@ class Craftsanity(Toggle):
 
 @dataclass
 class ADOptions(PerGameCommonOptions):
+    weave_goal: WeaveGoalAmount
     progressive_areas: ProgressiveAreas
     spawn_melee: SpawnMeleeWeapon
     spawn_range: SpawnRangeWeapon
@@ -83,6 +92,12 @@ class ADOptions(PerGameCommonOptions):
     cooksanity: Cooksanity
 
 option_groups = [
+    OptionGroup(
+        "Goal",
+        [
+            WeaveGoalAmount,
+        ]
+    ),
     OptionGroup(
         "Items",
         [
