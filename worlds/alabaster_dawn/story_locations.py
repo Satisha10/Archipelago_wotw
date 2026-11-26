@@ -2,14 +2,14 @@
 
 from rule_builder.rules import Has, HasAll, HasAny
 
-from .rule_helpers import has_any_elements
+from .rule_helpers import has_any_elements, has_keys
 from .data_structures import StoryLocData
 
 story_loc: dict[str, StoryLocData] = {
     "Aether.Element": StoryLocData(
         game_name="Aether",
         area="Trial of Aether A",
-        rule=HasAll("Filia", "Blunt", "Range") & Has("Aether Trial Mark", count=2),
+        rule=HasAll("Filia", "Blunt", "Range") & has_keys("Aether Trial Mark", count=2),
         loc_id=1,
     ),
     "Valley.Hammer": StoryLocData(
@@ -53,7 +53,7 @@ story_loc: dict[str, StoryLocData] = {
         game_name="ap_spire_aether.weaved",
         area="Trial of Aether B",
         rule=HasAll("Filia", "Chakram", "Blunt", "Pierce Range", "Aether", "Physis")
-             & Has("Aether Trial Mark", count=2),
+             & has_keys("Aether Trial Mark", count=2),
         loc_id=8,
     ),
     "ScalaMoor.Spear": StoryLocData(
@@ -72,7 +72,7 @@ story_loc: dict[str, StoryLocData] = {
         game_name="swamp.bossDefeated",
         area="Cryo.E",
         # Slash combat + Chakram for the enemy gauntlet that triggers after opening the 4th key chest.
-        rule=Has("Cryo Trial Mark", count=4) & HasAll("Cryo", "Slash Combat", "Chakram"),
+        rule=has_keys("Cryo Trial Mark", count=4) & HasAll("Cryo", "Slash Combat", "Chakram"),
         loc_id=11,
     ),
 }

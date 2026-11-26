@@ -138,12 +138,12 @@ class ADWorld(World):
                     removed_items.add(item_name)
 
         if self.options.spawn_relics:
-            removed_items += ["Winged Boots", "Great Attractor", "Utility Belt I", "Utility Belt II"]
+            removed_items |= {"Winged Boots", "Great Attractor", "Utility Belt I", "Utility Belt II"}
 
         # Create only one of each key instead of the normal amount
         if self.options.master_keys:
             keys = ["Aether Trial Mark", "Cryo Trial Mark"]
-            removed_items += keys
+            removed_items |= set(keys)
             for key in keys:
                 pool.append(self.create_item(key))
 
@@ -235,8 +235,7 @@ class ADWorld(World):
         )
 
     def fill_slot_data(self) -> dict[str, Any]:
-        # TODO See if choice options are sent as ints or str for client code
-        return self.options.as_dict(
+        option_dict = self.options.as_dict(
             "weave_goal",
             "progressive_areas",
             "spawn_relics",
@@ -247,6 +246,8 @@ class ADWorld(World):
             "craftsanity",
             "cooksanity",
         )
+        return option_dict | {"ap_version": 1}
+
 
 class ADItem(Item):
     game: str = "Alabaster Dawn"
