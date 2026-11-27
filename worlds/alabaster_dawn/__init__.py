@@ -56,8 +56,8 @@ class ADWorld(World):
         if re_gen_passthrough and self.game in re_gen_passthrough:
             slot_data: dict[str, Any] = re_gen_passthrough[self.game]
 
-            self.options.weave_goal = slot_data["weave_goal"]
-            self.options.master_keys = slot_data["master_keys"]
+            self.options.weave_goal.value = slot_data["weave_goal"]
+            self.options.master_keys.value = slot_data["master_keys"]
             self.options.quests.value = slot_data["quests"]
             self.options.divine_logic.value = slot_data["divine_logic"]
             self.options.craftsanity.value = slot_data["craftsanity"]
@@ -179,9 +179,10 @@ class ADWorld(World):
             # complete: the number of times the list is added completely
             # rand: take this number of gems at random from the list
             complete, rand = amount // len(gems), amount % len(gems)
+            suffix = " Construct" if key[0] in (GemSlot.core, GemSlot.melee_m, GemSlot.ranged_m) else ""
             for _ in range(complete):
-                pool += [self.create_item(gem) for gem in gems]
-            pool += [self.create_item(gem) for gem in self.random.sample(gems, rand)]
+                pool += [self.create_item(gem + suffix) for gem in gems]
+            pool += [self.create_item(gem + suffix) for gem in self.random.sample(gems, rand)]
 
         # Add filler items to have the same number of items and locations
         extras = len(mworld.get_unfilled_locations(player=self.player)) - len(pool)
